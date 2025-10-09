@@ -46,7 +46,7 @@ $(MLX_DIR):
 	git clone https://github.com/42paris/minilibx-linux.git mlx_linux
 
 clean:
-	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME)
+	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) $(PROJ)
 	$(MAKE) -C $(MLX_DIR) clean
 	$(MAKE) -C $(LIBFT_DIR) clean
 
