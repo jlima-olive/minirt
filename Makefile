@@ -6,11 +6,15 @@ PROJ_DIR=	${PROJ}_dir
 
 MLX_DIR=	minilibx-linux
 
+MLX_ARQ=	$(MLX_DIR)/libmlx.a $(MLX_DIR)/libmlx_Linux.a
+
 SRC_FILES=	$(wildcard $(PROJ_DIR)/*.c)
 
 OBJ_FILES=	$(SRC_FILES:.c=.o)
 
 LIBFT_DIR=	my_libft
+
+LIBFT_ARQ=	jojo_libft.a
 
 SRC_LIBFT=	$(wildcard $(LIBFT_DIR)/*.c)
 
@@ -18,25 +22,30 @@ OBJ_LIBFT=	$(SRC_LIBFT:.c=.o)
 
 CC=			cc
 
-CFLAGS=		-I/usr/include -I$(MLX_DIR) -O3 -Wall -Wextra -Werror
+CFLAGS=		-Wall -Wextra -Werror
 
-LMX_FLAGS=	-L$(MLX_DIR) -l$(MLX_DIR) -L/usr/lib -I$(MLX_DIR) -lXext -lX11 -lm -lz
+LMX_FLAGS=	-Wall -Wextra -Werror -Lminilibx-linux -lmlx_Linux -L/usr/lib -Iminilibx-linux -lXext -lX11 -lm -lz
+
+#
+MLBLIB=		minilibx-linux/libmlx_Linux.a
+
+MLBMAC=		minilibx-linux/libmlx.a
+
+LMX_FLAGS=					 -Lminilibx-linux -lmlx_Linux -L/usr/lib -Iminilibx-linux -lXext -lX11 -lm -lz
+#
 
 AR=			ar rcs
 
 all: MLX $(PROJ)
 
-$(PROJ): $(PROJ).c
-	$(CC) $(CFLAGS) $(LMX_FLAGS) -c $(PROJ).c -o $(PROJ)
+$(PROJ): $(PROJ).c $(LIBFT_ARQ) $(NAME)
+	$(CC) $(LMX_FLAGS) $(MLX_ARQ) $(LIBFT_ARQ) $(NAME) $(LMX_FLAGS) $(PROJ).c -o $(PROJ)
 
-# $(LIBFT_DIR)/$(LIBFT_DIR).a:
-# 	$(MAKE) -C $(LIBFT_DIR)
+$(NAME):
+	$(AR) $(NAME) $(OBJ_FILES)
 
-# $(MLX_DIR)/libmlx.a:
-# 	$(MAKE) -C $(MLX_DIR)
-
-# $(MLX_DIR)/libmlx_Linux.a:
-# 	$(MAKE) -C $(MLX_DIR)
+$(LIBFT_ARQ):
+	$(MAKE) -C $(LIBFT_DIR)
 
 MLX: $(MLX_DIR)
 	$(MAKE) -C $(MLX_DIR)

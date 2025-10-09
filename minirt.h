@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/09 13:54:31 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/09 15:53:58 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,18 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
-# include "minilibx-linux/mlx.h"
 # include "minilibx-linux/mlx_int.h"
+# include "minilibx-linux/mlx.h"
+
+#ifndef WIDTH
+# define WIDTH 1080
+#endif
+
+typedef struct s_mlx
+{
+	void	*mlx_ptr;
+	void	*mlx_win;
+}   t_mlx;
 
 typedef struct s_vec
 {
