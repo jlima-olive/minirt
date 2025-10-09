@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/09 15:53:58 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/09 16:17:39 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
-# include "minilibx-linux/mlx_int.h"
-# include "minilibx-linux/mlx.h"
+# include "mlx_linux/mlx_int.h"
+# include "mlx_linux/mlx.h"
 
 #ifndef WIDTH
 # define WIDTH 1080

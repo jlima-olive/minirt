@@ -4,7 +4,7 @@ NAME=		${PROJ}.a
 
 PROJ_DIR=	${PROJ}_dir
 
-MLX_DIR=	minilibx-linux
+MLX_DIR=	mlx_linux
 
 MLX_ARQ=	$(MLX_DIR)/libmlx.a $(MLX_DIR)/libmlx_Linux.a
 
@@ -24,22 +24,14 @@ CC=			cc
 
 CFLAGS=		-Wall -Wextra -Werror
 
-LMX_FLAGS=	-Wall -Wextra -Werror -Lminilibx-linux -lmlx_Linux -L/usr/lib -Iminilibx-linux -lXext -lX11 -lm -lz
-
-#
-MLBLIB=		minilibx-linux/libmlx_Linux.a
-
-MLBMAC=		minilibx-linux/libmlx.a
-
-LMX_FLAGS=					 -Lminilibx-linux -lmlx_Linux -L/usr/lib -Iminilibx-linux -lXext -lX11 -lm -lz
-#
+LMX_FLAGS=	-Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 
 AR=			ar rcs
 
 all: MLX $(PROJ)
 
 $(PROJ): $(PROJ).c $(LIBFT_ARQ) $(NAME)
-	$(CC) $(LMX_FLAGS) $(MLX_ARQ) $(LIBFT_ARQ) $(NAME) $(LMX_FLAGS) $(PROJ).c -o $(PROJ)
+	$(CC) $(CFLAGS) $(MLX_ARQ) $(LIBFT_ARQ) $(NAME) $(PROJ).c $(LMX_FLAGS) -o $(PROJ)
 
 $(NAME):
 	$(AR) $(NAME) $(OBJ_FILES)
@@ -51,27 +43,22 @@ MLX: $(MLX_DIR)
 	$(MAKE) -C $(MLX_DIR)
 
 $(MLX_DIR):
-	git clone https://github.com/42paris/minilibx-linux.git
+	git clone https://github.com/42paris/minilibx-linux.git mlx_linux
 
 clean:
-	rm -fr $(PROJ).a
-	rm -fr $(OBJ_FILES)
+	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME)
 	$(MAKE) -C $(MLX_DIR) clean
 	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean:
-	rm -fr $(PROJ).a
-	rm -fr $(OBJ_FILES)
-	rm -fr $(PROJ)
+	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) $(PROJ)
 	$(MAKE) -C $(MLX_DIR) clean
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
 r:
-	rm -fr $(PROJ).a
-	rm -fr $(OBJ_FILES)
+	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) $(PROJ)
 	make
-	./minirt
 
 .PHONY: re fclean clean all mini MLX
