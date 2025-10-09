@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/09 16:20:36 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/09 20:34:05 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,29 @@ int	init_mlx(t_mlx *mlx)
 	return (0);
 }
 
-void	close_mlx(t_mlx mlx)
+int	close_mlx(t_mlx *mlx)
 {
-	mlx_destroy_window(mlx.mlx_ptr, mlx.mlx_win);
-	mlx_destroy_display(mlx.mlx_ptr);
-	free(mlx.mlx_ptr);
+	// mlx_destroy_image(data->mlx_ptr, data->img2.img_ptr);
+	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
+	mlx_destroy_display(mlx->mlx_ptr);
+	free(mlx->mlx_ptr);
+	exit (0);
 }
+
+int my_key_hook(int key, t_mlx *mlx)
+{
+	if (key == XK_Escape)
+		close_mlx(mlx);
+	return (0);
+}
+
+int my_button_hook(int key, t_mlx *mlx)
+{
+	if (key == XK_Escape)
+		close_mlx(mlx);
+	return (0);
+}
+
 
 int	main(void)
 {
@@ -38,6 +55,8 @@ int	main(void)
 		return (1);
 	if (init_mlx(&mlx))
 		return (1);
-	sleep(1);
-	close_mlx(mlx);
+	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
+	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
+	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_button_hook, &mlx);
+	mlx_loop(mlx.mlx_ptr);
 }
