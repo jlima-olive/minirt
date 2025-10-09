@@ -1,30 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minirt.c                                           :+:      :+:    :+:   */
+/*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/09 14:02:52 by namejojo         ###   ########.fr       */
+/*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
+/*   Updated: 2025/10/09 13:54:31 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minirt.h"
+#ifndef MINIRT_H
+# define MINIRT_H
 
-int	init_mlx(void *mlx)
-{
-	mlx = mlx_init();
-	if (mlx == NULL)
-		return (1);
-}
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <string.h>
+# include "minilibx-linux/mlx.h"
+# include "minilibx-linux/mlx_int.h"
 
-int	main(void)
+typedef struct s_vec
 {
-	void	*mlx;
-	
-	mlx = NULL;
-	if (init_mlx(mlx))
-		return (1);
-	
-}
+    float	x;
+    float	y;
+    float	z;
+} t_vec;
+
+typedef t_vec t_rgb;
+typedef t_vec t_point;
+
+#endif
