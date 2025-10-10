@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 13:04:28 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 13:39:57 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,10 @@ int		my_key_hook(int key, t_mlx *mlx);
 int		close_mlx(t_mlx *mlx);
 
 // replicating member functions
-// arithmetic.c
+int		equal(t_point one, t_point two);
 t_point	add(t_point one, t_point two);
 t_point	sub(t_point one, t_point two);
-t_point	add(t_point one, t_point two);
-int		equal(t_point one, t_point two);
-t_point	mult_cords(t_point point, float a);
-t_point	mult_vec(t_point point, float a);
-t_point	mult_rgb(t_point point, float a);
-
+t_point	mult_class(t_point point, float a);
 t_point	set_class(float x, float y, float z);
-int		get_color(t_rgb rgb);
 
 #endif

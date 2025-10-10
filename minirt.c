@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 13:04:59 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 13:42:21 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,12 @@ void	paint_back_ground(t_mlx *mlx)
 
 t_mlximg parse(t_mlximg img)
 {
-	t_vec	to_focus_point;
+	t_vec	focus_point;
 
 	img.camera = set_class(0, 0, 0);
-	to_focus_point = set_class(0, 0, 1);
-	to_focus_point = mult_cords(mult(1 / normalize_vec(to_focus_point)));
+	focus_point = set_class(0, 0, 1);
+	focus_point = mult_class(focus_point, 1 / normalize_vec(focus_point));
+	img.focus_point = focus_point;
 	return (img);
 }
 
