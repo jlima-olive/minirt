@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 21:17:57 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 21:55:14 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include "mlx_linux/mlx.h"
 
 # ifndef HGT
-#  define HGT 540
+#  define HGT 720
 # endif
 
 typedef struct	s_vec
@@ -47,6 +47,7 @@ typedef struct	s_mlximg
 	t_point	focus_point;
 	t_vec	del_x;
 	t_vec	del_y;
+	double	(*del_z)(double);
 }	t_mlximg;
 
 typedef struct	s_mlx

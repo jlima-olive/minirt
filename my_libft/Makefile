@@ -1,8 +1,7 @@
 LIB_DIR=	libft/
 GNL_DIR=	get_next_line/
 
-SRC_FILES=  $(wildcard ${LIB_DIR}*.c) \
-			$(wildcard ${GNL_DIR}*.c) \
+SRC_FILES=  $(wildcard ${LIB_DIR}*.c)
 
 OBJ_FILES=	${SRC_FILES:.c=.o}
 

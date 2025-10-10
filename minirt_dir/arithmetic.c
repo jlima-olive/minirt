@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 11:35:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 21:09:32 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 21:36:32 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int	get_rgb_num(float r, float g, float b, float a)
 	r = r * 255 * a;
 	g = g * 255 * a;
 	b = b * 255 * a;
-	return (((int)(r * a) << 16) + ((int)(g * a) << 8) + ((int)(b * a)));
+	return (((int)(r * a) << 16) + ((int)(g * a) << 8) + (int)(b * a));
 }
 
 int	get_rgb(t_point one, float a)
@@ -61,8 +61,8 @@ int	get_rgb(t_point one, float a)
 	int	g;
 	int	b;
 
-	r = one.x * a;
-	g = one.y * a;
-	b = one.z * a;
-	return (r << 16 + g << 8 + b);
+	r = one.x * 255 * a;
+	g = one.y * 255 * a;
+	b = one.z * 255 * a;
+	return ((r << 16) + (g << 8) + b);
 }
