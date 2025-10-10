@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 11:09:51 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 13:04:28 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,10 @@ typedef struct	s_mlximg
 	void	*img_ptr;
 	char	*pixel_ptr;
 	t_point	camera;
-	t_point	pixel;
+	t_point	fpixel;
+	t_point	focus_point;
+	t_vec	del_x;
+	t_vec	del_y;
 }	t_mlximg;
 
 typedef struct	s_mlx
@@ -63,6 +66,18 @@ typedef t_vec	t_point;
 int		my_button_hook(int key, t_mlx *mlx);
 int		my_key_hook(int key, t_mlx *mlx);
 int		close_mlx(t_mlx *mlx);
-t_point	get_cords(float x, float y, float z);
+
+// replicating member functions
+// arithmetic.c
+t_point	add(t_point one, t_point two);
+t_point	sub(t_point one, t_point two);
+t_point	add(t_point one, t_point two);
+int		equal(t_point one, t_point two);
+t_point	mult_cords(t_point point, float a);
+t_point	mult_vec(t_point point, float a);
+t_point	mult_rgb(t_point point, float a);
+
+t_point	set_class(float x, float y, float z);
+int		get_color(t_rgb rgb);
 
 #endif

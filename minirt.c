@@ -6,31 +6,11 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 11:10:17 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 13:04:59 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-
-t_point	get_cords(float x, float y, float z)
-{
-	t_point	ret;
-
-	ret.x = x;
-	ret.y = y;
-	ret.z = z;
-	return (ret);
-}
-
-t_point at(t_ray ray)
-{
-	t_point ret;
-
-	ret.x = ray.point.x + ray.vec.x * ray.t;
-	ret.y = ray.point.y + ray.vec.y * ray.t;
-	ret.z = ray.point.z + ray.vec.z * ray.t;
-	return (ret);
-}
 
 int	close_mlx(t_mlx *mlx)
 {
@@ -67,7 +47,7 @@ void	init_var(t_mlx *mlx)
 	mlx->mlx_win = NULL;
 }
 
-int	get_color(int x, int y)
+int	get_color(int x, int y, t_mlximg img)
 {
 	
 }
@@ -78,7 +58,7 @@ void	my_pixel_put(int x, int y, t_mlximg img)
 	
 	offset = (x * 4) + (y * img.line_len);
 	*((unsigned int *)(img.pixel_ptr + offset))
-	= get_color(x, y);
+	= get_color(x, y, img);
 }
 
 void	paint_back_ground(t_mlx *mlx)
@@ -99,22 +79,31 @@ void	paint_back_ground(t_mlx *mlx)
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
 }
 
+t_mlximg parse(t_mlximg img)
+{
+	t_vec	to_focus_point;
+
+	img.camera = set_class(0, 0, 0);
+	to_focus_point = set_class(0, 0, 1);
+	to_focus_point = mult_cords(mult(1 / normalize_vec(to_focus_point)));
+	return (img);
+}
+
 int	main(void)
 {
 	t_mlx	mlx;
 	t_point	camera_center;
 	t_point	pixel;
 
-	init_var(&mlx);
 	if (HEIGHT != 540)
 		return (1);
+	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
+	mlx.img = parse(mlx.img);
 	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
 	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
-	mlx.img.camera = get_cords(0, 0 ,0);
-	mlx.img.pixel = get_cords(-1 * 16 / 9, 1, 1);
 	paint_back_ground(&mlx);
 	mlx_loop(mlx.mlx_ptr);
 }
