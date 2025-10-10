@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/11 00:31:58 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/11 00:34:50 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ t_mlximg parse(t_mlximg img)
 	img.ctr_pnt = add(img.camera, img.ctr_pnt);
 	// all wrong here
 	img.del_h = set_class(2 * rad / wdt, 0, var); // calculate this knowint y is zero
-	img.del_v = set_class(0, -1 / HGT, 0); // calculate this knowing its pararel to del_h and ori_vec
+	img.del_v = set_class(var, -1 / HGT, var); // calculate this knowing its pararel to del_h and ori_vec
 	// all wrong here
 	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -wdt / 2));
 	img.pixel00 = add(img.ctr_pnt, mult(img.del_v, -HGT / 2));
