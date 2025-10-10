@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 11:35:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 21:36:32 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 23:16:03 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_point	sub(t_point one, t_point two)
 	return (ret);
 }
 
-t_point	mult_class(t_point point, float a)
+t_point	mult(t_point point, float a)
 {
 	t_point	ret;
 

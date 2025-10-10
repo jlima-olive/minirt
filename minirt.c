@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 23:14:20 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/11 00:06:23 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,18 +118,22 @@ t_mlximg parse(t_mlximg img)
 	int		wdt;
 	int		rad;
 	int		degree;
+	int		var;
 
-	wdt = HGT * 16 / 9;
 	degree = 90;
-	rad = degree / 180;
 	img.camera = set_class(0, 0, 0);
 	img.ori_vec = set_class(0, 0, 1);
-	img.ori_vec = mult_class(img.ori_vec, 1 / vec_len(img.ori_vec));
+	// things above are done by the parser this is just an example
+	rad = degree / 180;
+	wdt = HGT * 16 / 9;
+	img.ori_vec = mult(img.ori_vec, 1 / vec_len(img.ori_vec));
 	img.ctr_pnt = add(img.camera, img.ctr_pnt);
-	// probably all wrong under here
-	img.pixel00 = add(img.ctr_pnt, set_class(-rad, 1, 1));
-	img.del_x = set_class(rad / HGT, 0, 0);
-	img.del_y = set_class(0, -2 , 0);
+	// probably all wrong here
+	img.del_x = set_class(2 * rad / wdt, 0, 0);
+	img.del_y = set_class(0, -1 / HGT, 0);
+	// probably all wrong here
+	img.pixel00 = add(img.ctr_pnt, mult(img.del_x, -wdt / 2));
+	img.pixel00 = add(img.ctr_pnt, mult(img.del_y, -HGT / 2));
 	return (img);
 }
 

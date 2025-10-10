@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 23:08:02 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 23:16:03 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int		close_mlx(t_mlx *mlx);
 int		equal(t_point one, t_point two);
 t_point	add(t_point one, t_point two);
 t_point	sub(t_point one, t_point two);
-t_point	mult_class(t_point point, float a);
+t_point	mult(t_point point, float a);
 t_point	set_class(float x, float y, float z);
 int		get_rgb(t_point one, float a);
 int		get_rgb_num(float r, float g, float b, float a);
