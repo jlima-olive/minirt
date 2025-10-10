@@ -31,9 +31,9 @@ AR=			ar rcs
 all: MLX $(PROJ)
 
 $(PROJ): $(PROJ).c $(LIBFT_ARQ) $(NAME)
-	$(CC) $(CFLAGS) $(MLX_ARQ) $(LIBFT_ARQ) $(NAME) $(PROJ).c $(LMX_FLAGS) -o $(PROJ)
+	$(CC) $(CFLAGS) $(PROJ).c $(MLX_ARQ) $(LIBFT_ARQ) $(NAME) $(LMX_FLAGS) -o $(PROJ)
 
-$(NAME):
+$(NAME): $(OBJ_FILES)
 	$(AR) $(NAME) $(OBJ_FILES)
 
 $(LIBFT_ARQ):
