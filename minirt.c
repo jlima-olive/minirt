@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 09:56:04 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 10:15:51 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	close_mlx(t_mlx *mlx)
 {
-	mlx_destroy_image(mlx->mlx_ptr, mlx->img);
+	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
 	mlx_destroy_display(mlx->mlx_ptr);
 	free(mlx->mlx_ptr);
@@ -23,21 +23,20 @@ int	close_mlx(t_mlx *mlx)
 
 int	init_mlx(t_mlx *mlx)
 {
-	t_mlximg	*img;
+	t_mlximg	img;
 
 	mlx->mlx_ptr = mlx_init();
 	if (mlx->mlx_ptr == NULL)
 		close_mlx(mlx);
-	mlx->mlx_win = mlx_new_window(mlx->mlx_ptr, WIDTH, WIDTH * 16/9, "WINDOW");
+	mlx->mlx_win = mlx_new_window(mlx->mlx_ptr, HEIGHT * 16/9, HEIGHT, "WINDOW");
 	if (mlx->mlx_win == NULL)
 		close_mlx(mlx);
-	img = mlx_new_image(mlx->mlx_ptr, WIDTH, WIDTH * 16/9);
-	if (img == NULL)
+	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HEIGHT * 16/9, HEIGHT);
+	if (img.img_ptr == NULL)
 		close_mlx(mlx);
+	img.pixel_ptr = mlx_get_data_addr(img.img_ptr, &img.bpp, &img.line_len, &img.endian);
 	mlx->img = img;
-	img->pixel_ptr
-	= mlx_get_data_addr(img->img_ptr, &img->bpp, &img->line_len, &img->endian);
-	if (img->pixel_ptr == NULL)
+	if (img.pixel_ptr == NULL)
 		close_mlx(mlx);
 	return (0);
 }
@@ -46,37 +45,33 @@ void	init_var(t_mlx *mlx)
 {
 	mlx->mlx_ptr = NULL;
 	mlx->mlx_win = NULL;
-	mlx->img = NULL;
 }
 
-void	my_pixel_put(int x, int y, t_mlx *mlx)
+void	my_pixel_put(int x, int y, t_mlximg img)
 {
 	int	offset;
 	
-	offset = (x * (mlx->img->bpp / 8)) + (y * mlx->img->line_len);
-	*((unsigned int *)(mlx->img->pixel_ptr + offset)) = 255;
+	offset = (x * 4) + (y * img.line_len);
+	*((unsigned int *)(img.pixel_ptr + offset))
+	= 255;
 }
 
 void	paint_back_ground(t_mlx *mlx)
 {
-	int	h;
+	int	w;
 	int	x;
 	int	y;
 
-	h = WIDTH * 16 / 9;
+	w = HEIGHT * 16 / 9;
 	y = -1;
-	printf("doing something1\n");
-	fflush(stdout);
-	while (++y < h)
+	while (++y < HEIGHT)
 	{
 		x = -1;
-		while (++x < WIDTH)
-			my_pixel_put(x, y, mlx);
+		while (++x < w)
+			my_pixel_put(x, y, mlx->img);
 	}
-	printf("doing something2\n");
-	fflush(stdout);
 	mlx_put_image_to_window
-	(mlx->mlx_ptr, mlx->mlx_win, mlx->img->img_ptr, WIDTH, h);
+	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
 }
 
 int	main(void)
@@ -84,7 +79,7 @@ int	main(void)
 	t_mlx mlx;
 
 	init_var(&mlx);
-	if (WIDTH != 1080)
+	if (HEIGHT != 540)
 		return (1);
 	if (init_mlx(&mlx))
 		return (1);

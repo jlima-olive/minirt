@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 09:42:12 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 10:13:27 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 # include "mlx_linux/mlx_int.h"
 # include "mlx_linux/mlx.h"
 
-# ifndef WIDTH
-#  define WIDTH 1080
+# ifndef HEIGHT
+#  define HEIGHT 540
 # endif
 
 typedef struct	s_mlximg
@@ -37,7 +37,7 @@ typedef struct	s_mlx
 {
 	void		*mlx_ptr;
 	void		*mlx_win;
-	t_mlximg	*img;
+	t_mlximg	img;
 }   t_mlx;
 
 typedef struct	s_vec
