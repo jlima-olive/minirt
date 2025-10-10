@@ -22,7 +22,7 @@ OBJ_LIBFT=	$(SRC_LIBFT:.c=.o)
 
 CC=			cc
 
-CFLAGS=		-Wall -Wextra -Werror
+# CFLAGS=		-Wall -Wextra -Werror
 
 LMX_FLAGS=	-Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 

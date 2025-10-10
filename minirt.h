@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 13:39:57 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 21:17:57 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,23 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+# include <math.h>
 # include "mlx_linux/mlx_int.h"
 # include "mlx_linux/mlx.h"
 
-# ifndef HEIGHT
-#  define HEIGHT 540
+# ifndef HGT
+#  define HGT 540
 # endif
+
+typedef struct	s_vec
+{
+	float	x;
+	float	y;
+	float	z;
+} t_vec;
+
+typedef t_vec	t_rgb;
+typedef t_vec	t_point;
 
 typedef struct	s_mlximg
 {
@@ -45,23 +56,13 @@ typedef struct	s_mlx
 	t_mlximg	img;
 }   t_mlx;
 
-typedef struct	s_vec
-{
-	float	x;
-	float	y;
-	float	z;
-} t_vec;
-
 typedef struct	s_ray
 {
 	t_point	point;
 	t_vec	vec;
 	float	t;
-	t_point (*at)(t_ray);
+	// t_point (*at)(t_ray);
 } t_ray;
-
-typedef t_vec	t_rgb;
-typedef t_vec	t_point;
 
 int		my_button_hook(int key, t_mlx *mlx);
 int		my_key_hook(int key, t_mlx *mlx);
@@ -73,5 +74,7 @@ t_point	add(t_point one, t_point two);
 t_point	sub(t_point one, t_point two);
 t_point	mult_class(t_point point, float a);
 t_point	set_class(float x, float y, float z);
+int		get_rgb(t_point one, float a);
+int		get_rgb_num(float r, float g, float b, float a);
 
 #endif
