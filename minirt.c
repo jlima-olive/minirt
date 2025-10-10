@@ -6,11 +6,31 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 10:15:51 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/10 11:10:17 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
+
+t_point	get_cords(float x, float y, float z)
+{
+	t_point	ret;
+
+	ret.x = x;
+	ret.y = y;
+	ret.z = z;
+	return (ret);
+}
+
+t_point at(t_ray ray)
+{
+	t_point ret;
+
+	ret.x = ray.point.x + ray.vec.x * ray.t;
+	ret.y = ray.point.y + ray.vec.y * ray.t;
+	ret.z = ray.point.z + ray.vec.z * ray.t;
+	return (ret);
+}
 
 int	close_mlx(t_mlx *mlx)
 {
@@ -47,13 +67,18 @@ void	init_var(t_mlx *mlx)
 	mlx->mlx_win = NULL;
 }
 
+int	get_color(int x, int y)
+{
+	
+}
+
 void	my_pixel_put(int x, int y, t_mlximg img)
 {
 	int	offset;
 	
 	offset = (x * 4) + (y * img.line_len);
 	*((unsigned int *)(img.pixel_ptr + offset))
-	= 255;
+	= get_color(x, y);
 }
 
 void	paint_back_ground(t_mlx *mlx)
@@ -76,7 +101,9 @@ void	paint_back_ground(t_mlx *mlx)
 
 int	main(void)
 {
-	t_mlx mlx;
+	t_mlx	mlx;
+	t_point	camera_center;
+	t_point	pixel;
 
 	init_var(&mlx);
 	if (HEIGHT != 540)
@@ -86,6 +113,8 @@ int	main(void)
 	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
 	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
+	mlx.img.camera = get_cords(0, 0 ,0);
+	mlx.img.pixel = get_cords(-1 * 16 / 9, 1, 1);
 	paint_back_ground(&mlx);
 	mlx_loop(mlx.mlx_ptr);
 }
