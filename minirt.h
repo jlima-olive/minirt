@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 23:16:03 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/11 00:30:49 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ typedef struct	s_mlximg
 	t_point	ctr_pnt;
 	t_point	ori_vec;
 	t_point	pixel00;
-	t_vec	del_x;
-	t_vec	del_y;
+	t_vec	del_h;
+	t_vec	del_v;
 	int		degres;
 }	t_mlximg;
 
