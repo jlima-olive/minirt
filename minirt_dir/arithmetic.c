@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 11:35:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 23:16:03 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/11 13:11:41 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ t_point	sub(t_point one, t_point two)
 	return (ret);
 }
 
-t_point	mult(t_point point, float a)
+t_point	mult(t_point point, double a)
 {
 	t_point	ret;
 
@@ -47,7 +47,7 @@ int	equal(t_point one, t_point two)
 	return ((one.x == two.x) && (one.y == two.y) && (one.z == two.z));
 }
 
-int	get_rgb_num(float r, float g, float b, float a)
+int	get_rgb_num(double r, double g, double b, double a)
 {
 	r = r * 255 * a;
 	g = g * 255 * a;
@@ -55,7 +55,7 @@ int	get_rgb_num(float r, float g, float b, float a)
 	return (((int)(r * a) << 16) + ((int)(g * a) << 8) + (int)(b * a));
 }
 
-int	get_rgb(t_point one, float a)
+int	get_rgb(t_point one, double a)
 {
 	int	r;
 	int	g;

@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/11 00:34:50 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/12 15:05:48 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	init_var(t_mlx *mlx)
 	mlx->mlx_win = NULL;
 }
 
-int	get_color(float y)
+int	get_color(double y)
 {
 	y = (y / HGT);
 	return (get_rgb_num(0.5, 0.3, 0, y) + get_rgb_num(0.5, 0.7, 1, 1));
@@ -108,32 +108,84 @@ void	run_code(t_mlx *mlx)
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
 }
 
-int	vec_len(t_vec vec)
+double	vec_len(t_vec vec)
 {
 	return (sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z));
+}
+
+t_vec	normalize_vec(t_vec vec)
+{
+	return (mult(vec, 1 / vec_len(vec)));
+}
+
+double	get_x(t_vec h)
+{
+	return (-h.z / h.x);
+}
+
+double	get_y(t_vec o, t_vec h)
+{
+	return ((h.z * o.x - o.z * h.x) / (o.y * h.x));
+}
+
+double	dot_product(t_vec a, t_vec b)
+{
+	return (a.x * b.x + a.y * b.y + a.z * b.z);
+}
+
+double get_cos(t_vec a, t_vec b)
+{
+	float	len;
+
+	len = (vec_len(a) * vec_len(b));
+	return (dot_product(a, b) / len);
+}
+
+t_vec edge_cases_del_v(t_vec o, t_vec v)
+{
+	if (o.z == 0)
+		return (set_class(-o.y, o.x, 0));
+	if (o.y == 0)
+		return (set_class(0, 1 ,0));
+	return (v);
 }
 
 t_mlximg parse(t_mlximg img)
 {
 	int		wdt;
-	int		rad;
-	int		degree;
-	int		var;
+	double	rad;
+	double	degree;
+	double	cos;
+	double	z;
+	t_vec	vec;
 
-	degree = 90;
-	img.camera = set_class(0, 0, 0);
-	img.ori_vec = set_class(0, 0, 1);
-	// things above are done by the parser this is just an example
-	rad = degree / 180;
 	wdt = HGT * 16 / 9;
-	img.ori_vec = mult(img.ori_vec, 1 / vec_len(img.ori_vec));
-	img.ctr_pnt = add(img.camera, img.ctr_pnt);
-	// all wrong here
-	img.del_h = set_class(2 * rad / wdt, 0, var); // calculate this knowint y is zero
-	img.del_v = set_class(var, -1 / HGT, var); // calculate this knowing its pararel to del_h and ori_vec
-	// all wrong here
+	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
+	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
+	degree = 180.0;							// done by the parser this is just an example
+	rad = degree / 180 * 3.14159265359;
+	if (rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
+		exit/* _func */(1);
+	img.ori_vec = normalize_vec(img.ori_vec);
+	img.ctr_pnt = add(img.camera, img.ori_vec);
+	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
+	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
+	img.del_h = mult(img.del_h, (2.0 * sin(rad / 2)) / wdt);
+	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1); 
+	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 1.0 / HGT);
+	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
+	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
+	printf("del_v	%f %f %f\n", img.del_v.x, img.del_v.y, img.del_v.z);
+	printf("dot_product img.ori_vec, img.del_h = %f\n", dot_product(img.ori_vec, img.del_h));
+	printf("dot_product img.ori_vec, img.del_v = %f\n", dot_product(img.ori_vec, img.del_v));
+	printf("dot_product img.del_h, img.del_v = %f\n", dot_product(img.del_h, img.del_v));
 	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -wdt / 2));
-	img.pixel00 = add(img.ctr_pnt, mult(img.del_v, -HGT / 2));
+	img.pixel00 = add(img.pixel00, mult(img.del_v, -HGT / 2));
+	printf("%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
+	img.pixel00 = add(img.pixel00, mult(img.del_h, wdt));
+	printf("%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
+	img.pixel00 = add(img.pixel00, mult(img.del_v, HGT));
+	printf("%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
 	return (img);
 }
 
