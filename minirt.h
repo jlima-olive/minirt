@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/11 13:11:27 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/12 20:23:00 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ typedef struct	s_vec
 typedef t_vec	t_rgb;
 typedef t_vec	t_point;
 
+typedef struct s_obj
+{
+	struct s_obj	*next;
+}	t_obj;
+
 typedef struct	s_mlximg
 {
 	int		bpp;
@@ -48,7 +53,9 @@ typedef struct	s_mlximg
 	t_vec	ori_vec;
 	t_vec	del_h;
 	t_vec	del_v;
-	int		degres;
+	float	rad;
+	float	wdt;
+	t_obj	lst;
 }	t_mlximg;
 
 typedef struct	s_mlx
@@ -60,11 +67,11 @@ typedef struct	s_mlx
 
 typedef struct	s_ray
 {
-	t_point	point;
-	t_vec	vec;
+	t_point	origin;
+	t_vec	direction;
 	double	t;
 	// t_point (*at)(t_ray);
-} t_ray;
+}	t_ray;
 
 int		my_button_hook(int key, t_mlx *mlx);
 int		my_key_hook(int key, t_mlx *mlx);
@@ -78,5 +85,12 @@ t_point	mult(t_point point, double a);
 t_point	set_class(double x, double y, double z);
 int		get_rgb(t_point one, double a);
 int		get_rgb_num(double r, double g, double b, double a);
+t_ray	set_ray(t_point origin, t_vec direction);
+t_vec	get_vector(t_mlximg img, float x, int y);
+double	get_cos(t_vec a, t_vec b);
+double	dot_product(t_vec a, t_vec b);
+double	get_y(t_vec o, t_vec h);
+t_vec	normalize_vec(t_vec vec);
+double	vec_len(t_vec vec);
 
 #endif

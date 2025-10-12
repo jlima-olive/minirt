@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/12 15:28:51 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/12 20:33:33 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,19 +48,57 @@ void	init_var(t_mlx *mlx)
 	mlx->mlx_win = NULL;
 }
 
-int	get_color(double y)
+int	hit_sphere1(t_point center, double radius, t_ray ray)
 {
-	y = (y / HGT);
+	t_vec	oc;
+	float	a;
+	float	b;
+	float	c;
+	float	sqr;
+
+	oc = sub(center, ray.origin);
+	a = dot_product(ray.direction, ray.direction);
+	b = dot_product(mult(ray.direction, -2), oc);
+	c = dot_product(oc, oc) - (radius * radius);
+	sqr = b * b - 4 * a * c;
+	return (sqr > 0);
+}
+
+int	hit_sphere2(t_point center, double radius, t_ray ray)
+{
+	t_vec	oc;
+	float	a;
+	float	b;
+	float	c;
+	float	ok;
+	float	ck;
+	float	res;
+	float	sqr;
+
+	
+	sqr = b * b - 4 * a * c;
+	return (sqr > 0);
+}
+
+int	get_color(float y, t_ray ray)
+{
+	if (hit_sphere1(set_class(0, 0, 1), 0.5, ray))
+		return (get_rgb_num(1, 0 ,0, 1));
+	if (hit_sphere2(set_class(0, 0, 1), 0.5, ray))
+		return (get_rgb_num(1, 0 ,0, 1));
+	y = y / HGT;
 	return (get_rgb_num(0.5, 0.3, 0, y) + get_rgb_num(0.5, 0.7, 1, 1));
 }
 
-void	render_background(int x, int y, t_mlximg img)
+void	render(int x, int y, t_mlximg img)
 {
-	int	offset;
-	
+	int		offset;
+	t_ray	ray;
+
+	ray = set_ray(img.camera, get_vector(img, x, y));
 	offset = (x * 4) + (y * img.line_len);
 	*((unsigned int *)(img.pixel_ptr + offset))
-	= get_color(y);
+	= get_color(y, ray);
 }
 
 void	paint_back_ground(t_mlx *mlx)
@@ -75,12 +113,12 @@ void	paint_back_ground(t_mlx *mlx)
 	{
 		x = -1;
 		while (++x < w)
-			render_background(x, y, mlx->img);
+			render(x, y, mlx->img);
 	}
 	mlx_put_image_to_window
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
 }
-
+/* 
 void	my_pixel_put(int x, int y, t_mlximg img)
 {
 	int	offset;
@@ -106,7 +144,7 @@ void	run_code(t_mlx *mlx)
 	}
 	mlx_put_image_to_window
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
-}
+} */
 
 double	vec_len(t_vec vec)
 {
@@ -150,27 +188,39 @@ t_vec edge_cases_del_v(t_vec o, t_vec v)
 	return (v);
 }
 
+t_vec	get_vector(t_mlximg img, float x, int y)
+{
+	t_vec	vec;
+
+	vec = add(img.pixel00, mult(img.del_h, x));
+	vec = add(vec, mult(img.del_v, y));
+	// printf("%f %f\n", x, img.rad / 2);
+	x = (x - (img.wdt / 2)) / img.wdt * 2;
+	x = (x > 0) * x - x * (x < 0);
+	// printf("%f\n", x);
+	// vec = add(vec, mult(img.ori_vec, -sin(x * img.rad / 2)));
+	return (vec);
+} 
+
 t_mlximg parse(t_mlximg img)
 {
-	int		wdt;
-	double	rad;
 	double	degree;
 	double	cos;
 	double	z;
 	t_vec	vec;
 
-	wdt = HGT * 16 / 9;
+	img.wdt = HGT * 16 / 9;
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
 	degree = 180.0;							// done by the parser this is just an example
-	rad = degree / 180 * 3.14159265359;
-	if (rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
+	img.rad = degree / 180 * 3.14159265359;
+	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
 		exit/* _func */(1);
 	img.ori_vec = normalize_vec(img.ori_vec);
 	img.ctr_pnt = add(img.camera, img.ori_vec);
 	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
 	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
-	img.del_h = mult(img.del_h, (2.0 * sin(rad / 2)) / wdt);
+	img.del_h = mult(img.del_h, (2.0 * sin(img.rad / 2)) / img.wdt);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1); 
 	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 2.0 / HGT);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
@@ -178,9 +228,12 @@ t_mlximg parse(t_mlximg img)
 	printf("del_v	%f %f %f\n", img.del_v.x, img.del_v.y, img.del_v.z);
 	printf("dot_product img.ori_vec, img.del_h = %f\n", dot_product(img.ori_vec, img.del_h));
 	printf("dot_product img.ori_vec, img.del_v = %f\n", dot_product(img.ori_vec, img.del_v));
-	printf("dot_product img.del_h, img.del_v = %f\n", dot_product(img.del_h, img.del_v));
-	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -wdt / 2));
+	printf("dot_product img.del_h,   img.del_v = %f\n", dot_product(img.del_h, img.del_v));
+	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -img.wdt / 2));
 	img.pixel00 = add(img.pixel00, mult(img.del_v, -HGT / 2));
+	vec = get_vector(img, img.wdt, HGT);
+	printf("pixel00	%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
+	printf("n_vec	%f %f %f\n", vec.x, vec.y, vec.z);
 	return (img);
 }
 
@@ -200,6 +253,7 @@ int	main(void)
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
 	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
 	paint_back_ground(&mlx);
-	run_code(&mlx);
+	
+	// run_code(&mlx);
 	mlx_loop(mlx.mlx_ptr);
 }
