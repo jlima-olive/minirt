@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/12 15:05:48 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/12 15:28:51 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ t_vec edge_cases_del_v(t_vec o, t_vec v)
 	if (o.z == 0)
 		return (set_class(-o.y, o.x, 0));
 	if (o.y == 0)
-		return (set_class(0, 1 ,0));
+		return (set_class(0, -1 ,0));
 	return (v);
 }
 
@@ -172,7 +172,7 @@ t_mlximg parse(t_mlximg img)
 	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
 	img.del_h = mult(img.del_h, (2.0 * sin(rad / 2)) / wdt);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1); 
-	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 1.0 / HGT);
+	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 2.0 / HGT);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
 	printf("del_v	%f %f %f\n", img.del_v.x, img.del_v.y, img.del_v.z);
@@ -181,11 +181,6 @@ t_mlximg parse(t_mlximg img)
 	printf("dot_product img.del_h, img.del_v = %f\n", dot_product(img.del_h, img.del_v));
 	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -wdt / 2));
 	img.pixel00 = add(img.pixel00, mult(img.del_v, -HGT / 2));
-	printf("%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
-	img.pixel00 = add(img.pixel00, mult(img.del_h, wdt));
-	printf("%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
-	img.pixel00 = add(img.pixel00, mult(img.del_v, HGT));
-	printf("%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
 	return (img);
 }
 
