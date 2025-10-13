@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/12 20:33:33 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/13 10:32:27 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,16 @@ int	hit_sphere1(t_point center, double radius, t_ray ray)
 	b = dot_product(mult(ray.direction, -2), oc);
 	c = dot_product(oc, oc) - (radius * radius);
 	sqr = b * b - 4 * a * c;
-	return (sqr > 0);
+	
+	if (sqr < 0)
+		return (0);
+	return (1);
+	// return (get_rgb(())
+}
+
+float	square_vec(t_vec vec)
+{
+	return (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 }
 
 int	hit_sphere2(t_point center, double radius, t_ray ray)
@@ -70,21 +79,22 @@ int	hit_sphere2(t_point center, double radius, t_ray ray)
 	float	a;
 	float	b;
 	float	c;
-	float	ok;
-	float	ck;
-	float	res;
+	// float	res;
 	float	sqr;
 
-	
-	sqr = b * b - 4 * a * c;
+	oc = sub(center, ray.origin);
+	a = square_vec(ray.direction);
+	b = dot_product(mult(oc, 2), ray.direction);
+	c = square_vec(oc) - radius * radius;
+	sqr = (b * b) - (4 * a * c);
 	return (sqr > 0);
 }
 
 int	get_color(float y, t_ray ray)
 {
-	if (hit_sphere1(set_class(0, 0, 1), 0.5, ray))
-		return (get_rgb_num(1, 0 ,0, 1));
-	if (hit_sphere2(set_class(0, 0, 1), 0.5, ray))
+	// if (hit_sphere1(set_class(0, 0, 1), 0.5, ray))
+		// return (get_rgb_num(1, 0 ,0, 1));
+	if (hit_sphere2(set_class(0, 0, 2), 0.5, ray))
 		return (get_rgb_num(1, 0 ,0, 1));
 	y = y / HGT;
 	return (get_rgb_num(0.5, 0.3, 0, y) + get_rgb_num(0.5, 0.7, 1, 1));
@@ -118,37 +128,10 @@ void	paint_back_ground(t_mlx *mlx)
 	mlx_put_image_to_window
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
 }
-/* 
-void	my_pixel_put(int x, int y, t_mlximg img)
-{
-	int	offset;
-	
-	offset = (x * 4) + (y * img.line_len);
-	*((unsigned int *)(img.pixel_ptr + offset))
-	= get_color(y);
-}
-
-void	run_code(t_mlx *mlx)
-{
-	int	w;
-	int	x;
-	int	y;
-
-	w = HGT * 16 / 9;
-	y = -1;
-	while (++y < HGT)
-	{
-		x = -1;
-		while (++x < w)
-			my_pixel_put(x, y, mlx->img);
-	}
-	mlx_put_image_to_window
-	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
-} */
 
 double	vec_len(t_vec vec)
 {
-	return (sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z));
+	return (sqrt(square_vec(vec)));
 }
 
 t_vec	normalize_vec(t_vec vec)
@@ -198,7 +181,7 @@ t_vec	get_vector(t_mlximg img, float x, int y)
 	x = (x - (img.wdt / 2)) / img.wdt * 2;
 	x = (x > 0) * x - x * (x < 0);
 	// printf("%f\n", x);
-	// vec = add(vec, mult(img.ori_vec, -sin(x * img.rad / 2)));
+	vec = add(vec, mult(img.ori_vec, 1 -cos(x * img.rad / 2)));
 	return (vec);
 } 
 
@@ -222,7 +205,7 @@ t_mlximg parse(t_mlximg img)
 	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
 	img.del_h = mult(img.del_h, (2.0 * sin(img.rad / 2)) / img.wdt);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1); 
-	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 2.0 / HGT);
+	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 1.0 / HGT);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
 	printf("del_v	%f %f %f\n", img.del_v.x, img.del_v.y, img.del_v.z);
@@ -231,7 +214,7 @@ t_mlximg parse(t_mlximg img)
 	printf("dot_product img.del_h,   img.del_v = %f\n", dot_product(img.del_h, img.del_v));
 	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -img.wdt / 2));
 	img.pixel00 = add(img.pixel00, mult(img.del_v, -HGT / 2));
-	vec = get_vector(img, img.wdt, HGT);
+	vec = get_vector(img, img.wdt / 2, HGT / 2);
 	printf("pixel00	%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
 	printf("n_vec	%f %f %f\n", vec.x, vec.y, vec.z);
 	return (img);
