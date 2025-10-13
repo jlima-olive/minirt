@@ -6,11 +6,20 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/13 10:32:27 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/13 16:26:00 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
+
+void	free_obj(t_lst *obj)
+{
+	if (obj == NULL)
+		return ;
+	free(obj->obj);
+	free_obj(obj->next);
+	free(obj);
+}
 
 int	close_mlx(t_mlx *mlx)
 {
@@ -18,7 +27,9 @@ int	close_mlx(t_mlx *mlx)
 	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
 	mlx_destroy_display(mlx->mlx_ptr);
 	free(mlx->mlx_ptr);
+	free_obj(mlx->img.objs);
 	exit (0);
+	return (0);
 }
 
 int	init_mlx(t_mlx *mlx)
@@ -48,54 +59,96 @@ void	init_var(t_mlx *mlx)
 	mlx->mlx_win = NULL;
 }
 
-int	hit_sphere1(t_point center, double radius, t_ray ray)
+t_point	point_at(t_ray ray, float t)
+{
+	return (add(ray.origin, mult(ray.direction, t)));
+}
+
+t_vec	new_vec(t_point a, t_point b)
+{
+	return (sub(a, b));
+}
+
+int	proven_hit_sphere(t_sphere sp, t_ray ray, t_vec light)
 {
 	t_vec	oc;
+	t_point	point;
+	float	a;
+	float	h;
+	float	c;
+	float	discriminant;
+	float	res;
+
+	oc = sub(sp.center, ray.origin);
+	a = dot_product(ray.direction, ray.direction);
+	h = dot_product(ray.direction, oc);
+	c = dot_product(oc, oc) - (sp.radius * sp.radius);
+	discriminant = h * h - a * c;
+	if (discriminant < 0)
+		return (-1);
+	return ((h - sqrt( discriminant) / a));
+	// discriminant = sqrt(discriminant);
+	// res = (-b + discriminant) / 2 * a;
+	// a = (-b - discriminant) / 2 * a;
+	// if (a < 0 && res < 0)
+		// return (0);
+	// a = a * (a < res) + res * (res < a);
+	// point = point_at(ray, a);
+	// point = mult(new_vec(point, center), 1 / radius);
+	// a = get_cos(mult(point, 1 / radius), light);
+	// a = get_rgb_num(-((a + 1) / 2), 0, 0, 1);
+	// return (a + !a * (255 << 16));
+}
+
+int	my_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
+{
+	t_vec	oc;
+	t_vec	op;
+	t_point	point;
 	float	a;
 	float	b;
 	float	c;
 	float	sqr;
+	float	res;
 
-	oc = sub(center, ray.origin);
+	oc = sub(sp->center, ray.origin);
 	a = dot_product(ray.direction, ray.direction);
 	b = dot_product(mult(ray.direction, -2), oc);
-	c = dot_product(oc, oc) - (radius * radius);
+	c = dot_product(oc, oc) - (sp->radius * sp->radius);
 	sqr = b * b - 4 * a * c;
-	
 	if (sqr < 0)
-		return (0);
-	return (1);
-	// return (get_rgb(())
+		return (-1);
+	sqr = sqrt(sqr);
+	res = (-b + sqr) / 2 * a;
+	a = (-b - sqr) / 2 * a;
+	if (a < 0 && res < 0)
+		return (-1);
+	a = a * (a < res) + res * (res < a);
+	point = point_at(ray, a);
+	op = mult(new_vec(point, sp->center), 1 / sp->radius);
+	a = get_cos(mult(op, 1 / sp->radius), light);
+	a = (-a - 1) / 2;
+	return (get_rgb(sp->color, -a));
 }
 
-float	square_vec(t_vec vec)
+int	get_color( t_mlximg img, float y, t_ray ray)
 {
-	return (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-}
+	float	value;
+	float	temp;
+	t_lst	*lst;
 
-int	hit_sphere2(t_point center, double radius, t_ray ray)
-{
-	t_vec	oc;
-	float	a;
-	float	b;
-	float	c;
-	// float	res;
-	float	sqr;
-
-	oc = sub(center, ray.origin);
-	a = square_vec(ray.direction);
-	b = dot_product(mult(oc, 2), ray.direction);
-	c = square_vec(oc) - radius * radius;
-	sqr = (b * b) - (4 * a * c);
-	return (sqr > 0);
-}
-
-int	get_color(float y, t_ray ray)
-{
-	// if (hit_sphere1(set_class(0, 0, 1), 0.5, ray))
-		// return (get_rgb_num(1, 0 ,0, 1));
-	if (hit_sphere2(set_class(0, 0, 2), 0.5, ray))
-		return (get_rgb_num(1, 0 ,0, 1));
+	lst = img.objs;
+	value = -1;
+	while (lst)
+	{
+		if (lst->id == 's')
+			temp = my_hit_sphere(lst->obj, ray, img.ligh_ray);
+		lst = lst->next;
+		if (temp != -1)
+			value = temp;
+	}
+	if (value != -1)
+		return (value);
 	y = y / HGT;
 	return (get_rgb_num(0.5, 0.3, 0, y) + get_rgb_num(0.5, 0.7, 1, 1));
 }
@@ -108,10 +161,10 @@ void	render(int x, int y, t_mlximg img)
 	ray = set_ray(img.camera, get_vector(img, x, y));
 	offset = (x * 4) + (y * img.line_len);
 	*((unsigned int *)(img.pixel_ptr + offset))
-	= get_color(y, ray);
+	= get_color(img, y, ray);
 }
 
-void	paint_back_ground(t_mlx *mlx)
+void	run_code(t_mlx *mlx)
 {
 	int	w;
 	int	x;
@@ -127,31 +180,6 @@ void	paint_back_ground(t_mlx *mlx)
 	}
 	mlx_put_image_to_window
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
-}
-
-double	vec_len(t_vec vec)
-{
-	return (sqrt(square_vec(vec)));
-}
-
-t_vec	normalize_vec(t_vec vec)
-{
-	return (mult(vec, 1 / vec_len(vec)));
-}
-
-double	get_x(t_vec h)
-{
-	return (-h.z / h.x);
-}
-
-double	get_y(t_vec o, t_vec h)
-{
-	return ((h.z * o.x - o.z * h.x) / (o.y * h.x));
-}
-
-double	dot_product(t_vec a, t_vec b)
-{
-	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }
 
 double get_cos(t_vec a, t_vec b)
@@ -195,7 +223,7 @@ t_mlximg parse(t_mlximg img)
 	img.wdt = HGT * 16 / 9;
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
-	degree = 180.0;							// done by the parser this is just an example
+	degree = 120.0;							// done by the parser this is just an example
 	img.rad = degree / 180 * 3.14159265359;
 	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
 		exit/* _func */(1);
@@ -235,8 +263,8 @@ int	main(void)
 	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
 	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
-	paint_back_ground(&mlx);
-	
-	// run_code(&mlx);
+	get_objs(&mlx);
+	run_code(&mlx);
 	mlx_loop(mlx.mlx_ptr);
+	close_mlx(&mlx);
 }

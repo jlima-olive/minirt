@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 11:35:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/11 13:11:41 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/13 11:09:07 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,34 @@ int	get_rgb(t_point one, double a)
 	g = one.y * 255 * a;
 	b = one.z * 255 * a;
 	return ((r << 16) + (g << 8) + b);
+}
+
+float	square_vec(t_vec vec)
+{
+	return (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+}
+
+double	vec_len(t_vec vec)
+{
+	return (sqrt(square_vec(vec)));
+}
+
+t_vec	normalize_vec(t_vec vec)
+{
+	return (mult(vec, 1 / vec_len(vec)));
+}
+
+double	get_x(t_vec h)
+{
+	return (-h.z / h.x);
+}
+
+double	get_y(t_vec o, t_vec h)
+{
+	return ((h.z * o.x - o.z * h.x) / (o.y * h.x));
+}
+
+double	dot_product(t_vec a, t_vec b)
+{
+	return (a.x * b.x + a.y * b.y + a.z * b.z);
 }

@@ -4,6 +4,7 @@
         "mlx.h": "c",
         "mlx_int.h": "c",
         "stdlib.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "random": "c"
     }
 }

@@ -1,0 +1,2 @@
+revisit book1 6.2 Simplifying the Ray-Sphere Intersection Code
+
