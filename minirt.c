@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/13 16:26:00 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/14 09:35:20 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,55 +100,68 @@ int	proven_hit_sphere(t_sphere sp, t_ray ray, t_vec light)
 	// return (a + !a * (255 << 16));
 }
 
-int	my_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
+t_objinfo	set_obj_info(void)
 {
-	t_vec	oc;
-	t_vec	op;
-	t_point	point;
-	float	a;
-	float	b;
-	float	c;
-	float	sqr;
-	float	res;
+	t_objinfo	ret;
 
+	ret.color = -1;
+	ret.point = set_class(0, 0, 0);
+	return (ret);
+}
+
+t_objinfo	my_sphere_render1(t_sphere *sp, t_ray ray, t_vec light)
+{
+	t_objinfo	info;
+	t_vec		oc;
+	t_vec		op;
+	float		a;
+	float		b;
+	float		c;
+	float		sqr;
+	float		res;
+
+	info = set_obj_info();
 	oc = sub(sp->center, ray.origin);
 	a = dot_product(ray.direction, ray.direction);
 	b = dot_product(mult(ray.direction, -2), oc);
 	c = dot_product(oc, oc) - (sp->radius * sp->radius);
 	sqr = b * b - 4 * a * c;
 	if (sqr < 0)
-		return (-1);
+		return (info);
 	sqr = sqrt(sqr);
 	res = (-b + sqr) / 2 * a;
 	a = (-b - sqr) / 2 * a;
 	if (a < 0 && res < 0)
-		return (-1);
+		return (info);
 	a = a * (a < res) + res * (res < a);
-	point = point_at(ray, a);
-	op = mult(new_vec(point, sp->center), 1 / sp->radius);
+	info.point = point_at(ray, a);
+	op = mult(new_vec(info.point, sp->center), 1 / sp->radius);
 	a = get_cos(mult(op, 1 / sp->radius), light);
-	a = (-a - 1) / 2;
-	return (get_rgb(sp->color, -a));
+	b = 1 - (a * (a > 0) - a * (a - 0));
+	info.color = get_rgb(sp->color, (-a + 1) / 2);
+	return (info);
 }
 
 int	get_color( t_mlximg img, float y, t_ray ray)
 {
-	float	value;
-	float	temp;
-	t_lst	*lst;
+	t_objinfo	value;
+	t_objinfo	new_v;
+	t_lst		*lst;
 
 	lst = img.objs;
-	value = -1;
+	value = set_obj_info();
 	while (lst)
 	{
 		if (lst->id == 's')
-			temp = my_hit_sphere(lst->obj, ray, img.ligh_ray);
+			new_v = my_sphere_render1(lst->obj, ray, img.ligh_ray);
 		lst = lst->next;
-		if (temp != -1)
-			value = temp;
+		if (value.color == -1 || (new_v.color != -1
+			&& vec_len(new_vec(img.camera, new_v.point))
+			< vec_len(new_vec(img.camera, value.point))))
+			value = new_v;
 	}
-	if (value != -1)
-		return (value);
+	if (value.color != -1)
+		return (value.color);
 	y = y / HGT;
 	return (get_rgb_num(0.5, 0.3, 0, y) + get_rgb_num(0.5, 0.7, 1, 1));
 }
