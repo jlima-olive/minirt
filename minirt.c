@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/14 10:35:44 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/14 15:40:09 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -255,19 +255,18 @@ t_vec edge_cases_del_v(t_vec o, t_vec v)
 	return (v);
 }
 
-t_vec	get_vector(t_mlximg img, float x, int y)
+t_vec	get_vector(t_mlximg img, float x, float y)
 {
 	t_vec	vec;
 
 	vec = add(img.pixel00, mult(img.del_h, x));
 	vec = add(vec, mult(img.del_v, y));
-	// printf("%f %f\n", x, img.rad / 2);
-	x = (x - (img.wdt / 2)) / img.wdt * 2;
-	x = (x > 0) * x - x * (x < 0);
-	// printf("%f\n", x);
-	vec = add(vec, mult(img.ori_vec, 1 -cos(x * img.rad / 2)));
+	x = x / (img.wdt / 2);
+	// printf(" huh %f %f\n", y, -cos((x / 2) * img.rad));
+	// vec = add(vec, mult(img.ori_vec, sin((x / 2) * img.rad) - 1));
+	// vec = add(vec, mult(img.ori_vec, -cos((y / 2) * img.rad)));
 	return (vec);
-} 
+}
 
 t_mlximg parse(t_mlximg img)
 {
