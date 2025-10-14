@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/13 15:56:28 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/14 08:56:05 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,12 @@ typedef struct	s_vec
 
 typedef t_vec	t_rgb;
 typedef t_vec	t_point;
+
+typedef struct s_objinfo
+{
+	int		color;
+	t_point	point;
+}	t_objinfo;
 
 typedef struct s_lst
 {
