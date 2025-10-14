@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/14 09:35:20 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/14 10:35:44 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,49 @@ t_objinfo	my_sphere_render1(t_sphere *sp, t_ray ray, t_vec light)
 	return (info);
 }
 
+t_vec	get_op_redirections1(t_vec vec, t_vec op)
+{
+	t_vec	ret;
+
+	ret.x = 2 * vec.x + op.x; 
+	ret.y = 2 * vec.y + op.y; 
+	ret.z = 2 * vec.z + op.z; 
+	return (ret);
+}
+
+t_objinfo	my_sphere_render2(t_sphere *sp, t_ray ray, t_vec light)
+{
+	t_objinfo	info;
+	t_vec		oc;
+	t_vec		op;
+	float		a;
+	float		b;
+	float		c;
+	float		sqr;
+	float		res;
+
+	info = set_obj_info();
+	oc = sub(sp->center, ray.origin);
+	a = dot_product(ray.direction, ray.direction);
+	b = dot_product(mult(ray.direction, -2), oc);
+	c = dot_product(oc, oc) - (sp->radius * sp->radius);
+	sqr = b * b - 4 * a * c;
+	if (sqr < 0)
+		return (info);
+	sqr = sqrt(sqr);
+	res = (-b + sqr) / 2 * a;
+	a = (-b - sqr) / 2 * a;
+	if (a < 0 && res < 0)
+		return (info);
+	a = a * (a < res) + res * (res < a);
+	info.point = point_at(ray, a);
+	op = get_op_redirections1(ray.direction, oc);
+	a = get_cos(mult(op, 1 / sp->radius), light);
+	b = 1 - (a * (a > 0) - a * (a - 0));
+	info.color = get_rgb(sp->color, (-a + 1) / 2);
+	return (info);
+}
+
 int	get_color( t_mlximg img, float y, t_ray ray)
 {
 	t_objinfo	value;
@@ -153,7 +196,7 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 	while (lst)
 	{
 		if (lst->id == 's')
-			new_v = my_sphere_render1(lst->obj, ray, img.ligh_ray);
+			new_v = my_sphere_render2(lst->obj, ray, img.ligh_ray);
 		lst = lst->next;
 		if (value.color == -1 || (new_v.color != -1
 			&& vec_len(new_vec(img.camera, new_v.point))
@@ -245,7 +288,7 @@ t_mlximg parse(t_mlximg img)
 	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
 	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
 	img.del_h = mult(img.del_h, (2.0 * sin(img.rad / 2)) / img.wdt);
-	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1); 
+	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
 	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 1.0 / HGT);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
