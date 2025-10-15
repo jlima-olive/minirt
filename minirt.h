@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 15:00:47 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 18:09:34 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ typedef struct	s_mlximg
 	t_vec	del_v;
 	t_vec	normal_v;
 	t_vec	ligh_ray;
+	t_vec	min_vec;
+	float	min_len;
 	float	rad;
 	float	wdt;
 	t_lst	*objs;

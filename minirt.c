@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 16:58:31 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 18:41:09 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,7 @@ t_ray	get_ray(t_mlximg img, float x, float y)
 	t_vec	vec1;
 	t_vec	vec2;
 	t_vec	viewport_position;
+	float	temp;
 
 	ray.origin = add(img.pixel00, mult(img.del_h, x));
 	ray.origin = add(ray.direction, mult(img.del_v, y));
@@ -272,18 +273,18 @@ t_ray	get_ray(t_mlximg img, float x, float y)
 	viewport_position = sub(img.ori_vec, ray.direction);
 	x = ft_abs(x);
 	y = ft_abs(y);
-	x = 0.5 - (x * (x > y) + y * (y > x));
-	// x = x * (x < y) + y * (y <= x);
-	vec1 = mult(img.ori_vec, sin(x * img.rad));
+	x = (x * (x > y) + y * (y >= x));
+	vec1 = img.min_vec;
+	printf("x = %f y = %f\n",x ,y);
 	ray.direction = add(ray.direction, vec1);
-	// ray.direction = sub(ray.direction, /);
+	vec1 = mult(img.ori_vec, (cos(x * 3.14159) * (1 - img.min_len)));
+	ray.direction = add(ray.direction, vec1);
 	return (ray);
 }
 
 t_mlximg parse(t_mlximg img)
 {
 	double	degree;
-	double	cos;
 	double	z;
 	t_ray	vec;
 
@@ -311,16 +312,18 @@ t_mlximg parse(t_mlximg img)
 	printf("dot_product img.del_h,   img.del_v = %f\n", dot_product(img.del_h, img.del_v));
 	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -img.wdt / 2));
 	img.pixel00 = add(img.pixel00, mult(img.del_v, -HGT / 2));
+	img.min_vec = mult(img.ori_vec, cos(img.rad / 2));
+	img.min_len = vec_len(img.min_vec);
 	printf("pixel00	%f %f %f\n\n\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
-	vec = get_ray(img, 0, HGT / 2);
+	vec = get_ray(img, 0, 0);
 	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
-	vec = get_ray(img, img.wdt / 4, HGT / 2);
+	vec = get_ray(img, img.wdt / 4, HGT / 4);
 	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
 	vec = get_ray(img, img.wdt / 2, HGT / 2);
 	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
-	vec = get_ray(img, 3 * img.wdt / 4, HGT / 2);
+	vec = get_ray(img, 3 * img.wdt / 4, 3 * HGT / 4);
 	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
-	vec = get_ray(img, img.wdt, HGT / 2);
+	vec = get_ray(img, img.wdt, HGT);
 	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
 	exit(0);
 	return (img);
