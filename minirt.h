@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 18:09:34 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 19:46:08 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@
 
 # ifndef HGT
 #  define HGT 720
+# endif
+
+# ifndef PI
+#  define PI 3.14159265359
 # endif
 
 typedef struct	s_vec
@@ -79,6 +83,7 @@ typedef struct	s_mlximg
 	float	min_len;
 	float	rad;
 	float	wdt;
+	float	asp_ratio;
 	t_lst	*objs;
 }	t_mlximg;
 

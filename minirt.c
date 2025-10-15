@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 18:41:09 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 19:48:01 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,10 +261,13 @@ t_ray	get_ray(t_mlximg img, float x, float y)
 	t_vec	vec1;
 	t_vec	vec2;
 	t_vec	viewport_position;
-	float	temp;
+	float	x1;
+	float	y1;
 
 	ray.origin = add(img.pixel00, mult(img.del_h, x));
-	ray.origin = add(ray.direction, mult(img.del_v, y));
+	ray.origin = add(ray.origin, mult(img.del_v, y));
+	// printf("n_vecpnt	%f %f %f\n",ray.origin.x,ray.origin.y,ray.origin.z);
+	// printf("x = %f y = %f\n",x ,y);
 	x = x / img.wdt - 0.5;
 	y = y / HGT - 0.5;
 	vec1 = mult(img.normal_h, sin(x * img.rad));
@@ -275,9 +278,9 @@ t_ray	get_ray(t_mlximg img, float x, float y)
 	y = ft_abs(y);
 	x = (x * (x > y) + y * (y >= x));
 	vec1 = img.min_vec;
-	printf("x = %f y = %f\n",x ,y);
+	// printf("x = %f y = %f\n",x ,y);
 	ray.direction = add(ray.direction, vec1);
-	vec1 = mult(img.ori_vec, (cos(x * 3.14159) * (1 - img.min_len)));
+	vec1 = mult(img.ori_vec, (cos(x * PI) * (1 - img.min_len)));
 	ray.direction = add(ray.direction, vec1);
 	return (ray);
 }
@@ -285,14 +288,15 @@ t_ray	get_ray(t_mlximg img, float x, float y)
 t_mlximg parse(t_mlximg img)
 {
 	double	degree;
-	double	z;
+	double	asp_ratio;
 	t_ray	vec;
 
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
-	degree = 180.0;							// done by the parser this is just an example
-	img.wdt = HGT * 16 / 9;
-	img.rad = degree / 180 * 3.14159265359;
+	degree = 90.0;							// done by the parser this is just an example
+	img.asp_ratio = 16.0 / 9.0;					// maybe done by the parser?
+	img.wdt = HGT * img.asp_ratio;
+	img.rad = degree / 180 * PI;
 	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
 		exit/* _func */(1);
 	img.ori_vec = normalize_vec(img.ori_vec);
@@ -302,7 +306,7 @@ t_mlximg parse(t_mlximg img)
 	img.del_h = mult(img.del_h, (2.0 * sin(img.rad / 2)) / img.wdt);
 	img.normal_h = normalize_vec(img.del_h);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
-	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 1.0 / HGT);
+	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 2.0 / img.asp_ratio * sin(img.rad / 2) / HGT);
 	img.normal_v = normalize_vec(img.del_v);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
@@ -316,15 +320,20 @@ t_mlximg parse(t_mlximg img)
 	img.min_len = vec_len(img.min_vec);
 	printf("pixel00	%f %f %f\n\n\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
 	vec = get_ray(img, 0, 0);
-	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	// printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
 	vec = get_ray(img, img.wdt / 4, HGT / 4);
-	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	// printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
 	vec = get_ray(img, img.wdt / 2, HGT / 2);
-	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	// printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
 	vec = get_ray(img, 3 * img.wdt / 4, 3 * HGT / 4);
-	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	// printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
 	vec = get_ray(img, img.wdt, HGT);
-	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	// printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
 	exit(0);
 	return (img);
 }
