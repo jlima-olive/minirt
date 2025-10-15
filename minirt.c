@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 20:23:52 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 20:24:29 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,7 +293,7 @@ t_mlximg parse(t_mlximg img)
 
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
-	degree = 135.0;							// done by the parser this is just an example
+	degree = 180.0;							// done by the parser this is just an example
 	img.asp_ratio = 16.0 / 9.0;				// maybe done by the parser?
 	img.wdt = HGT * img.asp_ratio;
 	img.rad = degree / 180 * PI;
