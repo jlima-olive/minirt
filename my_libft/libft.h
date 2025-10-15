@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:02:51 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/10/09 13:39:49 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:01:42 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ long	ft_atol(const char *str);
 char	*ft_strsubs(char *str, char ch1, char ch2);
 char    *ft_rmrep(char *str, char rep);
 char    **ft_matrix_in_matrix(char **mat, int ind, char **holder);
+float	ft_abs(float abs);
 
 typedef struct s_list
 {

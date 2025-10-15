@@ -6,6 +6,7 @@
         "stdlib.h": "c",
         "stdio.h": "c",
         "random": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "libft.h": "c"
     }
 }

@@ -28,15 +28,15 @@ LMX_FLAGS=	-Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 
 AR=			ar rcs
 
-all: MLX $(PROJ)
+all: MLX LIBFT $(PROJ)
 
-$(PROJ): $(PROJ).c $(LIBFT_ARQ) $(NAME)
+$(PROJ): $(PROJ).c $(NAME)
 	$(CC) $(CFLAGS) $(PROJ).c $(MLX_ARQ) $(LIBFT_ARQ) $(NAME) $(LMX_FLAGS) -o $(PROJ)
 
 $(NAME): $(OBJ_FILES)
 	$(AR) $(NAME) $(OBJ_FILES)
 
-$(LIBFT_ARQ):
+LIBFT:
 	$(MAKE) -C $(LIBFT_DIR)
 
 MLX: $(MLX_DIR)
@@ -61,4 +61,4 @@ r:
 	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) $(PROJ)
 	make
 
-.PHONY: re fclean clean all mini MLX
+.PHONY: re fclean clean all mini MLX LIBFT

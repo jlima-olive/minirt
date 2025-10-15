@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/14 08:56:05 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:00:47 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <math.h>
 # include "mlx_linux/mlx_int.h"
 # include "mlx_linux/mlx.h"
+# include "my_libft/libft.h"
 
 # ifndef HGT
 #  define HGT 720
@@ -70,7 +71,9 @@ typedef struct	s_mlximg
 	t_point	pixel00;
 	t_vec	ori_vec;
 	t_vec	del_h;
+	t_vec	normal_h;
 	t_vec	del_v;
+	t_vec	normal_v;
 	t_vec	ligh_ray;
 	float	rad;
 	float	wdt;
@@ -105,7 +108,7 @@ t_point		set_class(double x, double y, double z);
 int			get_rgb(t_point one, double a);
 int			get_rgb_num(double r, double g, double b, double a);
 t_ray		set_ray(t_point origin, t_vec direction);
-t_vec		get_vector(t_mlximg img, float x, int y);
+t_vec		get_vector(t_mlximg img, float x, float y);
 double		get_cos(t_vec a, t_vec b);
 double		dot_product(t_vec a, t_vec b);
 double		get_y(t_vec o, t_vec h);

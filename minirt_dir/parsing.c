@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/13 16:23:24 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/14 16:32:38 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,6 @@ void get_objs(t_mlx *mlx)
 	if (lst->obj == NULL)
 		close_mlx(mlx); 
 	lst->next->id = 's';
-	lst->next->obj = new_sphere(set_class(-1, 2, 10), 2, set_class(1, 0, 0));
-	img->ligh_ray = set_class(-1, -1 , 1);
+	lst->next->obj = new_sphere(set_class(-6, 2, 10), 2, set_class(1, 0, 0));
+	img->ligh_ray = set_class(1, -1, 1);
 }

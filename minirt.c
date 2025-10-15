@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/14 15:40:09 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 15:35:32 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,9 +136,9 @@ t_objinfo	my_sphere_render1(t_sphere *sp, t_ray ray, t_vec light)
 	a = a * (a < res) + res * (res < a);
 	info.point = point_at(ray, a);
 	op = mult(new_vec(info.point, sp->center), 1 / sp->radius);
-	a = get_cos(mult(op, 1 / sp->radius), light);
+	a = get_cos(op, light);
 	b = 1 - (a * (a > 0) - a * (a - 0));
-	info.color = get_rgb(sp->color, (-a + 1) / 2);
+	info.color = get_rgb_num(1, 1, 1, (1 - a) / 2);
 	return (info);
 }
 
@@ -174,14 +174,14 @@ t_objinfo	my_sphere_render2(t_sphere *sp, t_ray ray, t_vec light)
 	sqr = sqrt(sqr);
 	res = (-b + sqr) / 2 * a;
 	a = (-b - sqr) / 2 * a;
-	if (a < 0 && res < 0)
+	if ((a < 0 && res < 0) || a == res)
 		return (info);
 	a = a * (a < res) + res * (res < a);
 	info.point = point_at(ray, a);
 	op = get_op_redirections1(ray.direction, oc);
-	a = get_cos(mult(op, 1 / sp->radius), light);
+	a = get_cos(mult(op, -1 / sp->radius), light);
 	b = 1 - (a * (a > 0) - a * (a - 0));
-	info.color = get_rgb(sp->color, (-a + 1) / 2);
+	info.color = get_rgb_num(1, 1, 1, (a - 1) / 2);
 	return (info);
 }
 
@@ -196,7 +196,7 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 	while (lst)
 	{
 		if (lst->id == 's')
-			new_v = my_sphere_render2(lst->obj, ray, img.ligh_ray);
+			new_v = my_sphere_render1(lst->obj, ray, img.ligh_ray);
 		lst = lst->next;
 		if (value.color == -1 || (new_v.color != -1
 			&& vec_len(new_vec(img.camera, new_v.point))
@@ -214,7 +214,7 @@ void	render(int x, int y, t_mlximg img)
 	int		offset;
 	t_ray	ray;
 
-	ray = set_ray(img.camera, get_vector(img, x, y));
+	// ray = set_ray(img.camera, get_ray(img, x, y));
 	offset = (x * 4) + (y * img.line_len);
 	*((unsigned int *)(img.pixel_ptr + offset))
 	= get_color(img, y, ray);
@@ -255,17 +255,27 @@ t_vec edge_cases_del_v(t_vec o, t_vec v)
 	return (v);
 }
 
-t_vec	get_vector(t_mlximg img, float x, float y)
+t_ray	get_ray(t_mlximg img, float x, float y)
 {
+	t_ray	ray;
 	t_vec	vec;
 
-	vec = add(img.pixel00, mult(img.del_h, x));
-	vec = add(vec, mult(img.del_v, y));
-	x = x / (img.wdt / 2);
-	// printf(" huh %f %f\n", y, -cos((x / 2) * img.rad));
-	// vec = add(vec, mult(img.ori_vec, sin((x / 2) * img.rad) - 1));
-	// vec = add(vec, mult(img.ori_vec, -cos((y / 2) * img.rad)));
-	return (vec);
+	ray.origin = add(img.pixel00, mult(img.del_h, x));
+	ray.origin = add(ray.direction, mult(img.del_v, y));
+	x = x / img.wdt - 0.5;
+	y = y / HGT - 0.5;
+	// printf("%f %f %f\n", img.normal_h.x, img.normal_h.y, img.normal_h.z);
+	// printf("%f %f %f\n\n", img.normal_v.x, img.normal_v.y, img.normal_v.z);
+	// ray.direction = mult(img.normal_v, sin(y * img.rad)); // not this
+	ray.direction = mult(img.normal_h, sin(x * img.rad));
+	ray.direction = add(ray.direction, mult(img.normal_v, sin(y * img.rad)));
+	x = ft_abs((x * (x > y) + y * (y >= x)) * 2);
+	// x = ft_abs(x * 2);
+	// x  = 1 - x;
+	vec = img.ori_vec;
+	vec = sub(vec, mult(img.ori_vec, sin(x / 2 * img.rad)));
+	ray.direction = /* normalize_vec */(add(ray.direction, vec));
+	return (ray);
 }
 
 t_mlximg parse(t_mlximg img)
@@ -273,12 +283,12 @@ t_mlximg parse(t_mlximg img)
 	double	degree;
 	double	cos;
 	double	z;
-	t_vec	vec;
+	t_ray	vec;
 
 	img.wdt = HGT * 16 / 9;
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
-	degree = 120.0;							// done by the parser this is just an example
+	degree = 90.0;							// done by the parser this is just an example
 	img.rad = degree / 180 * 3.14159265359;
 	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
 		exit/* _func */(1);
@@ -287,8 +297,10 @@ t_mlximg parse(t_mlximg img)
 	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
 	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
 	img.del_h = mult(img.del_h, (2.0 * sin(img.rad / 2)) / img.wdt);
+	img.normal_h = normalize_vec(img.del_h);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
 	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 1.0 / HGT);
+	img.normal_v = normalize_vec(img.del_v);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
 	printf("del_v	%f %f %f\n", img.del_v.x, img.del_v.y, img.del_v.z);
@@ -297,9 +309,14 @@ t_mlximg parse(t_mlximg img)
 	printf("dot_product img.del_h,   img.del_v = %f\n", dot_product(img.del_h, img.del_v));
 	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -img.wdt / 2));
 	img.pixel00 = add(img.pixel00, mult(img.del_v, -HGT / 2));
-	vec = get_vector(img, img.wdt / 2, HGT / 2);
 	printf("pixel00	%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
-	printf("n_vec	%f %f %f\n", vec.x, vec.y, vec.z);
+	vec = get_ray(img, 0, 0);
+	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	vec = get_ray(img, img.wdt / 2, HGT / 2);
+	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	vec = get_ray(img, img.wdt, HGT);
+	printf("n_vec	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
+	exit(0);
 	return (img);
 }
 
@@ -315,11 +332,11 @@ int	main(void)
 	if (init_mlx(&mlx))
 		return (1);
 	mlx.img = parse(mlx.img);
-	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
-	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
-	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
-	get_objs(&mlx);
-	run_code(&mlx);
-	mlx_loop(mlx.mlx_ptr);
-	close_mlx(&mlx);
+	// mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
+	// mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
+	// mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
+	// get_objs(&mlx);
+	// run_code(&mlx);
+	// mlx_loop(mlx.mlx_ptr);
+	// close_mlx(&mlx);
 }

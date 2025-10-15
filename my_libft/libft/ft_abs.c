@@ -1,30 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_abs_strcmp.c                                    :+:      :+:    :+:   */
+/*   ft_abs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/04 14:38:38 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/10/15 15:08:40 by namejojo         ###   ########.fr       */
+/*   Created: 2025/10/15 12:15:58 by namejojo          #+#    #+#             */
+/*   Updated: 2025/10/15 15:04:42 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int	ft_abs_strcmp(char *str1, char *str2)
+float	ft_abs(float abs)
 {
-	char	ch1;
-	char	ch2;
-
-	if (!str1 || !str2)
-		return (str1 - str2);
-	while (*str1 && *str2)
-	{
-		ch1 = *str1 + (*str1 > 64 && *str1 < 91) * 32;
-		ch2 = *str2 + (*str2 > 64 && *str2 < 91) * 32;
-		if (ch1 != ch2)
-			return (ch1 - ch2);
-		str1++;
-		str2++;
-	}
-	return (0);
+	return (abs * (abs > 0) - abs * (abs < 0));
 }
