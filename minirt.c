@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 19:48:01 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 20:15:03 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,7 +214,7 @@ void	render(int x, int y, t_mlximg img)
 	int		offset;
 	t_ray	ray;
 
-	// ray = set_ray(img.camera, get_ray(img, x, y));
+	ray = get_ray(img, x, y);
 	offset = (x * 4) + (y * img.line_len);
 	*((unsigned int *)(img.pixel_ptr + offset))
 	= get_color(img, y, ray);
@@ -293,8 +293,8 @@ t_mlximg parse(t_mlximg img)
 
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
-	degree = 90.0;							// done by the parser this is just an example
-	img.asp_ratio = 16.0 / 9.0;					// maybe done by the parser?
+	degree = 70.0;							// done by the parser this is just an example
+	img.asp_ratio = 16.0 / 9.0;				// maybe done by the parser?
 	img.wdt = HGT * img.asp_ratio;
 	img.rad = degree / 180 * PI;
 	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
@@ -303,10 +303,10 @@ t_mlximg parse(t_mlximg img)
 	img.ctr_pnt = add(img.camera, img.ori_vec);
 	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
 	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
-	img.del_h = mult(img.del_h, (2.0 * sin(img.rad / 2)) / img.wdt);
+	img.del_h = mult(img.del_h, (2 /* * img.asp_ratio */ * sin(img.rad / 2)) / img.wdt);
 	img.normal_h = normalize_vec(img.del_h);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
-	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), 2.0 / img.asp_ratio * sin(img.rad / 2) / HGT);
+	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), sin(img.rad / 2) / HGT);
 	img.normal_v = normalize_vec(img.del_v);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
@@ -334,7 +334,7 @@ t_mlximg parse(t_mlximg img)
 	vec = get_ray(img, img.wdt, HGT);
 	// printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
 	printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
-	exit(0);
+	// exit(0);
 	return (img);
 }
 
@@ -350,11 +350,11 @@ int	main(void)
 	if (init_mlx(&mlx))
 		return (1);
 	mlx.img = parse(mlx.img);
-	// mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
-	// mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
-	// mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
-	// get_objs(&mlx);
-	// run_code(&mlx);
-	// mlx_loop(mlx.mlx_ptr);
-	// close_mlx(&mlx);
+	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
+	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
+	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
+	get_objs(&mlx);
+	run_code(&mlx);
+	mlx_loop(mlx.mlx_ptr);
+	close_mlx(&mlx);
 }

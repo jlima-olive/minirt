@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 19:46:08 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 19:50:04 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,5 +130,6 @@ t_vec		normalize_vec(t_vec vec);
 void 		get_objs(t_mlx *mlx);
 t_lst		*new_lst(void);
 t_sphere	*new_sphere(t_point center, float radius, t_rgb color);
+t_ray		get_ray(t_mlximg img, float x, float y);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/14 16:32:38 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/15 19:54:48 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,18 +38,23 @@ void get_objs(t_mlx *mlx)
 	t_mlximg	*img;
 
 	img = &mlx->img;
+	img->ligh_ray = set_class(1, -1, 1);
 	lst = new_lst();
 	if (lst == NULL)
-		close_mlx(mlx);
-	lst->next = new_lst();
-	if (lst->next == NULL)
 		close_mlx(mlx);
 	img->objs = lst;
 	lst->id = 's';
 	lst->obj = new_sphere(set_class(0, 0, 2), 0.5, set_class(0, 0 ,1));
 	if (lst->obj == NULL)
 		close_mlx(mlx); 
+	lst->next = new_lst();
+	if (lst->next == NULL)
+		close_mlx(mlx);
 	lst->next->id = 's';
-	lst->next->obj = new_sphere(set_class(-6, 2, 10), 2, set_class(1, 0, 0));
-	img->ligh_ray = set_class(1, -1, 1);
+	lst->next->obj = new_sphere(set_class(-6, 0, 0), 2, set_class(1, 0, 0));
+	lst->next->next = new_lst();
+	if (lst->next->next == NULL)
+		close_mlx(mlx);
+	lst->next->next->id = 's';
+	lst->next->next->obj = new_sphere(set_class(6, 0, 0), 2, set_class(1, 0, 0));
 }
