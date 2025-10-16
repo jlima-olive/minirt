@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 20:45:25 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 12:23:39 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,23 +51,22 @@ void get_objs(t_mlx *mlx)
 	if (lst->next == NULL)
 		close_mlx(mlx);
 	lst->next->id = 's';
-	lst->next->obj = new_sphere(set_class(-6, 0, 3), 2, set_class(1, 0, 0));
+	lst->next->obj = new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0));
 	lst->next->next = new_lst();
 	if (lst->next->next == NULL)
 		close_mlx(mlx);
 	lst->next->next->id = 's';
-	lst->next->next->obj = new_sphere(set_class(6, 0, 3), 2, set_class(1, 0, 0));
-
+	lst->next->next->obj = new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0));
 
 	lst->next->next->next = new_lst();
 	if (lst->next->next->next == NULL)
 		close_mlx(mlx);
 	lst->next->next->next->id = 's';
-	lst->next->next->next->obj = new_sphere(set_class(0, 6, 3), 2, set_class(1, 0, 0));
+	lst->next->next->next->obj = new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0));
 
 	lst->next->next->next->next = new_lst();
 	if (lst->next->next->next->next == NULL)
 		close_mlx(mlx);
 	lst->next->next->next->next->id = 's';
-	lst->next->next->next->next->obj = new_sphere(set_class(0, -6, 3), 2, set_class(1, 0, 0));
+	lst->next->next->next->next->obj = new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0));
 }

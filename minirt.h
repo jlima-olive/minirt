@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 19:50:04 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 12:29:49 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@
 
 # ifndef PI
 #  define PI 3.14159265359
+# endif
+
+# ifndef AP_RAT
+#  define AP_RAT 16.0 / 9
 # endif
 
 typedef struct	s_vec
