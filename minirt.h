@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 15:03:53 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 17:28:59 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,12 @@
 # include "mlx_linux/mlx.h"
 # include "my_libft/libft.h"
 
-# ifndef PI
-#  define PI 3.14159265359
-# endif
-
 # ifndef HGT
 #  define HGT 720
 # endif
 
 # ifndef AP_RAT
-#  define AP_RAT 1
+#  define AP_RAT 16.0 / 9
 # endif
 
 # ifndef FOV
@@ -51,6 +47,7 @@ typedef t_vec	t_point;
 typedef struct s_objinfo
 {
 	int		color;
+	int		inside;
 	t_point	point;
 }	t_objinfo;
 
@@ -70,6 +67,15 @@ typedef struct s_sphere
 	t_vec	normal;
 	float	root;
 }	t_sphere;
+
+typedef struct	s_simpleimg
+{
+	int		bpp;
+	int		endian;
+	int		line_len;
+	void	*img_ptr;
+	char	*pixel_ptr;
+}	t_simpleimg;
 
 typedef struct	s_mlximg
 {
@@ -99,12 +105,13 @@ typedef struct	s_mlx
 	void		*mlx_ptr;
 	void		*mlx_win;
 	t_mlximg	img;
+	t_simpleimg	img2;
 }   t_mlx;
 
 typedef struct	s_ray
 {
-	t_point	origin;
-	t_vec	direction;
+	t_point	ori;
+	t_vec	dir;
 	double	t;
 	// t_point (*at)(t_ray);
 }	t_ray;

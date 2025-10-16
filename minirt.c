@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 16:22:59 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 18:07:09 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int	close_mlx(t_mlx *mlx)
 int	init_mlx(t_mlx *mlx)
 {
 	t_mlximg	img;
+	t_simpleimg	img2;
 
 	mlx->mlx_ptr = mlx_init();
 	if (mlx->mlx_ptr == NULL)
@@ -50,6 +51,16 @@ int	init_mlx(t_mlx *mlx)
 	mlx->img = img;
 	if (img.pixel_ptr == NULL)
 		close_mlx(mlx);
+
+	img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT * AP_RAT);
+	if (img2.img_ptr == NULL)
+		close_mlx(mlx);
+	img2.pixel_ptr
+	= mlx_get_data_addr(img2.img_ptr, &img2.bpp, &img2.line_len, &img2.endian);
+	mlx->img = img;
+	if (img2.pixel_ptr == NULL)
+		close_mlx(mlx);
+	mlx->img2 = img2;
 	return (0);
 }
 
@@ -61,7 +72,7 @@ void	init_var(t_mlx *mlx)
 
 t_point	point_at(t_ray ray, float t)
 {
-	return (add(ray.origin, mult(ray.direction, t)));
+	return (add(ray.ori, mult(ray.dir, t)));
 }
 
 t_vec	new_vec(t_point a, t_point b)
@@ -104,9 +115,9 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 	float		res;
 
 	info = set_obj_info();
-	oc = sub(sp->center, ray.origin);
-	a = dot_product(ray.direction, ray.direction);
-	h = dot_product(ray.direction, oc);
+	oc = sub(sp->center, ray.ori);
+	a = dot_product(ray.dir, ray.dir);
+	h = dot_product(ray.dir, oc);
 	c = dot_product(oc, oc) - (sp->radius * sp->radius);
 	root = get_root(a, h, c);
 	if (root < 0)
@@ -115,6 +126,8 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 	point = mult(new_vec(info.point, sp->center), 1 / sp->radius);
 	a = get_cos(mult(point, -1 / sp->radius), light);
 	a = (a + 1) / 2;
+	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
+	// printf("%d\n", info.inside);
 	// info.color = get_rgb(sp->color, a);
 	info.color = get_rgb_num(1, 1, 1, a);
 	return (info);
@@ -132,9 +145,9 @@ t_objinfo	my_sphere_render1(t_sphere *sp, t_ray ray, t_vec light)
 	float		res;
 
 	info = set_obj_info();
-	oc = sub(sp->center, ray.origin);
-	a = dot_product(ray.direction, ray.direction);
-	b = dot_product(mult(ray.direction, -2), oc);
+	oc = sub(sp->center, ray.ori);
+	a = dot_product(ray.dir, ray.dir);
+	b = dot_product(mult(ray.dir, -2), oc);
 	c = dot_product(oc, oc) - (sp->radius * sp->radius);
 	sqr = b * b - 4 * a * c;
 	if (sqr < 0)
@@ -175,9 +188,9 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 	float		res;
 
 	info = set_obj_info();
-	oc = sub(sp->center, ray.origin);
-	a = dot_product(ray.direction, ray.direction);
-	b = dot_product(mult(ray.direction, -2), oc);
+	oc = sub(sp->center, ray.ori);
+	a = dot_product(ray.dir, ray.dir);
+	b = dot_product(mult(ray.dir, -2), oc);
 	c = dot_product(oc, oc) - (sp->radius * sp->radius);
 	sqr = b * b - 4 * a * c;
 	if (sqr < 0)
@@ -189,7 +202,7 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 		return (info);
 	a = a * (a < res) + res * (res < a);
 	info.point = point_at(ray, a);
-	op = get_op_redirections1(ray.direction, oc);
+	op = get_op_redirections1(ray.dir, oc);
 	a = get_cos(mult(op, -1 / sp->radius), light);
 	b = 1 - (a * (a > 0) - a * (a - 0));
 	info.color = get_rgb_num(1, 1, 1, (a - 1) / 2);
@@ -231,7 +244,48 @@ void	render(int x, int y, t_mlximg img, float ratio)
 	= get_color(img, (int)(y / ratio), ray);
 }
 
-void	run_code(t_mlx *mlx)
+t_rgb	decompose_color(unsigned color)
+{
+	t_rgb	ret;
+
+	ret.x = color >> 16;
+	ret.y = (color << 16) >> 24;
+	ret.z = (color << 24) >> 24;
+	return (ret);
+}
+
+void	get_medium_color(int x, int y, t_simpleimg img2, t_mlximg img)
+{
+	t_rgb	color;
+	int		offset;
+	int		u;
+	int		l;
+	int		r;
+	int		d;
+
+	offset = ((x - 1) * 4) + (y * img.line_len);
+	color = decompose_color(*((unsigned int *)(img.pixel_ptr + offset)));
+	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
+	offset = ((x + 1) * 4) + (y * img.line_len);
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
+	offset = (x * 4) + ((y - 1) * img.line_len);
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
+	offset = (x * 4) + ((y + 1) * img.line_len);
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
+	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
+	offset = (x * 4) + (y * img.line_len);
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	color = mult(color, 1.0 / 5);
+	// printf("r=%f g=%f b=%f\n", color.x, color.y, color.z);
+	*((unsigned int *)(img2.pixel_ptr + offset)) = get_rgb(color, 1);
+	// offset = (x * 4) + (y * img.line_len);
+	// *((unsigned int *)(img2.pixel_ptr + offset)) = ;
+}
+
+void	anti_aliasing(t_simpleimg img2,t_mlximg img)
 {
 	float	w;
 	float	h;
@@ -241,9 +295,40 @@ void	run_code(t_mlx *mlx)
 	float	ratio;
 
 	ratio = AP_RAT;
+	var = (HGT - HGT / ratio) / 2;
 	w = HGT;
-	h = HGT / ratio + (HGT - HGT / ratio) / 2;
-	y = (HGT - HGT / ratio) / 2;
+	h = HGT / ratio + var;
+	y = var;
+	w *= ratio;
+	h *= ratio;
+	while (++y < h)
+	{
+		x = -1;
+		while (++x < w)
+			get_medium_color(x, y, img2, img);
+	}
+}
+
+void	run_code(t_mlx *mlx)
+{
+	float	w;
+	float	h;
+	float	x;
+	float	y;
+	float	var;
+	float	ratio;
+
+
+	t_rgb	color;
+
+	// color = decompose_color((255 << 16) + (133 << 8) + 200);
+	// printf("r=%d g=%d b=%d\n", (int)color.x, (int)color.y, (int)color.z);
+	// exit(0);
+	ratio = AP_RAT;
+	var = (HGT - HGT / ratio) / 2;
+	w = HGT;
+	h = HGT / ratio + var;
+	y = var;
 	w *= ratio;
 	h *= ratio;
 	while (++y < h)
@@ -252,8 +337,13 @@ void	run_code(t_mlx *mlx)
 		while (++x < w)
 			render(x, y, mlx->img, ratio);
 	}
+	anti_aliasing(mlx->img2, mlx->img);
 	mlx_put_image_to_window
-	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, -((HGT - HGT / ratio) / 2) * ratio);
+	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, -var * ratio);
+	sleep(1);
+	mlx_put_image_to_window
+	(mlx->mlx_ptr, mlx->mlx_win, mlx->img2.img_ptr, 0, -var * ratio);
+
 }
 
 double get_cos(t_vec a, t_vec b)
@@ -282,24 +372,24 @@ t_ray	get_ray(t_mlximg img, float x, float y)
 	float	x1;
 	float	y1;
 
-	ray.origin = img.camera/* add(img.pixel00, mult(img.del_h, x)) */;
-	// ray.origin = add(ray.origin, mult(img.del_v, y));
-	// printf("n_vecpnt	%f %f %f\n",ray.origin.x,ray.origin.y,ray.origin.z);
+	ray.ori = img.camera/* add(img.pixel00, mult(img.del_h, x)) */;
+	// ray.ori = add(ray.ori, mult(img.del_v, y));
+	// printf("n_vecpnt	%f %f %f\n",ray.ori.x,ray.ori.y,ray.ori.z);
 	// printf("x = %f y = %f\n",x ,y);
 	x = x / img.wdt - 0.5;
 	y = y / HGT - 0.5;
 	vec1 = mult(img.normal_h, sin(x * img.rad));
 	vec2 = mult(img.normal_v, sin(y * img.rad));
-	ray.direction = add(vec1, vec2);
-	viewport_position = sub(img.ori_vec, ray.direction);
+	ray.dir = add(vec1, vec2);
+	viewport_position = sub(img.ori_vec, ray.dir);
 	x = ft_abs(x);
 	y = ft_abs(y);
 	x = (x * (x > y) + y * (y >= x));
 	vec1 = img.min_vec;
 	// printf("x = %f y = %f\n",x ,y);
-	ray.direction = add(ray.direction, vec1);
+	ray.dir = add(ray.dir, vec1);
 	vec1 = mult(img.ori_vec, (cos(x * PI) * (1 - img.min_len)));
-	ray.direction = add(ray.direction, vec1);
+	ray.dir = add(ray.dir, vec1);
 	return (ray);
 }
 
@@ -313,7 +403,7 @@ t_mlximg parse(t_mlximg img)
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
 	degree = FOV;							// done by the parser this is just an example
 	img.wdt = HGT;
-	img.rad = degree / 180 * PI;
+	img.rad = ft_deg_to_rad(degree);
 	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
 		exit/* _func */(1);
 	img.ori_vec = normalize_vec(img.ori_vec);
@@ -337,20 +427,20 @@ t_mlximg parse(t_mlximg img)
 	img.min_len = vec_len(img.min_vec);
 	printf("pixel00	%f %f %f\n\n\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
 	vec = get_ray(img, img.wdt, 0);
-	printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
+	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
+	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
 	vec = get_ray(img, img.wdt, HGT / 4);
-	printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
+	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
+	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
 	vec = get_ray(img, img.wdt, HGT / 2);
-	printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
+	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
+	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
 	vec = get_ray(img, img.wdt, 3 * HGT / 4);
-	printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
+	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
+	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
 	vec = get_ray(img, img.wdt, HGT);
-	printf("n_vecdir	%f %f %f\n", vec.direction.x, vec.direction.y, vec.direction.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.origin.x, vec.origin.y, vec.origin.z);
+	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
+	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
 	// exit(0);
 	return (img);
 }

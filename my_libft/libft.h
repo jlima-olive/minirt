@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:02:51 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/10/16 15:59:36 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 17:11:50 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@
 # include <fcntl.h>
 # include <sys/wait.h>
 # include <sys/types.h>
+
+# ifndef PI
+#  define PI 3.14159265359
+# endif
 
 typedef struct s_exec
 {
@@ -121,6 +125,8 @@ float	ft_min(float a, float b);
 float	ft_min(float a, float b);
 float	ft_max_neg(float a, float b);
 float	ft_min_pos(float a, float b);
+float	ft_deg_to_rad(float	deg);
+float	ft_rad_to_deg(float	rad);
 
 typedef struct s_list
 {
@@ -138,6 +144,5 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *),
 t_list	*ft_lstlast(t_list *lst);
 int		ft_lstsize(t_list *lst);
 void	ft_lstdelone(t_list *lst, void (*del)(void*));
-void	adeus(void *content);
 
 #endif

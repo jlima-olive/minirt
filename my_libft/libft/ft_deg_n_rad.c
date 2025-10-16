@@ -1,33 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_func.c                                         :+:      :+:    :+:   */
+/*   ft_deg_n_rad.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/10 11:35:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 17:22:58 by namejojo         ###   ########.fr       */
+/*   Created: 2025/10/16 17:02:04 by namejojo          #+#    #+#             */
+/*   Updated: 2025/10/16 17:04:28 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minirt.h"
+#include "../libft.h"
 
-t_point	set_class(double x, double y, double z)
+float	ft_deg_to_rad(float	deg)
 {
-	t_point	ret;
-
-	ret.x = x;
-	ret.y = y;
-	ret.z = z;
-	return (ret);
+	return (deg * PI / 180.0);
 }
 
-t_ray	set_ray(t_point origin, t_vec direction)
+float	ft_rad_to_deg(float	rad)
 {
-	t_ray	ret;
-
-	ret.ori = origin;
-	ret.dir = direction;
-	ret.t = 0;
-	return (ret);
+	return (rad / 180.0 * PI);
 }
