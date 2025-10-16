@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 14:38:09 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 15:03:53 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,16 +22,20 @@
 # include "mlx_linux/mlx.h"
 # include "my_libft/libft.h"
 
-# ifndef HGT
-#  define HGT 720
-# endif
-
 # ifndef PI
 #  define PI 3.14159265359
 # endif
 
+# ifndef HGT
+#  define HGT 720
+# endif
+
 # ifndef AP_RAT
-#  define AP_RAT 16.0 / 9
+#  define AP_RAT 1
+# endif
+
+# ifndef FOV
+#  define FOV 180
 # endif
 
 typedef struct	s_vec
@@ -87,7 +91,6 @@ typedef struct	s_mlximg
 	float	min_len;
 	float	rad;
 	float	wdt;
-	float	asp_ratio;
 	t_lst	*objs;
 }	t_mlximg;
 

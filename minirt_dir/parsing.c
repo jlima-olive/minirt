@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 12:23:39 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 15:36:10 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void get_objs(t_mlx *mlx)
 	t_mlximg	*img;
 
 	img = &mlx->img;
-	img->ligh_ray = set_class(1, -1, 1);
+	img->ligh_ray = set_class(1, 0, 0);
 	lst = new_lst();
 	if (lst == NULL)
 		close_mlx(mlx);

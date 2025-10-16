@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 14:39:19 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 15:36:30 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,37 +69,6 @@ t_vec	new_vec(t_point a, t_point b)
 	return (sub(a, b));
 }
 
-int	proven_hit_sphere(t_sphere sp, t_ray ray, t_vec light)
-{
-	t_vec	oc;
-	t_point	point;
-	float	a;
-	float	h;
-	float	c;
-	float	discriminant;
-	float	res;
-
-	oc = sub(sp.center, ray.origin);
-	a = dot_product(ray.direction, ray.direction);
-	h = dot_product(ray.direction, oc);
-	c = dot_product(oc, oc) - (sp.radius * sp.radius);
-	discriminant = h * h - a * c;
-	if (discriminant < 0)
-		return (-1);
-	return ((h - sqrt( discriminant) / a));
-	// discriminant = sqrt(discriminant);
-	// res = (-b + discriminant) / 2 * a;
-	// a = (-b - discriminant) / 2 * a;
-	// if (a < 0 && res < 0)
-		// return (0);
-	// a = a * (a < res) + res * (res < a);
-	// point = point_at(ray, a);
-	// point = mult(new_vec(point, center), 1 / radius);
-	// a = get_cos(mult(point, 1 / radius), light);
-	// a = get_rgb_num(-((a + 1) / 2), 0, 0, 1);
-	// return (a + !a * (255 << 16));
-}
-
 t_objinfo	set_obj_info(void)
 {
 	t_objinfo	ret;
@@ -107,6 +76,39 @@ t_objinfo	set_obj_info(void)
 	ret.color = -1;
 	ret.point = set_class(0, 0, 0);
 	return (ret);
+}
+
+t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
+{
+	t_objinfo	info;
+	t_point		point;
+	t_vec		oc;
+	float		a;
+	float		h;
+	float		c;
+	float		discriminant;
+	float		res;
+
+	info = set_obj_info();
+	oc = sub(sp->center, ray.origin);
+	a = dot_product(ray.direction, ray.direction);
+	h = dot_product(ray.direction, oc);
+	c = dot_product(oc, oc) - (sp->radius * sp->radius);
+	discriminant = h * h - a * c;
+	if (discriminant < 0)
+		return (info);
+	discriminant = sqrt( discriminant) / a;
+	res = (h - discriminant);
+	discriminant = (h + discriminant);
+	if (res < 0 && discriminant < 0)
+		return (info);
+	res = res * (res < discriminant) + discriminant * (discriminant < res);
+	info.point = point_at(ray, res);
+	point = mult(new_vec(info.point, sp->center), 1 / sp->radius);
+	a = get_cos(mult(point, -1 / sp->radius), light);
+	a = (a + 1) / 2;
+	info.color = get_rgb_num(1, 1, 1, a);
+	return (info);
 }
 
 t_objinfo	my_sphere_render1(t_sphere *sp, t_ray ray, t_vec light)
@@ -152,7 +154,7 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 	return (ret);
 }
 
-t_objinfo	my_sphere_render2(t_sphere *sp, t_ray ray, t_vec light)
+/* t_objinfo	my_sphere_render2(t_sphere *sp, t_ray ray, t_vec light)
 {
 	t_objinfo	info;
 	t_vec		oc;
@@ -183,7 +185,7 @@ t_objinfo	my_sphere_render2(t_sphere *sp, t_ray ray, t_vec light)
 	b = 1 - (a * (a > 0) - a * (a - 0));
 	info.color = get_rgb_num(1, 1, 1, (a - 1) / 2);
 	return (info);
-}
+} */
 
 int	get_color( t_mlximg img, float y, t_ray ray)
 {
@@ -196,7 +198,7 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 	while (lst)
 	{
 		if (lst->id == 's')
-			new_v = my_sphere_render1(lst->obj, ray, img.ligh_ray);
+			new_v = proven_hit_sphere(lst->obj, ray, img.ligh_ray);
 		lst = lst->next;
 		if (value.color == -1 || (new_v.color != -1
 			&& vec_len(new_vec(img.camera, new_v.point))
@@ -300,9 +302,8 @@ t_mlximg parse(t_mlximg img)
 
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
-	degree = 180.0;							// done by the parser this is just an example
-	img.asp_ratio = 1;				// maybe done by the parser?
-	img.wdt = HGT * img.asp_ratio;
+	degree = FOV;							// done by the parser this is just an example
+	img.wdt = HGT;
 	img.rad = degree / 180 * PI;
 	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
 		exit/* _func */(1);
@@ -311,7 +312,7 @@ t_mlximg parse(t_mlximg img)
 	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
 	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
 	img.del_h = mult(img.del_h, (sin(img.rad / 2) / img.wdt));
-	img.normal_h = mult(img.del_h, img.wdt * img.asp_ratio);
+	img.normal_h = mult(img.del_h, img.wdt);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
 	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), sin(img.rad / 2) / HGT);
 	img.normal_v = mult(img.del_v, HGT);
