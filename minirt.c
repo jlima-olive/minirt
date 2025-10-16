@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 14:26:42 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 14:39:19 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,13 +230,11 @@ void	run_code(t_mlx *mlx)
 	float	ratio;
 
 	ratio = AP_RAT;
-	// var = 
 	w = HGT;
 	h = HGT / ratio + (HGT - HGT / ratio) / 2;
 	y = (HGT - HGT / ratio) / 2;
 	w *= ratio;
 	h *= ratio;
-	// y *= ratio;
 	while (++y < h)
 	{
 		x = -1;
