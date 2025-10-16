@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 12:53:19 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 14:26:42 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	init_mlx(t_mlx *mlx)
 	mlx->mlx_win = mlx_new_window(mlx->mlx_ptr, HGT * AP_RAT, HGT, "minirt");
 	if (mlx->mlx_win == NULL)
 		close_mlx(mlx);
-	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT, HGT);
+	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT * AP_RAT);
 	if (img.img_ptr == NULL)
 		close_mlx(mlx);
 	img.pixel_ptr
@@ -209,37 +209,42 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 	return (get_rgb_num(0.5, 0.3, 0, y) + get_rgb_num(0.5, 0.7, 1, 1));
 }
 
-void	render(int x, int y, t_mlximg img)
+void	render(int x, int y, t_mlximg img, float ratio)
 {
 	int		offset;
 	t_ray	ray;
 
-	ray = get_ray(img, x, y);
+	ray = get_ray(img, (int)(x / ratio), (int)(y / ratio));
 	offset = (x * 4) + (y * img.line_len);
 	*((unsigned int *)(img.pixel_ptr + offset))
-	= get_color(img, y, ray);
+	= get_color(img, (int)(y / ratio), ray);
 }
 
 void	run_code(t_mlx *mlx)
 {
-	int	w;
-	int	h;
-	int	x;
-	int	y;
-	int	var;
+	float	w;
+	float	h;
+	float	x;
+	float	y;
+	float	var;
+	float	ratio;
 
+	ratio = AP_RAT;
+	// var = 
 	w = HGT;
-	var = (HGT * AP_RAT - HGT) / 4;
-	h = HGT - var;
-	y = var;
+	h = HGT / ratio + (HGT - HGT / ratio) / 2;
+	y = (HGT - HGT / ratio) / 2;
+	w *= ratio;
+	h *= ratio;
+	// y *= ratio;
 	while (++y < h)
 	{
 		x = -1;
 		while (++x < w)
-			render(x, y, mlx->img);
+			render(x, y, mlx->img, ratio);
 	}
 	mlx_put_image_to_window
-	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, -var);
+	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, -((HGT - HGT / ratio) / 2) * ratio);
 }
 
 double get_cos(t_vec a, t_vec b)
@@ -348,8 +353,8 @@ int	main(void)
 	t_point	camera_center;
 	t_point	pixel;
 
-	if (HGT != 720)
-		return (1);
+	// if (HGT != 720)
+		// return (1);
 	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
