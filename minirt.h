@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 17:28:59 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 18:53:59 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # endif
 
 # ifndef AP_RAT
-#  define AP_RAT 16.0 / 9
+#  define AP_RAT 1
 # endif
 
 # ifndef FOV

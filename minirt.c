@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 18:07:09 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 18:56:58 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,30 +258,34 @@ void	get_medium_color(int x, int y, t_simpleimg img2, t_mlximg img)
 {
 	t_rgb	color;
 	int		offset;
-	int		u;
-	int		l;
-	int		r;
-	int		d;
 
 	offset = ((x - 1) * 4) + (y * img.line_len);
 	color = decompose_color(*((unsigned int *)(img.pixel_ptr + offset)));
-	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
+	offset = ((x - 1) * 4) + ((y + 1) * img.line_len);
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	offset = ((x - 1) * 4) + ((y - 1) * img.line_len);
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	// printf("r=%f g=%f b=%f\n", color.x, color.y, color.z);
+	offset = ((x + 1) * 4) + ((y - 1) * img.line_len);
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
 	offset = ((x + 1) * 4) + (y * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
-	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
-	offset = (x * 4) + ((y - 1) * img.line_len);
+	offset = ((x + 1) * 4) + ((y + 1) * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
-	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
+	// printf("r=%f g=%f b=%f\n", color.x, color.y, color.z);
 	offset = (x * 4) + ((y + 1) * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
-	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
-	// printf("r=%f g=%f b=%f", color.x, color.y, color.z);
+	offset = (x * 4) + ((y - 1) * img.line_len);
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	// printf("r=%f g=%f b=%f\n", color.x, color.y, color.z);
 	offset = (x * 4) + (y * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
-	color = mult(color, 1.0 / 5);
 	// printf("r=%f g=%f b=%f\n", color.x, color.y, color.z);
-	*((unsigned int *)(img2.pixel_ptr + offset)) = get_rgb(color, 1);
+	color = mult(color, 1.0 / 9);
+	// printf("r=%f g=%f b=%f\n\n\n\n\n", color.x, color.y, color.z);
 	// offset = (x * 4) + (y * img.line_len);
+	// color = decompose_color(*((unsigned int *)(img.pixel_ptr + offset)));
+	*((unsigned int *)(img2.pixel_ptr + offset)) = get_rgb(color, 1.0 / 255);
 	// *((unsigned int *)(img2.pixel_ptr + offset)) = ;
 }
 
@@ -318,12 +322,6 @@ void	run_code(t_mlx *mlx)
 	float	var;
 	float	ratio;
 
-
-	t_rgb	color;
-
-	// color = decompose_color((255 << 16) + (133 << 8) + 200);
-	// printf("r=%d g=%d b=%d\n", (int)color.x, (int)color.y, (int)color.z);
-	// exit(0);
 	ratio = AP_RAT;
 	var = (HGT - HGT / ratio) / 2;
 	w = HGT;
@@ -340,10 +338,8 @@ void	run_code(t_mlx *mlx)
 	anti_aliasing(mlx->img2, mlx->img);
 	mlx_put_image_to_window
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, -var * ratio);
-	sleep(1);
 	mlx_put_image_to_window
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img2.img_ptr, 0, -var * ratio);
-
 }
 
 double get_cos(t_vec a, t_vec b)
