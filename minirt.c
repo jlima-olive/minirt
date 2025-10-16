@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 15:36:30 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 16:22:59 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,20 @@ t_objinfo	set_obj_info(void)
 	return (ret);
 }
 
+float	get_root(float a, float h, float c)
+{
+	float	root1;
+	float	root2;
+
+	root1 = h * h - a * c;
+	if (root1 < 0)
+		return (-1);
+	root1 = sqrt(root1);
+	root2 = (h - root1) / a;
+	root1 = (h + root1) / a;
+	return (ft_min_pos(root1, root2));
+}
+
 t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 {
 	t_objinfo	info;
@@ -86,7 +100,7 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 	float		a;
 	float		h;
 	float		c;
-	float		discriminant;
+	float		root;
 	float		res;
 
 	info = set_obj_info();
@@ -94,19 +108,14 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 	a = dot_product(ray.direction, ray.direction);
 	h = dot_product(ray.direction, oc);
 	c = dot_product(oc, oc) - (sp->radius * sp->radius);
-	discriminant = h * h - a * c;
-	if (discriminant < 0)
+	root = get_root(a, h, c);
+	if (root < 0)
 		return (info);
-	discriminant = sqrt( discriminant) / a;
-	res = (h - discriminant);
-	discriminant = (h + discriminant);
-	if (res < 0 && discriminant < 0)
-		return (info);
-	res = res * (res < discriminant) + discriminant * (discriminant < res);
-	info.point = point_at(ray, res);
+	info.point = point_at(ray, root);
 	point = mult(new_vec(info.point, sp->center), 1 / sp->radius);
 	a = get_cos(mult(point, -1 / sp->radius), light);
 	a = (a + 1) / 2;
+	// info.color = get_rgb(sp->color, a);
 	info.color = get_rgb_num(1, 1, 1, a);
 	return (info);
 }

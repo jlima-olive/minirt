@@ -18,7 +18,7 @@ all: ${NAME}
 ${NAME}: ${OBJ_FILES}
 	ar rcs $@ $?
 
-%.o: %.c ${HDR_FILE}
+%.o: %.c
 	${CC} ${FLAGS} -c $< -o ${<:.c=.o}
 
 clean: 

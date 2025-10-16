@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:02:51 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/10/15 15:01:42 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 15:59:36 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,10 @@ char	*ft_strsubs(char *str, char ch1, char ch2);
 char    *ft_rmrep(char *str, char rep);
 char    **ft_matrix_in_matrix(char **mat, int ind, char **holder);
 float	ft_abs(float abs);
+float	ft_min(float a, float b);
+float	ft_min(float a, float b);
+float	ft_max_neg(float a, float b);
+float	ft_min_pos(float a, float b);
 
 typedef struct s_list
 {
