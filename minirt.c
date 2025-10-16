@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 18:56:58 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 18:57:55 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,28 +265,20 @@ void	get_medium_color(int x, int y, t_simpleimg img2, t_mlximg img)
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
 	offset = ((x - 1) * 4) + ((y - 1) * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
-	// printf("r=%f g=%f b=%f\n", color.x, color.y, color.z);
 	offset = ((x + 1) * 4) + ((y - 1) * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
 	offset = ((x + 1) * 4) + (y * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
 	offset = ((x + 1) * 4) + ((y + 1) * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
-	// printf("r=%f g=%f b=%f\n", color.x, color.y, color.z);
 	offset = (x * 4) + ((y + 1) * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
 	offset = (x * 4) + ((y - 1) * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
-	// printf("r=%f g=%f b=%f\n", color.x, color.y, color.z);
 	offset = (x * 4) + (y * img.line_len);
 	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
-	// printf("r=%f g=%f b=%f\n", color.x, color.y, color.z);
 	color = mult(color, 1.0 / 9);
-	// printf("r=%f g=%f b=%f\n\n\n\n\n", color.x, color.y, color.z);
-	// offset = (x * 4) + (y * img.line_len);
-	// color = decompose_color(*((unsigned int *)(img.pixel_ptr + offset)));
 	*((unsigned int *)(img2.pixel_ptr + offset)) = get_rgb(color, 1.0 / 255);
-	// *((unsigned int *)(img2.pixel_ptr + offset)) = ;
 }
 
 void	anti_aliasing(t_simpleimg img2,t_mlximg img)
