@@ -6,11 +6,28 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 18:57:55 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/16 20:16:15 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
+
+t_vec	get_random_vec(float min, float max)
+{
+	t_vec	ret;
+	float	sqrd;
+	float	len;
+
+	while (1)
+	{
+		ret.x = ((float)rand() / RAND_MAX) * (max - min);
+		ret.y = ((float)rand() / RAND_MAX) * (max - min);
+		ret.z = ((float)rand() / RAND_MAX) * (max - min);
+		sqrd = square_vec(ret);
+		if (sqrd && sqrd <= 1)
+			return (mult(ret, 1 / sqrt(sqrd)));
+	}
+}
 
 void	free_obj(t_lst *obj)
 {
@@ -103,16 +120,25 @@ float	get_root(float a, float h, float c)
 	return (ft_min_pos(root1, root2));
 }
 
+int	get_color_difu(t_point p, t_vec cp)
+{
+	t_vec	ran;
+	float	prod;
+
+	ran = get_random_vec(0, 1);
+	prod = dot_product(ran, cp);
+	ran = mult(ran, (prod > 0.0) - (prod <= 0.0));
+}
+
 t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 {
 	t_objinfo	info;
-	t_point		point;
 	t_vec		oc;
+	t_vec		cp;
 	float		a;
 	float		h;
 	float		c;
 	float		root;
-	float		res;
 
 	info = set_obj_info();
 	oc = sub(sp->center, ray.ori);
@@ -123,13 +149,14 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 	if (root < 0)
 		return (info);
 	info.point = point_at(ray, root);
-	point = mult(new_vec(info.point, sp->center), 1 / sp->radius);
-	a = get_cos(mult(point, -1 / sp->radius), light);
+	cp = mult(new_vec(info.point, sp->center), -1 / sp->radius);
+	a = get_cos(cp, light);
 	a = (a + 1) / 2;
 	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
 	// printf("%d\n", info.inside);
 	// info.color = get_rgb(sp->color, a);
-	info.color = get_rgb_num(1, 1, 1, a);
+	/* get_rgb_num(1, 1, 1, a) */;
+	info.color = get_color_difu(info.point, cp);
 	return (info);
 }
 
@@ -175,39 +202,6 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 	ret.z = 2 * vec.z + op.z; 
 	return (ret);
 }
-
-/* t_objinfo	my_sphere_render2(t_sphere *sp, t_ray ray, t_vec light)
-{
-	t_objinfo	info;
-	t_vec		oc;
-	t_vec		op;
-	float		a;
-	float		b;
-	float		c;
-	float		sqr;
-	float		res;
-
-	info = set_obj_info();
-	oc = sub(sp->center, ray.ori);
-	a = dot_product(ray.dir, ray.dir);
-	b = dot_product(mult(ray.dir, -2), oc);
-	c = dot_product(oc, oc) - (sp->radius * sp->radius);
-	sqr = b * b - 4 * a * c;
-	if (sqr < 0)
-		return (info);
-	sqr = sqrt(sqr);
-	res = (-b + sqr) / 2 * a;
-	a = (-b - sqr) / 2 * a;
-	if ((a < 0 && res < 0) || a == res)
-		return (info);
-	a = a * (a < res) + res * (res < a);
-	info.point = point_at(ray, a);
-	op = get_op_redirections1(ray.dir, oc);
-	a = get_cos(mult(op, -1 / sp->radius), light);
-	b = 1 - (a * (a > 0) - a * (a - 0));
-	info.color = get_rgb_num(1, 1, 1, (a - 1) / 2);
-	return (info);
-} */
 
 int	get_color( t_mlximg img, float y, t_ray ray)
 {
