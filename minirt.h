@@ -6,7 +6,7 @@
 /*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/19 11:45:34 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/19 11:53:05 by namejojo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include "my_libft/libft.h"
 
 # ifndef HGT
-#  define HGT 1080
+#  define HGT 480
 # endif
 
 # ifndef AP_RAT
