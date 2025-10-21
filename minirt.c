@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/19 12:42:15 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/21 17:52:10 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int	get_color_difu(t_point p, t_vec cp)
 	ran = get_random_vec(0, 1);
 	prod = dot_product(ran, cp);
 	ran = mult(ran, (prod >= 0.0) - (prod < 0.0));
-	return ();
+	// return ();
 }
 
 t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
@@ -156,8 +156,8 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
 	// printf("%d\n", info.inside);
 	// info.color = get_rgb(sp->color, a);
-	// get_rgb_num(1, 1, 1, a);
-	info.color = get_color_difu(info.point, cp);
+	info.color = get_rgb_num(1, 1, 1, a);
+	// info.color = get_color_difu(info.point, cp);
 	return (info);
 }
 
@@ -216,11 +216,11 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 	{
 		if (lst->id == 's')
 			new_v = proven_hit_sphere(lst->obj, ray, img.ligh_ray);
-		lst = lst->next;
 		if (value.color == -1 || (new_v.color != -1
 			&& vec_len(new_vec(img.camera, new_v.point))
 			< vec_len(new_vec(img.camera, value.point))))
 			value = new_v;
+		lst = lst->next;
 	}
 	if (value.color != -1)
 		return (value.color);
