@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/21 18:22:54 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/21 19:59:55 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,18 @@ t_sphere *new_sphere(t_point center, float radius, t_rgb color)
 	obj->center = center;
 	obj->radius = radius;
 	obj->color = color;
+	return (obj);
+}
+
+t_sphere *new_plane(t_point norm, t_point pt, t_rgb color)
+{
+	t_plane *obj;
+
+	obj = malloc(sizeof(t_plane));
+	obj->norm = norm;
+	obj->pt = pt;
+	obj->color = color;
+	obj->d = norm.x * pt.x + norm.y * pt.y + norm.z * pt.z;
 	return (obj);
 }
 
@@ -73,8 +85,8 @@ void	print_obj(t_mlximg *img)
 		}
 		walk = walk->next;
 	}
-	
 }
+
 
 void get_objs(t_mlx *mlx)
 {
@@ -82,13 +94,17 @@ void get_objs(t_mlx *mlx)
 	t_mlximg	*img;
 
 	img = &mlx->img;
-	img->ligh_ray = set_class(1, -1, 1);
+	img->ligh_ray = set_class(0, 10, 1);
 	img->objs = NULL;
 	add_obj(img, new_sphere(set_class(0, 0, 2), 0.5, set_class(0, 0 ,1)), 's');
 	add_obj(img, new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, new_plane(set_class(0, 1, 0), set_class(20, 0, 0), set_class(1, 0, 1)), 'p');
+	add_obj(img, new_plane(set_class(0, 1, 0), set_class(-20, 0, 0), set_class(0, 1, 1)), 'p');
+	add_obj(img, new_plane(set_class(1, 0, 0), set_class(-20, 0, 0), set_class(0, 0, 1)), 'p');
+	add_obj(img, new_plane(set_class(1, 0, 0), set_class(20, 0, 0), set_class(1, 1, 1)), 'p');
 	print_obj(img);
 }
 

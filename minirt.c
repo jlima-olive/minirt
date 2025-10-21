@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/21 17:52:10 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/21 19:58:56 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,19 @@ float	get_root(float a, float h, float c)
 	return (ft_min_pos(root1, root2));
 }
 
+float	get_root_plane(t_ray ray, t_plane *pl)
+{
+	float	denominator;
+	float	nominator;
+
+	denominator =
+	pl->norm.x * ray.dir.x +pl->norm.y * ray.dir.y + pl->norm.z * ray.dir.z;
+	if (denominator == 0)
+		return (-1);
+	nominator = pl->d - ray.ori.x - ray.ori.y - ray.ori.z;
+	return (nominator / denominator);
+}
+
 int	get_color_difu(t_point p, t_vec cp)
 {
 	t_vec	ran;
@@ -151,7 +164,7 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 		return (info);
 	info.point = point_at(ray, root);
 	cp = mult(new_vec(info.point, sp->center), -1 / sp->radius);
-	a = get_cos(cp, light);
+	a = get_cos(cp, new_vec(info.point, light));
 	a = (a + 1) / 2;
 	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
 	// printf("%d\n", info.inside);
@@ -204,6 +217,27 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 	return (ret);
 }
 
+t_objinfo	proven_hit_plane(t_plane *pl, t_ray ray, t_vec light)
+{
+	t_ray		plray;
+	t_objinfo	info;
+	float		root;
+	float		a;
+
+	info = set_obj_info();
+	root = get_root_plane(ray, pl);
+	if (root < 0)
+		return (info);
+	info.point = point_at(ray, root);
+	a = get_cos(pl->norm, new_vec(info.point, light));
+	info.inside = dot_product(pl->norm, new_vec(info.point, light)) < 0;
+	// printf("%d\n", info.inside);
+	// info.color = get_rgb(sp->color, a);
+	info.color = get_rgb_num(1, 1, 1, a);
+	// info.color = get_color_difu(info.point, cp);
+	return (info);
+}
+
 int	get_color( t_mlximg img, float y, t_ray ray)
 {
 	t_objinfo	value;
@@ -216,6 +250,8 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 	{
 		if (lst->id == 's')
 			new_v = proven_hit_sphere(lst->obj, ray, img.ligh_ray);
+		if (lst->id == 'p')
+			new_v = proven_hit_plane(lst->obj, ray, img.ligh_ray);
 		if (value.color == -1 || (new_v.color != -1
 			&& vec_len(new_vec(img.camera, new_v.point))
 			< vec_len(new_vec(img.camera, value.point))))

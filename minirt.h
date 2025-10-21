@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minirt.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/19 11:53:05 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/21 19:37:39 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,14 @@ typedef struct s_sphere
 	t_vec	normal;
 	float	root;
 }	t_sphere;
+
+typedef struct s_plane
+{
+	t_point	norm;
+	t_point	pt;
+	t_rgb	color;
+	float	d;
+}	t_plane;
 
 typedef struct	s_simpleimg
 {
