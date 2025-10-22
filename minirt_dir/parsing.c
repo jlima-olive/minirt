@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/22 02:23:52 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/22 16:32:37 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,13 @@ void get_objs(t_mlx *mlx)
 	img->ligh_ray = set_class(0, 10, 0);
 	img->objs = NULL;
 	add_obj(img, new_sphere(set_class(0, 0, 2), 0.5, set_class(0, 0 ,1)), 's');
+	
+
+	add_obj(img, new_sphere(set_class(-6, 6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, new_sphere(set_class(-6, -6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, new_sphere(set_class(6, 6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, new_sphere(set_class(6, -6, 2), 2, set_class(1, 0, 0)), 's');
+	
 	add_obj(img, new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0)), 's');
