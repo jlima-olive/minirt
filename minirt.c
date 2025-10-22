@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/22 02:26:15 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/22 02:42:00 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ float	get_root_plane(t_ray ray, t_plane *pl)
 	nominator =
 		-pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c * ray.ori.z;
 	if (denominator == 0)
-		return (INT_MAX);
+		return (-1);
 	denominator = pl->a * ray.dir.x + pl->b * ray.dir.y + pl->c * ray.dir.z;
 	return (nominator / denominator);
 }
@@ -153,6 +153,7 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 	float		h;
 	float		c;
 	float		root;
+	float		len;
 
 	info = set_obj_info();
 	oc = sub(sp->center, ray.ori);
@@ -166,6 +167,10 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 	cp = mult(new_vec(info.point, sp->center), -1 / sp->radius);
 	a = get_cos(cp, new_vec(info.point, light));
 	a = (a + 1) / 2;
+	len = vec_len(new_vec(info.point, light));
+	a = a / len / len * 100;
+	if (a > 1)
+		a = 1;
 	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
 	// printf("%d\n", info.inside);
 	// info.color = get_rgb(sp->color, a);
@@ -223,14 +228,21 @@ t_objinfo	proven_hit_plane(t_plane *pl, t_ray ray, t_vec light)
 	t_objinfo	info;
 	float		root;
 	float		a;
+	float		len;
 
 	info = set_obj_info();
 	root = get_root_plane(ray, pl);
 	if (root < 0)
 		return (info);
 	info.point = point_at(ray, root);
-	a = get_cos(pl->norm, new_vec(pl->point, light));
-	a = (a + 1) / 2;
+	// a = get_cos(pl->norm, new_vec(pl->point, light));
+	len = vec_len(new_vec(info.point, light));
+	a = 1 / len / len * 100;
+	if (a > 1)
+		a = 1;
+	// if (a < 0.1)
+		// a = 0.1;
+	// a = (a + 1) / 2;
 	// printf("cos is %f\n",a );
 	info.inside = dot_product(pl->norm, new_vec(info.point, light)) < 0;
 	// printf("%d\n", info.inside);
