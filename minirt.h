@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/21 19:37:39 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/22 02:12:32 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,11 @@
 # include "my_libft/libft.h"
 
 # ifndef HGT
-#  define HGT 480
+#  define HGT 720
 # endif
 
 # ifndef AP_RAT
-#  define AP_RAT 16.0/9
+#  define AP_RAT 1/* 6.0/9 */
 # endif
 
 # ifndef FOV
@@ -70,9 +70,12 @@ typedef struct s_sphere
 
 typedef struct s_plane
 {
-	t_point	norm;
-	t_point	pt;
 	t_rgb	color;
+	t_vec	norm;
+	t_point	point;
+	float	a;
+	float	b;
+	float	c;
 	float	d;
 }	t_plane;
 
@@ -153,5 +156,6 @@ void 		get_objs(t_mlx *mlx);
 t_lst		*new_lst(void);
 t_sphere	*new_sphere(t_point center, float radius, t_rgb color);
 t_ray		get_ray(t_mlximg img, float x, float y);
+t_vec		new_vec(t_point a, t_point b);
 
 #endif

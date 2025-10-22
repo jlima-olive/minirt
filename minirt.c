@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/21 19:58:56 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/22 02:26:15 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,11 +125,11 @@ float	get_root_plane(t_ray ray, t_plane *pl)
 	float	denominator;
 	float	nominator;
 
-	denominator =
-	pl->norm.x * ray.dir.x +pl->norm.y * ray.dir.y + pl->norm.z * ray.dir.z;
+	nominator =
+		-pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c * ray.ori.z;
 	if (denominator == 0)
-		return (-1);
-	nominator = pl->d - ray.ori.x - ray.ori.y - ray.ori.z;
+		return (INT_MAX);
+	denominator = pl->a * ray.dir.x + pl->b * ray.dir.y + pl->c * ray.dir.z;
 	return (nominator / denominator);
 }
 
@@ -229,11 +229,13 @@ t_objinfo	proven_hit_plane(t_plane *pl, t_ray ray, t_vec light)
 	if (root < 0)
 		return (info);
 	info.point = point_at(ray, root);
-	a = get_cos(pl->norm, new_vec(info.point, light));
+	a = get_cos(pl->norm, new_vec(pl->point, light));
+	a = (a + 1) / 2;
+	// printf("cos is %f\n",a );
 	info.inside = dot_product(pl->norm, new_vec(info.point, light)) < 0;
 	// printf("%d\n", info.inside);
 	// info.color = get_rgb(sp->color, a);
-	info.color = get_rgb_num(1, 1, 1, a);
+	info.color = get_rgb(pl->color, a);
 	// info.color = get_color_difu(info.point, cp);
 	return (info);
 }
@@ -350,11 +352,11 @@ void	run_code(t_mlx *mlx)
 		while (++x < w)
 			render(x, y, mlx->img, ratio);
 	}
-	anti_aliasing(mlx->img2, mlx->img);
+	// anti_aliasing(mlx->img2, mlx->img);
 	mlx_put_image_to_window
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, -var * ratio);
-	mlx_put_image_to_window
-	(mlx->mlx_ptr, mlx->mlx_win, mlx->img2.img_ptr, 0, -var * ratio);
+	// mlx_put_image_to_window
+	// (mlx->mlx_ptr, mlx->mlx_win, mlx->img2.img_ptr, 0, -var * ratio);
 }
 
 double get_cos(t_vec a, t_vec b)

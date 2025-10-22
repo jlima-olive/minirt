@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/21 19:59:55 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/22 02:23:52 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,21 @@ t_sphere *new_sphere(t_point center, float radius, t_rgb color)
 	return (obj);
 }
 
-t_sphere *new_plane(t_point norm, t_point pt, t_rgb color)
+t_plane *new_plane(t_mlximg *img, t_point norm, t_point pt, t_rgb color)
 {
 	t_plane *obj;
 
+	norm = normalize_vec(norm);
 	obj = malloc(sizeof(t_plane));
-	obj->norm = norm;
-	obj->pt = pt;
 	obj->color = color;
-	obj->d = norm.x * pt.x + norm.y * pt.y + norm.z * pt.z;
+	if (dot_product(norm, new_vec(pt, img->camera)) <= 0)
+		norm = mult(norm, -1);
+	obj->norm = norm;
+	obj->point = pt;
+	obj->a = norm.x;
+	obj->b = norm.y;
+	obj->c = norm.z;
+	obj->d = -norm.x * pt.x -norm.y * pt.y -norm.z * pt.z;
 	return (obj);
 }
 
@@ -94,17 +100,18 @@ void get_objs(t_mlx *mlx)
 	t_mlximg	*img;
 
 	img = &mlx->img;
-	img->ligh_ray = set_class(0, 10, 1);
+	img->ligh_ray = set_class(0, 10, 0);
 	img->objs = NULL;
 	add_obj(img, new_sphere(set_class(0, 0, 2), 0.5, set_class(0, 0 ,1)), 's');
 	add_obj(img, new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, new_plane(set_class(0, 1, 0), set_class(20, 0, 0), set_class(1, 0, 1)), 'p');
-	add_obj(img, new_plane(set_class(0, 1, 0), set_class(-20, 0, 0), set_class(0, 1, 1)), 'p');
-	add_obj(img, new_plane(set_class(1, 0, 0), set_class(-20, 0, 0), set_class(0, 0, 1)), 'p');
-	add_obj(img, new_plane(set_class(1, 0, 0), set_class(20, 0, 0), set_class(1, 1, 1)), 'p');
+	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, -20, 0), set_class(1, 0, 0)), 'p');
+	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(-20, 0, 0), set_class(1, 2, 0)), 'p');
+	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(20, 0, 0), set_class(1, 0, 1)), 'p');
+	add_obj(img, new_plane(img, set_class(0, 0, 1), set_class(0, 0, 20), set_class(0, 1, 1)), 'p');
+	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, 20, 0), set_class(0, 0, 1)), 'p');
 	print_obj(img);
 }
 
