@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/23 13:39:53 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/23 13:59:20 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@
 # endif
 
 # ifndef AP_RAT
-#  define AP_RAT 1
+#  define AP_RAT (16.0 / 9)
 # endif
 
 # ifndef FOV
-#  define FOV 170.0
+#  define FOV 120.0
 # endif
 
 typedef struct	s_vec
@@ -108,6 +108,7 @@ typedef struct	s_mlximg
 	t_vec	vert;
 	float	min_len;
 	float	rad;
+	float	deg;
 	float	wdt;
 	t_lst	*objs;
 }	t_mlximg;

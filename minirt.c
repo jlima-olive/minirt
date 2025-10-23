@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/23 13:38:54 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/23 14:02:52 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	init_mlx(t_mlx *mlx)
 	mlx->mlx_win = mlx_new_window(mlx->mlx_ptr, HGT * AP_RAT, HGT, "minirt");
 	if (mlx->mlx_win == NULL)
 		close_mlx(mlx);
-	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT );
+	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
 	if (img.img_ptr == NULL)
 		close_mlx(mlx);
 	img.pixel_ptr
@@ -69,7 +69,7 @@ int	init_mlx(t_mlx *mlx)
 	if (img.pixel_ptr == NULL)
 		close_mlx(mlx);
 
-	img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT );
+	img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
 	if (img2.img_ptr == NULL)
 		close_mlx(mlx);
 	img2.pixel_ptr
@@ -278,15 +278,15 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 	return (get_rgb_num(0.5, 0.3, 0, y) + get_rgb_num(0.5, 0.7, 1, 1));
 }
 
-void	render(int x, int y, t_mlximg img, float ratio)
+void	render(int x, int y, t_mlximg img)
 {
 	int		offset;
 	t_ray	ray;
 
-	ray = get_ray(img, (int)(x / ratio), (int)(y / ratio));
+	ray = get_ray(img, (int)(x), (int)(y));
 	offset = (x * 4) + (y * img.line_len);
 	*((unsigned int *)(img.pixel_ptr + offset))
-	= get_color(img, (int)(y / ratio), ray);
+	= get_color(img, (int)(y), ray);
 }
 
 t_rgb	decompose_color(unsigned color)
@@ -348,25 +348,19 @@ void	run_code(t_mlx *mlx)
 	float	h;
 	float	x;
 	float	y;
-	float	var;
-	float	ratio;
 
-	ratio = AP_RAT;
-	var = (HGT - HGT / ratio) / 2;
-	w = HGT;
-	h = HGT / ratio + var;
-	y = var;
-	w *= ratio;
-	h *= ratio;
+	w = HGT * AP_RAT;
+	h = HGT;
+	y = -1;
 	while (++y < h)
 	{
 		x = -1;
 		while (++x < w)
-			render(x, y, mlx->img, ratio);
+			render(x, y, mlx->img);
 	}
 	// anti_aliasing(mlx->img2, mlx->img);
 	mlx_put_image_to_window
-	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, -var * ratio);
+	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
 	// mlx_put_image_to_window
 	// (mlx->mlx_ptr, mlx->mlx_win, mlx->img2.img_ptr, 0, -var * ratio);
 }
@@ -391,16 +385,16 @@ t_vec edge_cases_del_v(t_vec o, t_vec v)
 t_ray	get_ray(t_mlximg img, float x, float y)
 {
 	t_ray	ray;
-	t_vec	vec1;
-	t_vec	vec2;
 	t_vec	vp_position;
-	float	x1;
-	float	y1;
+	float	cl;
 
 	if (x == 0 && FOV == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, -1))));
 	if (x == img.wdt && FOV == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, 1))));
+	if (FOV > 120)
+		cl = (img.deg - 120) / 60;
+	
 	ray.ori = img.camera;
 	vp_position = add(img.pixel00, mult(img.del_h, x));
 	vp_position = add(vp_position, mult(img.del_v, y));
@@ -417,7 +411,8 @@ t_mlximg parse(t_mlximg img)
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
 	img.wdt = HGT * AP_RAT;
-	img.rad = ft_deg_to_rad(FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999));
+	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
+	img.rad = ft_deg_to_rad(img.deg);
 	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* || check_stuff() */)
 		exit/* _func */(1);
 	img.ori_vec = normalize_vec(img.ori_vec);
