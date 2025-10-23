@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/22 02:40:05 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/23 13:39:53 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,15 @@
 # include "my_libft/libft.h"
 
 # ifndef HGT
-#  define HGT 720
+#  define HGT 720.0
 # endif
 
 # ifndef AP_RAT
-#  define AP_RAT 1/* 6.0/9 */
+#  define AP_RAT 1
 # endif
 
 # ifndef FOV
-#  define FOV 180
+#  define FOV 170.0
 # endif
 
 typedef struct	s_vec
@@ -105,6 +105,7 @@ typedef struct	s_mlximg
 	t_vec	normal_v;
 	t_vec	ligh_ray;
 	t_vec	min_vec;
+	t_vec	vert;
 	float	min_len;
 	float	rad;
 	float	wdt;

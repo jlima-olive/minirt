@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/22 02:42:00 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/23 13:38:54 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	init_mlx(t_mlx *mlx)
 	mlx->mlx_win = mlx_new_window(mlx->mlx_ptr, HGT * AP_RAT, HGT, "minirt");
 	if (mlx->mlx_win == NULL)
 		close_mlx(mlx);
-	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT * AP_RAT);
+	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT );
 	if (img.img_ptr == NULL)
 		close_mlx(mlx);
 	img.pixel_ptr
@@ -69,7 +69,7 @@ int	init_mlx(t_mlx *mlx)
 	if (img.pixel_ptr == NULL)
 		close_mlx(mlx);
 
-	img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT * AP_RAT);
+	img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT );
 	if (img2.img_ptr == NULL)
 		close_mlx(mlx);
 	img2.pixel_ptr
@@ -393,52 +393,42 @@ t_ray	get_ray(t_mlximg img, float x, float y)
 	t_ray	ray;
 	t_vec	vec1;
 	t_vec	vec2;
-	t_vec	viewport_position;
+	t_vec	vp_position;
 	float	x1;
 	float	y1;
 
-	ray.ori = img.camera/* add(img.pixel00, mult(img.del_h, x)) */;
-	// ray.ori = add(ray.ori, mult(img.del_v, y));
-	// printf("n_vecpnt	%f %f %f\n",ray.ori.x,ray.ori.y,ray.ori.z);
-	// printf("x = %f y = %f\n",x ,y);
-	x = x / img.wdt - 0.5;
-	y = y / HGT - 0.5;
-	vec1 = mult(img.normal_h, sin(x * img.rad));
-	vec2 = mult(img.normal_v, sin(y * img.rad));
-	ray.dir = add(vec1, vec2);
-	viewport_position = sub(img.ori_vec, ray.dir);
-	x = ft_abs(x);
-	y = ft_abs(y);
-	x = (x * (x > y) + y * (y >= x));
-	vec1 = img.min_vec;
-	// printf("x = %f y = %f\n",x ,y);
-	ray.dir = add(ray.dir, vec1);
-	vec1 = mult(img.ori_vec, (cos(x * PI) * (1 - img.min_len)));
-	ray.dir = add(ray.dir, vec1);
+	if (x == 0 && FOV == 180)
+		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, -1))));
+	if (x == img.wdt && FOV == 180)
+		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, 1))));
+	ray.ori = img.camera;
+	vp_position = add(img.pixel00, mult(img.del_h, x));
+	vp_position = add(vp_position, mult(img.del_v, y));
+	ray.dir = normalize_vec(new_vec(vp_position, ray.ori));
 	return (ray);
 }
 
 t_mlximg parse(t_mlximg img)
 {
-	double	degree;
-	double	asp_ratio;
+	double	vp_size;
+	// double	img;
 	t_ray	vec;
 
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
-	degree = FOV;							// done by the parser this is just an example
-	img.wdt = HGT;
-	img.rad = ft_deg_to_rad(degree);
-	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* check_stuff() */)
+	img.wdt = HGT * AP_RAT;
+	img.rad = ft_deg_to_rad(FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999));
+	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* || check_stuff() */)
 		exit/* _func */(1);
 	img.ori_vec = normalize_vec(img.ori_vec);
 	img.ctr_pnt = add(img.camera, img.ori_vec);
 	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
 	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
-	img.del_h = mult(img.del_h, (sin(img.rad / 2) / img.wdt));
+	vp_size = 2 * tan(img.rad / 2);
+	img.del_h = mult(img.del_h, vp_size / img.wdt);
 	img.normal_h = mult(img.del_h, img.wdt);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
-	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), sin(img.rad / 2) / HGT);
+	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), (vp_size / AP_RAT) / HGT);
 	img.normal_v = mult(img.del_v, HGT);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
@@ -448,24 +438,17 @@ t_mlximg parse(t_mlximg img)
 	printf("dot_product img.del_h,   img.del_v = %f\n", dot_product(img.del_h, img.del_v));
 	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -img.wdt / 2));
 	img.pixel00 = add(img.pixel00, mult(img.del_v, -HGT / 2));
-	img.min_vec = mult(img.ori_vec, cos(img.rad / 2));
-	img.min_len = vec_len(img.min_vec);
-	printf("pixel00	%f %f %f\n\n\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
-	vec = get_ray(img, img.wdt, 0);
+	printf("pixel00	%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
+	vec = get_ray(img, 0, 0);
 	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
-	vec = get_ray(img, img.wdt, HGT / 4);
+	vec = get_ray(img, img.wdt / 4, HGT / 4);
 	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
-	vec = get_ray(img, img.wdt, HGT / 2);
+	vec = get_ray(img, img.wdt / 2, HGT / 2);
 	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
-	vec = get_ray(img, img.wdt, 3 * HGT / 4);
+	vec = get_ray(img, 3 * img.wdt / 4, 3 * HGT / 4);
 	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
 	vec = get_ray(img, img.wdt, HGT);
 	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	// printf("n_vecpnt	%f %f %f\n", vec.ori.x, vec.ori.y, vec.ori.z);
 	// exit(0);
 	return (img);
 }
