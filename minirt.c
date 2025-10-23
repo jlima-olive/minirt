@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/23 14:02:52 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/23 14:33:38 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,13 +124,17 @@ float	get_root_plane(t_ray ray, t_plane *pl)
 {
 	float	denominator;
 	float	nominator;
+	float	ret;
 
+	if (dot_product(ray.dir, pl->norm) < 0.0001)
+		return (-1);
 	nominator =
 		-pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c * ray.ori.z;
-	if (denominator == 0)
-		return (-1);
 	denominator = pl->a * ray.dir.x + pl->b * ray.dir.y + pl->c * ray.dir.z;
-	return (nominator / denominator);
+	ret = nominator / denominator;
+	if (ret != ret)
+		return (-1);
+	return (ret);
 }
 
 int	get_color_difu(t_point p, t_vec cp)
@@ -257,6 +261,7 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 	t_objinfo	value;
 	t_objinfo	new_v;
 	t_lst		*lst;
+	float		len;
 
 	lst = img.objs;
 	value = set_obj_info();
@@ -266,9 +271,10 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 			new_v = proven_hit_sphere(lst->obj, ray, img.ligh_ray);
 		if (lst->id == 'p')
 			new_v = proven_hit_plane(lst->obj, ray, img.ligh_ray);
-		if (value.color == -1 || (new_v.color != -1
-			&& vec_len(new_vec(img.camera, new_v.point))
-			< vec_len(new_vec(img.camera, value.point))))
+		len = vec_len(new_vec(img.camera, new_v.point));
+		if (value.color == -1 || ((new_v.color != -1 && len
+			< vec_len(new_vec(img.camera, value.point)))
+			&& len < 1000000))
 			value = new_v;
 		lst = lst->next;
 	}

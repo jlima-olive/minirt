@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/23 13:59:20 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/23 14:07:05 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # endif
 
 # ifndef AP_RAT
-#  define AP_RAT (16.0 / 9)
+#  define AP_RAT 1/* (16.0 / 9) */
 # endif
 
 # ifndef FOV

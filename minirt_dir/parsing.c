@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/22 16:32:37 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/23 14:08:01 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,10 +115,10 @@ void get_objs(t_mlx *mlx)
 	add_obj(img, new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, -20, 0), set_class(1, 0, 0)), 'p');
-	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(-20, 0, 0), set_class(1, 2, 0)), 'p');
-	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(20, 0, 0), set_class(1, 0, 1)), 'p');
+	// add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(-20, 0, 0), set_class(1, 2, 0)), 'p');
+	// add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(20, 0, 0), set_class(1, 0, 1)), 'p');
 	add_obj(img, new_plane(img, set_class(0, 0, 1), set_class(0, 0, 20), set_class(0, 1, 1)), 'p');
-	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, 20, 0), set_class(0, 0, 1)), 'p');
+	// add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, 20, 0), set_class(0, 0, 1)), 'p');
 	print_obj(img);
 }
 
