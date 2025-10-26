@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/26 23:07:25 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 23:26:30 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -320,9 +320,8 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 		len = vec_len(new_vec(info.point, light->src));
 		pl =  new_vec(info.point, walk->src);
 		root = get_cos(cp, pl);
-		if (root > 0)
-			root = (root + 1) / 2;
-		else
+		// root = (root + 1) / 2;
+		if (root < 0)
 			root = 0;
 		// root = root * root;
 		walk = walk->next;
@@ -382,7 +381,7 @@ float	get_lreflect(t_point pt, t_vec norm, t_vec dir, t_light light)
 	ray.dir = dir;
 	temp = point_at(ray, 1);
 	cosv = get_cos(norm, dir);
-	lreflect = dir;
+	lreflect = mult(dir, -1);
 	if (cosv != 0)
 	{
 		sinv = sqrt(1 - cosv * cosv);
@@ -406,7 +405,6 @@ float	get_lreflect(t_point pt, t_vec norm, t_vec dir, t_light light)
 	cp = mult(new_vec(inter, sp.center), -1 / sp.radius);
 	root = get_cos(cp, lreflect);
 	root = (root + 9) / 10;
-	root = root * root;
 /********************** */
 	return (root);
 }
@@ -438,17 +436,12 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	root = get_cos(pl_light, cp);
 	if (root < 0)
 		root = 0;	
-	// if (root < 0)
-		// root = root * root + 0.2;
-	// else
-		// root = 0.2;
-	// if (root > 1)
-		// root = 1;
-	// root = (root + 1) / 2;
-	// if (ref != 0)
-		// color = mult(set_class());
-	// else
-		color = cy->color;
+	color = cy->color;
+	if (ref)
+	{
+		color = light->color;
+		root = ref;
+	}
 	info.color = get_rgb(color, root);
 	return (info); 
 }

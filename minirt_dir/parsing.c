@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/26 22:55:03 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 23:24:45 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ void get_objs(t_mlx *mlx)
 	img->objs = NULL;
 	img->ligh_rays = NULL;
 	img->total_lights = 0;
-	add_light(img, set_class(-0, 0, 15), set_class(1, 1, 1));
+	add_light(img, set_class(-6, 6, 2), set_class(1, 1, 1));
 	// add_light(img, set_class(-1, 0, 2), set_class(1, 1, 1));
 	// print_light(img);
 	add_obj(img, new_sphere(set_class(0, 0, 2), 0.5, set_class(0, 0 ,1)), 's');
