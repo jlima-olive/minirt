@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/23 14:07:05 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/25 14:30:36 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,19 @@ typedef struct	s_vec
 typedef t_vec	t_rgb;
 typedef t_vec	t_point;
 
+typedef struct	s_ray
+{
+	t_point	ori;
+	t_vec	dir;
+	double	t;
+}	t_ray;
+
 typedef struct s_objinfo
 {
 	int		color;
 	int		inside;
+	int		light_count;
+	t_vec	red_vec;
 	t_point	point;
 }	t_objinfo;
 
@@ -79,6 +88,13 @@ typedef struct s_plane
 	float	d;
 }	t_plane;
 
+typedef struct s_cylidner
+{
+	t_rgb	color;
+	t_ray	ray;
+	float	r;
+}	t_cylidner;
+
 typedef struct	s_simpleimg
 {
 	int		bpp;
@@ -88,8 +104,16 @@ typedef struct	s_simpleimg
 	char	*pixel_ptr;
 }	t_simpleimg;
 
+typedef	struct s_light
+{
+	t_point			src;
+	t_rgb			color;
+	struct s_light	*next;
+}	t_light;
+
 typedef struct	s_mlximg
 {
+	int		total_lights;
 	int		bpp;
 	int		endian;
 	int		line_len;
@@ -103,7 +127,7 @@ typedef struct	s_mlximg
 	t_vec	normal_h;
 	t_vec	del_v;
 	t_vec	normal_v;
-	t_vec	ligh_ray;
+	t_light	*ligh_rays;
 	t_vec	min_vec;
 	t_vec	vert;
 	float	min_len;
@@ -120,14 +144,6 @@ typedef struct	s_mlx
 	t_mlximg	img;
 	t_simpleimg	img2;
 }   t_mlx;
-
-typedef struct	s_ray
-{
-	t_point	ori;
-	t_vec	dir;
-	double	t;
-	// t_point (*at)(t_ray);
-}	t_ray;
 
 int		my_button_hook(int key, t_mlx *mlx);
 int		my_key_hook(int key, t_mlx *mlx);
@@ -159,5 +175,6 @@ t_lst		*new_lst(void);
 t_sphere	*new_sphere(t_point center, float radius, t_rgb color);
 t_ray		get_ray(t_mlximg img, float x, float y);
 t_vec		new_vec(t_point a, t_point b);
+double		div_product(t_vec a, t_vec b);
 
 #endif

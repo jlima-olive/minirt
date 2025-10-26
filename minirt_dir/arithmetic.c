@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 11:35:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/22 02:01:34 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/25 14:25:10 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,9 @@ double	get_y(t_vec o, t_vec h)
 double	dot_product(t_vec a, t_vec b)
 {
 	return (a.x * b.x + a.y * b.y + a.z * b.z);
+}
+
+double	div_product(t_vec a, t_vec b)
+{
+	return (a.x / b.x + a.y / b.y + a.z / b.z);
 }

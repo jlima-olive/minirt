@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/23 14:08:01 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/25 18:01:16 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,66 @@ void	print_obj(t_mlximg *img)
 	}
 }
 
+t_light	*new_light()
+{
+	t_light	*ret;
+
+	ret = malloc(sizeof(t_light));
+	if (ret)
+		ret->next = NULL;
+	return (ret);
+}
+
+void	add_light(t_mlximg *img, t_point src, t_rgb color)
+{
+	t_light	*walk;
+	
+	if (img->ligh_rays == NULL)
+	{
+		img->ligh_rays = new_light();
+		if (img->ligh_rays)
+		{
+			img->ligh_rays->color =color;
+			img->ligh_rays->src = src;
+		}
+		img->total_lights++;
+		return ;
+	}
+	walk = img->ligh_rays;
+	while (walk->next)
+		walk = walk->next;
+	walk->next = new_light();
+	if (walk->next)
+	{
+		walk->next->color = color;
+		walk->next->src = src;
+	}
+	img->total_lights++;
+}
+
+void	print_light(t_mlximg *img)
+{
+	t_light	*light;
+
+	light = img->ligh_rays;
+	while (light)
+	{
+		printf("%f %f %f\n", light->color.x, light->color.y, light->color.z);
+		light = light->next;
+	}
+}
+
+t_cylidner	*new_cylinder(t_point base, t_vec norm, t_rgb color, float r)
+{
+	t_cylidner *obj;
+
+	obj = malloc(sizeof(t_cylidner));
+	obj->ray.ori = base;
+	obj->ray.dir = norm;
+	obj->r = r;
+	obj->color = color;
+	return (obj);
+}
 
 void get_objs(t_mlx *mlx)
 {
@@ -100,25 +160,34 @@ void get_objs(t_mlx *mlx)
 	t_mlximg	*img;
 
 	img = &mlx->img;
-	img->ligh_ray = set_class(0, 10, 0);
+	// img->ligh_ray = set_class(0, 10, 0);
 	img->objs = NULL;
+	img->ligh_rays = NULL;
+	img->total_lights = 0;
+	add_light(img, set_class(10, 0, 2), set_class(1, 1, 1));
+	// add_light(img, set_class(-1, 0, 2), set_class(1, 1, 1));
+	// print_light(img);
 	add_obj(img, new_sphere(set_class(0, 0, 2), 0.5, set_class(0, 0 ,1)), 's');
-	
 
 	add_obj(img, new_sphere(set_class(-6, 6, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(-6, -6, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(6, 6, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(6, -6, 2), 2, set_class(1, 0, 0)), 's');
-	
+
 	add_obj(img, new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0)), 's');
 	add_obj(img, new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0)), 's');
+
+	// add_obj(img, new_cylinder(set_class(-6, 0, -2), set_class(0, 0, 2), set_class(1, 1, 1), 0.1), 'c');
+	add_obj(img, new_cylinder(set_class(0, 0, -5), set_class(0, 1, 0), set_class(1, 1, 1), 2), 'c');
+	
+	
 	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, -20, 0), set_class(1, 0, 0)), 'p');
-	// add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(-20, 0, 0), set_class(1, 2, 0)), 'p');
-	// add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(20, 0, 0), set_class(1, 0, 1)), 'p');
+	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(-20, 0, 0), set_class(1, 2, 0)), 'p');
+	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(20, 0, 0), set_class(1, 0, 1)), 'p');
 	add_obj(img, new_plane(img, set_class(0, 0, 1), set_class(0, 0, 20), set_class(0, 1, 1)), 'p');
-	// add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, 20, 0), set_class(0, 0, 1)), 'p');
+	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, 20, 0), set_class(0, 0, 1)), 'p');
 	print_obj(img);
 }
 

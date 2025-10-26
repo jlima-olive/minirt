@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/23 14:33:38 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/25 17:59:45 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,12 +101,14 @@ t_objinfo	set_obj_info(void)
 {
 	t_objinfo	ret;
 
+	ret.light_count = 0;
 	ret.color = -1;
 	ret.point = set_class(0, 0, 0);
+	ret.red_vec = set_class(0, 0, 0);
 	return (ret);
 }
 
-float	get_root(float a, float h, float c)
+float	proven_get_root(float a, float h, float c)
 {
 	float	root1;
 	float	root2;
@@ -148,7 +150,7 @@ int	get_color_difu(t_point p, t_vec cp)
 	// return ();
 }
 
-t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
+t_objinfo	proven_hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 {
 	t_objinfo	info;
 	t_vec		oc;
@@ -164,15 +166,15 @@ t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_vec light)
 	a = dot_product(ray.dir, ray.dir);
 	h = dot_product(ray.dir, oc);
 	c = dot_product(oc, oc) - (sp->radius * sp->radius);
-	root = get_root(a, h, c);
+	root = proven_get_root(a, h, c);
 	if (root < 0)
 		return (info);
 	info.point = point_at(ray, root);
 	cp = mult(new_vec(info.point, sp->center), -1 / sp->radius);
-	a = get_cos(cp, new_vec(info.point, light));
+	a = get_cos(cp, new_vec(info.point, light->src));
 	a = (a + 1) / 2;
-	len = vec_len(new_vec(info.point, light));
-	a = a / len / len * 100;
+	// len = vec_len(new_vec(info.point, light->src));
+	// a = a / len / len * 100;
 	if (a > 1)
 		a = 1;
 	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
@@ -226,36 +228,168 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 	return (ret);
 }
 
-t_objinfo	proven_hit_plane(t_plane *pl, t_ray ray, t_vec light)
+t_objinfo	proven_hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 {
-	t_ray		plray;
+	t_vec		pl_light;
+	t_vec		pla;
 	t_objinfo	info;
 	float		root;
 	float		a;
 	float		len;
 
-	info = set_obj_info();
 	root = get_root_plane(ray, pl);
-	if (root < 0)
+	info.color = -1;
+	if (root < 0 || root > 100000)
 		return (info);
+	info = set_obj_info();
 	info.point = point_at(ray, root);
-	// a = get_cos(pl->norm, new_vec(pl->point, light));
-	len = vec_len(new_vec(info.point, light));
-	a = 1 / len / len * 100;
-	if (a > 1)
-		a = 1;
-	// if (a < 0.1)
-		// a = 0.1;
-	// a = (a + 1) / 2;
-	// printf("cos is %f\n",a );
-	info.inside = dot_product(pl->norm, new_vec(info.point, light)) < 0;
-	// printf("%d\n", info.inside);
-	// info.color = get_rgb(sp->color, a);
+	a = get_cos(pl->norm, new_vec(pl->point, light->src));
+	pl_light = new_vec(info.point, light->src);
+	a = a * (dot_product(pl->norm, pl_light) > 0);
+	// len = vec_len(new_vec(info.point, light->src));
+	// a = 1 / len / len * 100;
+	// if (a > 1)
+		// a = 1;
+	info.inside = dot_product(pl->norm, new_vec(info.point, light->src)) < 0;
 	info.color = get_rgb(pl->color, a);
-	// info.color = get_color_difu(info.point, cp);
 	return (info);
 }
 
+float	root_pl_plane(t_ray ray, t_plane *pl)
+{
+	float	denominator;
+	float	nominator;
+	float	ret;
+
+	if (dot_product(ray.dir, pl->norm) < 0.0001)
+		return (-1);
+	nominator =
+		-pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c * ray.ori.z;
+	denominator = pl->a * ray.dir.x + pl->b * ray.dir.y + pl->c * ray.dir.z;
+	ret = nominator / denominator;
+	if (ret != ret)
+		return (-1);
+	return (ret);
+}
+
+float	get_sp_root(t_sphere *sp, t_ray ray)
+{
+	t_vec		oc;
+	float		root1;
+	float		root2;
+	float			a;
+	float			h;
+	float			c;
+
+	oc = sub(sp->center, ray.ori);
+	a = dot_product(ray.dir, ray.dir);
+	h = dot_product(ray.dir, oc);
+	c = dot_product(oc, oc) - (sp->radius * sp->radius);
+	root1 = h * h - a * c;
+	if (root1 < 0)
+		return (-1);
+	root1 = sqrt(root1);
+	root2 = (h - root1) / a;
+	root1 = (h + root1) / a;
+	return (ft_min_pos(root1, root2));
+}
+/*  */
+
+t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
+{
+	t_light		*walk;
+	t_objinfo	info;
+	t_vec		pl;
+	t_vec		cp;
+	float		root;
+	float		new_root;
+	float		len;
+	int			sign;
+
+	root = get_sp_root(sp, ray);
+	if (root < 0)
+		return (info.color = -1, info);
+	info = set_obj_info();
+	info.point = point_at(ray, root);
+	cp = mult(new_vec(info.point, sp->center), -1 / sp->radius);
+	walk = light;
+	root = 0;
+	while (walk != NULL)
+	{
+		len = vec_len(new_vec(info.point, light->src));
+		pl =  new_vec(info.point, walk->src);
+		new_root = get_cos(cp, pl);
+		new_root = (new_root + 1) / 2;
+		root = (new_root / len / len) * 10 * 10;
+		walk = walk->next;
+	}
+	if (root > 1)
+		root = 1;
+	if (root < 0)
+		root = 0;
+	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
+	info.color = get_rgb_num(1, 1, 1, root);
+	return (info);
+}
+
+float	get_cy_root(t_ray ray, t_cylidner cy)
+{
+	t_vec	x;
+	float	dv;
+	float	xv;
+	float	a;
+	float	b;
+	float	c;
+	float	outside;
+	float	root;
+
+	x = new_vec(cy.ray.ori, ray.ori);
+	dv = dot_product(ray.dir, cy.ray.dir);
+	xv = dot_product(x, cy.ray.dir);
+	a = dot_product(ray.dir, ray.dir) - dv * dv;
+	if (a == 0)
+		return (-1);
+	b = 2 * (dot_product(ray.dir, x) - dv * xv);
+	c = dot_product(x, x) - xv * xv - cy.r * cy.r;
+	root = b * b -4 * a * c;
+	if (root < 0)
+		return (-1);
+	root = sqrt(root);
+	root = root / (a * 2);
+	b = -b / (a * 2);
+	return (ft_min_pos(b - root, b + root));
+}
+
+float	get_k(t_vec dir, t_vec pb)
+{
+	return (dot_product(dir, pb) / square_vec(dir));
+}
+
+t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
+{
+	t_light		*walk;
+	t_objinfo	info;
+	t_point		center;
+	t_vec		cp;
+	float		root;
+	float		k;
+
+	root = get_cy_root(ray, *cy);
+	if (root < 0)
+		return (info.color = -1, info);
+	// printf("root is %f\n", root);
+	info = set_obj_info();
+	info.point = point_at(ray, root);
+	k = get_k(cy->ray.dir, new_vec(cy->ray.ori, info.point));
+	center = point_at(cy->ray, k);
+	cp = new_vec(center, info.point);
+	// printf("%f %f %f\n %f %f %f\n", cy->ray.dir.x, cy->ray.dir.y, cy->ray.dir.z, cp.x, cp.y, cp.z);
+	// printf("dor prod=%f\n", dot_product(cy->ray.dir, cp));
+	printf("%f %f %f\n", info.point.x, info.point.y, info.point.z);
+	info.color = get_rgb_num(1, 1, 1, get_cos(light->src, cp));
+	return (info); 
+}
+	
 int	get_color( t_mlximg img, float y, t_ray ray)
 {
 	t_objinfo	value;
@@ -268,13 +402,14 @@ int	get_color( t_mlximg img, float y, t_ray ray)
 	while (lst)
 	{
 		if (lst->id == 's')
-			new_v = proven_hit_sphere(lst->obj, ray, img.ligh_ray);
-		if (lst->id == 'p')
-			new_v = proven_hit_plane(lst->obj, ray, img.ligh_ray);
+			new_v = hit_sphere(img, lst->obj, ray, img.ligh_rays);
+		else if (lst->id == 'p')
+			new_v = proven_hit_plane(img, lst->obj, ray, img.ligh_rays);
+		else if (lst->id == 'c')
+			new_v = hit_cylinder(img, lst->obj, ray, img.ligh_rays);
 		len = vec_len(new_vec(img.camera, new_v.point));
-		if (value.color == -1 || ((new_v.color != -1 && len
-			< vec_len(new_vec(img.camera, value.point)))
-			&& len < 1000000))
+		if (value.color == -1 || (new_v.color != -1 && len
+			< vec_len(new_vec(img.camera, value.point))))
 			value = new_v;
 		lst = lst->next;
 	}
@@ -411,7 +546,6 @@ t_ray	get_ray(t_mlximg img, float x, float y)
 t_mlximg parse(t_mlximg img)
 {
 	double	vp_size;
-	// double	img;
 	t_ray	vec;
 
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
@@ -450,7 +584,6 @@ t_mlximg parse(t_mlximg img)
 	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
 	vec = get_ray(img, img.wdt, HGT);
 	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	// exit(0);
 	return (img);
 }
 
@@ -460,8 +593,6 @@ int	main(void)
 	t_point	camera_center;
 	t_point	pixel;
 
-	// if (HGT != 720)
-		// return (1);
 	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
