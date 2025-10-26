@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/26 19:11:49 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 23:07:25 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,8 @@ t_objinfo	proven_hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *ligh
 	info.point = point_at(ray, root);
 	cp = mult(new_vec(info.point, sp->center), -1 / sp->radius);
 	a = get_cos(cp, new_vec(info.point, light->src));
-	a = (a + 1) / 2;
+	// a = (a + 1) / 2;
+	a = a * a ;
 	// len = vec_len(new_vec(info.point, light->src));
 	// a = a / len / len * 100;
 	if (a > 1)
@@ -319,6 +320,11 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 		len = vec_len(new_vec(info.point, light->src));
 		pl =  new_vec(info.point, walk->src);
 		root = get_cos(cp, pl);
+		if (root > 0)
+			root = (root + 1) / 2;
+		else
+			root = 0;
+		// root = root * root;
 		walk = walk->next;
 	}
 	if (root > 1)
@@ -361,17 +367,63 @@ double	get_k(t_vec dir, t_vec pb)
 	return (dot_product(dir, pb) / square_vec(dir));
 }
 
+float	get_lreflect(t_point pt, t_vec norm, t_vec dir, t_light light)
+{
+	t_ray		ray;
+	t_point		temp;
+	t_vec		lreflect;
+	t_vec		p_light;
+	float		cosv;
+	float		sinv;
+	float		root;
+	t_sphere	sp;
+
+	ray.ori = pt;
+	ray.dir = dir;
+	temp = point_at(ray, 1);
+	cosv = get_cos(norm, dir);
+	lreflect = dir;
+	if (cosv != 0)
+	{
+		sinv = sqrt(1 - cosv * cosv);
+		temp = add(temp, mult(norm, sinv * 2));
+		lreflect = sub(temp, pt);
+	}
+	p_light = sub(light.src, pt);
+	sp.center = light.src;
+	sp.radius = 5.0;
+	ray.ori = pt;
+	ray.dir = lreflect;
+	root = get_sp_root(&sp, ray);
+	if (root <= 0)
+		return (0);
+/********************** */
+	t_point	inter;
+	t_vec	cp;
+	t_light	walk;
+
+	inter = point_at(ray, root);
+	cp = mult(new_vec(inter, sp.center), -1 / sp.radius);
+	root = get_cos(cp, lreflect);
+	root = (root + 9) / 10;
+	root = root * root;
+/********************** */
+	return (root);
+}
+
 t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 {
 	t_light		*walk;
 	t_objinfo	info;
 	t_point		center;
 	t_vec		cp;
+	t_rgb		color;
 	double		root;
 	double		k;
 	double		dv;
 	double		xv;
 	t_vec		pl_light;
+	double		ref;
 
 	root = get_cy_root(ray, *cy, &dv, &xv);
 	if (root < 0)
@@ -382,7 +434,22 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	center = point_at(cy->ray, k);
 	cp = new_vec(info.point, center);
 	pl_light = new_vec(light->src, info.point);
-	info.color = get_rgb_num(1, 1, 1, get_cos(pl_light, cp));
+	ref = get_lreflect(info.point, cp, ray.dir, *light);
+	root = get_cos(pl_light, cp);
+	if (root < 0)
+		root = 0;	
+	// if (root < 0)
+		// root = root * root + 0.2;
+	// else
+		// root = 0.2;
+	// if (root > 1)
+		// root = 1;
+	// root = (root + 1) / 2;
+	// if (ref != 0)
+		// color = mult(set_class());
+	// else
+		color = cy->color;
+	info.color = get_rgb(color, root);
 	return (info); 
 }
 	
@@ -499,7 +566,7 @@ void	run_code(t_mlx *mlx)
 	mlx_put_image_to_window
 	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
 	// mlx_put_image_to_window
-	// (mlx->mlx_ptr, mlx->mlx_win, mlx->img2.img_ptr, 0, -var * ratio);
+	// (mlx->mlx_ptr, mlx->mlx_win, mlx->img2.img_ptr, 0, 0);
 }
 
 double get_cos(t_vec a, t_vec b)
@@ -550,8 +617,8 @@ t_mlximg parse(t_mlximg img)
 	double	cosv;
 	t_ray	vec;
 
-	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
-	img.ori_vec = set_class(0.0, 0.0, 1);	// done by the parser this is just an example
+	img.camera = set_class(-00.0, 00.0, -00.0);	// done by the parser this is just an example
+	img.ori_vec = set_class(0.0, -0.0, 1);	// done by the parser this is just an example
 	img.wdt = HGT * AP_RAT;
 	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
 	img.rad = ft_deg_to_rad(img.deg);
@@ -565,11 +632,6 @@ t_mlximg parse(t_mlximg img)
 	img.del_h = mult(normalize_vec(img.del_h), vp_size / img.wdt);
 	img.normal_h = mult(img.del_h, img.wdt);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
-	// cosv = get_cos(set_class(img.ori_vec.x, 0, img.ori_vec.z), img.ori_vec);
-	// sinv = sqrt(1 - cosv * cosv);
-	// sinv = sinv * (img.ori_vec.y < 0) - sinv * (img.ori_vec.y > 0);
-	// img.del_v = mult(img.ori_vec, sinv);
-	// img.del_v = add(img.del_v, mult(set_class(0, 1, 0), cosv));
 	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), (vp_size / AP_RAT) / HGT);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
