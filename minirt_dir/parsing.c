@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/25 18:01:16 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 14:10:18 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ void get_objs(t_mlx *mlx)
 	img->objs = NULL;
 	img->ligh_rays = NULL;
 	img->total_lights = 0;
-	add_light(img, set_class(10, 0, 2), set_class(1, 1, 1));
+	add_light(img, set_class(-10, 0, 2), set_class(1, 1, 1));
 	// add_light(img, set_class(-1, 0, 2), set_class(1, 1, 1));
 	// print_light(img);
 	add_obj(img, new_sphere(set_class(0, 0, 2), 0.5, set_class(0, 0 ,1)), 's');
@@ -180,7 +180,8 @@ void get_objs(t_mlx *mlx)
 	add_obj(img, new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0)), 's');
 
 	// add_obj(img, new_cylinder(set_class(-6, 0, -2), set_class(0, 0, 2), set_class(1, 1, 1), 0.1), 'c');
-	add_obj(img, new_cylinder(set_class(0, 0, -5), set_class(0, 1, 0), set_class(1, 1, 1), 2), 'c');
+	add_obj(img, new_cylinder(set_class(-10, 0, 15), set_class(0, 1, 0), set_class(1, 1, 1), 2), 'c');
+	add_obj(img, new_cylinder(set_class(10, 0, 15), set_class(0, 1, 0), set_class(1, 1, 1), 2), 'c');
 	
 	
 	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, -20, 0), set_class(1, 0, 0)), 'p');

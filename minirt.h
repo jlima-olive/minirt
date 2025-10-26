@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/25 14:30:36 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 14:24:26 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # endif
 
 # ifndef FOV
-#  define FOV 120.0
+#  define FOV 120
 # endif
 
 typedef struct	s_vec
@@ -74,7 +74,7 @@ typedef struct s_sphere
 	t_point	center;
 	t_point	p;
 	t_vec	normal;
-	float	root;
+	char	type;
 }	t_sphere;
 
 typedef struct s_plane
@@ -86,6 +86,7 @@ typedef struct s_plane
 	float	b;
 	float	c;
 	float	d;
+	char	type;
 }	t_plane;
 
 typedef struct s_cylidner
@@ -93,6 +94,7 @@ typedef struct s_cylidner
 	t_rgb	color;
 	t_ray	ray;
 	float	r;
+	char	type;
 }	t_cylidner;
 
 typedef struct	s_simpleimg

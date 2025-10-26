@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/25 17:59:45 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 14:15:02 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,9 +318,7 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	{
 		len = vec_len(new_vec(info.point, light->src));
 		pl =  new_vec(info.point, walk->src);
-		new_root = get_cos(cp, pl);
-		new_root = (new_root + 1) / 2;
-		root = (new_root / len / len) * 10 * 10;
+		root = get_cos(cp, pl);
 		walk = walk->next;
 	}
 	if (root > 1)
@@ -332,25 +330,23 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	return (info);
 }
 
-float	get_cy_root(t_ray ray, t_cylidner cy)
+float	get_cy_root(t_ray ray, t_cylidner cy, float *dv, float *xv)
 {
 	t_vec	x;
-	float	dv;
-	float	xv;
 	float	a;
 	float	b;
 	float	c;
 	float	outside;
 	float	root;
 
-	x = new_vec(cy.ray.ori, ray.ori);
-	dv = dot_product(ray.dir, cy.ray.dir);
-	xv = dot_product(x, cy.ray.dir);
-	a = dot_product(ray.dir, ray.dir) - dv * dv;
+	x = new_vec(ray.ori, cy.ray.ori);
+	*dv = dot_product(ray.dir, cy.ray.dir);
+	*xv = dot_product(x, cy.ray.dir);
+	a = dot_product(ray.dir, ray.dir) - *dv * *dv;
 	if (a == 0)
 		return (-1);
-	b = 2 * (dot_product(ray.dir, x) - dv * xv);
-	c = dot_product(x, x) - xv * xv - cy.r * cy.r;
+	b = 2 * (dot_product(ray.dir, x) - *dv * *xv);
+	c = dot_product(x, x) - *xv * *xv - cy.r * cy.r;
 	root = b * b -4 * a * c;
 	if (root < 0)
 		return (-1);
@@ -373,20 +369,20 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	t_vec		cp;
 	float		root;
 	float		k;
+	float		dv;
+	float		xv;
+	t_vec		pl_light;
 
-	root = get_cy_root(ray, *cy);
+	root = get_cy_root(ray, *cy, &dv, &xv);
 	if (root < 0)
 		return (info.color = -1, info);
-	// printf("root is %f\n", root);
 	info = set_obj_info();
 	info.point = point_at(ray, root);
-	k = get_k(cy->ray.dir, new_vec(cy->ray.ori, info.point));
+	k = dv * root + xv;
 	center = point_at(cy->ray, k);
-	cp = new_vec(center, info.point);
-	// printf("%f %f %f\n %f %f %f\n", cy->ray.dir.x, cy->ray.dir.y, cy->ray.dir.z, cp.x, cp.y, cp.z);
-	// printf("dor prod=%f\n", dot_product(cy->ray.dir, cp));
-	printf("%f %f %f\n", info.point.x, info.point.y, info.point.z);
-	info.color = get_rgb_num(1, 1, 1, get_cos(light->src, cp));
+	cp = new_vec(info.point, center);
+	pl_light = new_vec(light->src, info.point);
+	info.color = get_rgb_num(1, 1, 1, get_cos(pl_light, cp));
 	return (info); 
 }
 	
@@ -548,8 +544,8 @@ t_mlximg parse(t_mlximg img)
 	double	vp_size;
 	t_ray	vec;
 
-	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
-	img.ori_vec = set_class(0.0, 0.0, 1.0);	// done by the parser this is just an example
+	img.camera = set_class(0.0, 0.0, -0.0);	// done by the parser this is just an example
+	img.ori_vec = set_class(0.0, -0.0, 1.0);	// done by the parser this is just an example
 	img.wdt = HGT * AP_RAT;
 	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
 	img.rad = ft_deg_to_rad(img.deg);
