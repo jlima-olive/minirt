@@ -6,18 +6,18 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 17:02:04 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/23 13:07:51 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 18:48:13 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft.h"
 
-float	ft_deg_to_rad(float	deg)
+double	ft_deg_to_rad(double	deg)
 {
 	return (deg * (PI / 180.0));
 }
 
-float	ft_rad_to_deg(float	rad)
+double	ft_rad_to_deg(double	rad)
 {
 	return (rad / 180.0 * PI);
 }

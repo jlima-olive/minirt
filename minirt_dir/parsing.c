@@ -6,13 +6,13 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/26 14:10:18 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 18:48:13 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minirt.h"
 
-t_sphere *new_sphere(t_point center, float radius, t_rgb color)
+t_sphere *new_sphere(t_point center, double radius, t_rgb color)
 {
 	t_sphere *obj;
 
@@ -142,7 +142,7 @@ void	print_light(t_mlximg *img)
 	}
 }
 
-t_cylidner	*new_cylinder(t_point base, t_vec norm, t_rgb color, float r)
+t_cylidner	*new_cylinder(t_point base, t_vec norm, t_rgb color, double r)
 {
 	t_cylidner *obj;
 

@@ -6,23 +6,23 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/26 18:46:43 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 19:11:49 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-t_vec	get_random_vec(float min, float max)
+t_vec	get_random_vec(double min, double max)
 {
 	t_vec	ret;
-	float	sqrd;
-	float	len;
+	double	sqrd;
+	double	len;
 
 	while (1)
 	{
-		ret.x = ((float)rand() / RAND_MAX) * (max - min);
-		ret.y = ((float)rand() / RAND_MAX) * (max - min);
-		ret.z = ((float)rand() / RAND_MAX) * (max - min);
+		ret.x = ((double)rand() / RAND_MAX) * (max - min);
+		ret.y = ((double)rand() / RAND_MAX) * (max - min);
+		ret.z = ((double)rand() / RAND_MAX) * (max - min);
 		sqrd = square_vec(ret);
 		if (sqrd && sqrd <= 1)
 			return (mult(ret, 1 / sqrt(sqrd)));
@@ -87,7 +87,7 @@ void	init_var(t_mlx *mlx)
 	mlx->mlx_win = NULL;
 }
 
-t_point	point_at(t_ray ray, float t)
+t_point	point_at(t_ray ray, double t)
 {
 	return (add(ray.ori, mult(ray.dir, t)));
 }
@@ -108,10 +108,10 @@ t_objinfo	set_obj_info(void)
 	return (ret);
 }
 
-float	proven_get_root(float a, float h, float c)
+double	proven_get_root(double a, double h, double c)
 {
-	float	root1;
-	float	root2;
+	double	root1;
+	double	root2;
 
 	root1 = h * h - a * c;
 	if (root1 < 0)
@@ -122,11 +122,11 @@ float	proven_get_root(float a, float h, float c)
 	return (ft_min_pos(root1, root2));
 }
 
-float	get_root_plane(t_ray ray, t_plane *pl)
+double	get_root_plane(t_ray ray, t_plane *pl)
 {
-	float	denominator;
-	float	nominator;
-	float	ret;
+	double	denominator;
+	double	nominator;
+	double	ret;
 
 	if (dot_product(ray.dir, pl->norm) < 0.0001)
 		return (-1);
@@ -142,7 +142,7 @@ float	get_root_plane(t_ray ray, t_plane *pl)
 int	get_color_difu(t_point p, t_vec cp)
 {
 	t_vec	ran;
-	float	prod;
+	double	prod;
 
 	ran = get_random_vec(0, 1);
 	prod = dot_product(ran, cp);
@@ -155,11 +155,11 @@ t_objinfo	proven_hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *ligh
 	t_objinfo	info;
 	t_vec		oc;
 	t_vec		cp;
-	float		a;
-	float		h;
-	float		c;
-	float		root;
-	float		len;
+	double		a;
+	double		h;
+	double		c;
+	double		root;
+	double		len;
 
 	info = set_obj_info();
 	oc = sub(sp->center, ray.ori);
@@ -190,11 +190,11 @@ t_objinfo	my_sphere_render1(t_sphere *sp, t_ray ray, t_vec light)
 	t_objinfo	info;
 	t_vec		oc;
 	t_vec		op;
-	float		a;
-	float		b;
-	float		c;
-	float		sqr;
-	float		res;
+	double		a;
+	double		b;
+	double		c;
+	double		sqr;
+	double		res;
 
 	info = set_obj_info();
 	oc = sub(sp->center, ray.ori);
@@ -233,9 +233,9 @@ t_objinfo	proven_hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 	t_vec		pl_light;
 	t_vec		pla;
 	t_objinfo	info;
-	float		root;
-	float		a;
-	float		len;
+	double		root;
+	double		a;
+	double		len;
 
 	root = get_root_plane(ray, pl);
 	info.color = -1;
@@ -255,11 +255,11 @@ t_objinfo	proven_hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 	return (info);
 }
 
-float	root_pl_plane(t_ray ray, t_plane *pl)
+double	root_pl_plane(t_ray ray, t_plane *pl)
 {
-	float	denominator;
-	float	nominator;
-	float	ret;
+	double	denominator;
+	double	nominator;
+	double	ret;
 
 	if (dot_product(ray.dir, pl->norm) < 0.0001)
 		return (-1);
@@ -272,14 +272,14 @@ float	root_pl_plane(t_ray ray, t_plane *pl)
 	return (ret);
 }
 
-float	get_sp_root(t_sphere *sp, t_ray ray)
+double	get_sp_root(t_sphere *sp, t_ray ray)
 {
 	t_vec		oc;
-	float		root1;
-	float		root2;
-	float			a;
-	float			h;
-	float			c;
+	double		root1;
+	double		root2;
+	double			a;
+	double			h;
+	double			c;
 
 	oc = sub(sp->center, ray.ori);
 	a = dot_product(ray.dir, ray.dir);
@@ -301,9 +301,9 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	t_objinfo	info;
 	t_vec		pl;
 	t_vec		cp;
-	float		root;
-	float		new_root;
-	float		len;
+	double		root;
+	double		new_root;
+	double		len;
 	int			sign;
 
 	root = get_sp_root(sp, ray);
@@ -330,14 +330,14 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	return (info);
 }
 
-float	get_cy_root(t_ray ray, t_cylidner cy, float *dv, float *xv)
+double	get_cy_root(t_ray ray, t_cylidner cy, double *dv, double *xv)
 {
 	t_vec	x;
-	float	a;
-	float	b;
-	float	c;
-	float	outside;
-	float	root;
+	double	a;
+	double	b;
+	double	c;
+	double	outside;
+	double	root;
 
 	x = new_vec(ray.ori, cy.ray.ori);
 	*dv = dot_product(ray.dir, cy.ray.dir);
@@ -356,7 +356,7 @@ float	get_cy_root(t_ray ray, t_cylidner cy, float *dv, float *xv)
 	return (ft_min_pos(b - root, b + root));
 }
 
-float	get_k(t_vec dir, t_vec pb)
+double	get_k(t_vec dir, t_vec pb)
 {
 	return (dot_product(dir, pb) / square_vec(dir));
 }
@@ -367,10 +367,10 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	t_objinfo	info;
 	t_point		center;
 	t_vec		cp;
-	float		root;
-	float		k;
-	float		dv;
-	float		xv;
+	double		root;
+	double		k;
+	double		dv;
+	double		xv;
 	t_vec		pl_light;
 
 	root = get_cy_root(ray, *cy, &dv, &xv);
@@ -386,12 +386,12 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	return (info); 
 }
 	
-int	get_color( t_mlximg img, float y, t_ray ray)
+int	get_color( t_mlximg img, double y, t_ray ray)
 {
 	t_objinfo	value;
 	t_objinfo	new_v;
 	t_lst		*lst;
-	float		len;
+	double		len;
 
 	lst = img.objs;
 	value = set_obj_info();
@@ -457,12 +457,12 @@ void	get_medium_color(int x, int y, t_simpleimg img2, t_mlximg img)
 
 void	anti_aliasing(t_simpleimg img2,t_mlximg img)
 {
-	float	w;
-	float	h;
-	float	x;
-	float	y;
-	float	var;
-	float	ratio;
+	double	w;
+	double	h;
+	double	x;
+	double	y;
+	double	var;
+	double	ratio;
 
 	ratio = AP_RAT;
 	var = (HGT - HGT / ratio) / 2;
@@ -481,10 +481,10 @@ void	anti_aliasing(t_simpleimg img2,t_mlximg img)
 
 void	run_code(t_mlx *mlx)
 {
-	float	w;
-	float	h;
-	float	x;
-	float	y;
+	double	w;
+	double	h;
+	double	x;
+	double	y;
 
 	w = HGT * AP_RAT;
 	h = HGT;
@@ -504,7 +504,7 @@ void	run_code(t_mlx *mlx)
 
 double get_cos(t_vec a, t_vec b)
 {
-	float	len;
+	double	len;
 
 	len = (vec_len(a) * vec_len(b));
 	return (dot_product(a, b) / len);
@@ -512,20 +512,22 @@ double get_cos(t_vec a, t_vec b)
 
 t_vec edge_cases_del_v(t_vec o, t_vec v)
 {
-	if (o.x == 0 && o.z == 0)
-		return (set_class(0, 0, -1));
 	if (o.y == 0)
 		return (set_class(0, -1 ,0));
+	if (o.x == 0 && o.z == 0)
+		return (set_class(0, 0, 1));
+	if (o.x == 0)
+		return (normalize_vec(set_class(0, -o.z, o.y)));
 	if (o.z == 0)
-		return (set_class(o.y, o.x, 0));
-	return (v);
+		return (normalize_vec(set_class(o.y, o.x, 0)));
+	return (normalize_vec(v));
 }
 
-t_ray	get_ray(t_mlximg img, float x, float y)
+t_ray	get_ray(t_mlximg img, double x, double y)
 {
 	t_ray	ray;
 	t_vec	vp_position;
-	float	cl;
+	double	cl;
 
 	if (x == 0 && FOV == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, -1))));
@@ -549,7 +551,7 @@ t_mlximg parse(t_mlximg img)
 	t_ray	vec;
 
 	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
-	img.ori_vec = set_class(1.0, 0.0001, 1.0);	// done by the parser this is just an example
+	img.ori_vec = set_class(0.0, 0.0, 1);	// done by the parser this is just an example
 	img.wdt = HGT * AP_RAT;
 	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
 	img.rad = ft_deg_to_rad(img.deg);
@@ -560,7 +562,7 @@ t_mlximg parse(t_mlximg img)
 	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
 	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
 	vp_size = 2 * tan(img.rad / 2);
-	img.del_h = mult(img.del_h, vp_size / img.wdt);
+	img.del_h = mult(normalize_vec(img.del_h), vp_size / img.wdt);
 	img.normal_h = mult(img.del_h, img.wdt);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
 	// cosv = get_cos(set_class(img.ori_vec.x, 0, img.ori_vec.z), img.ori_vec);
@@ -569,7 +571,6 @@ t_mlximg parse(t_mlximg img)
 	// img.del_v = mult(img.ori_vec, sinv);
 	// img.del_v = add(img.del_v, mult(set_class(0, 1, 0), cosv));
 	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), (vp_size / AP_RAT) / HGT);
-	img.normal_v = mult(img.del_v, HGT);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
 	printf("del_v	%f %f %f\n", img.del_v.x, img.del_v.y, img.del_v.z);

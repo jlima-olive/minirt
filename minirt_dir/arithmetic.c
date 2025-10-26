@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 11:35:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/26 18:43:14 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 18:48:13 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	get_rgb(t_point one, double a)
 	return ((r << 16) + (g << 8) + b);
 }
 
-float	square_vec(t_vec vec)
+double	square_vec(t_vec vec)
 {
 	return (vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
 }

@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_abs.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 12:15:58 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/15 15:04:42 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/26 18:48:13 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-float	ft_abs(float abs)
+double	ft_abs(double abs)
 {
 	return (abs * (abs > 0) - abs * (abs < 0));
 }

@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/26 14:24:26 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 18:48:13 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ typedef struct s_lst
 typedef struct s_sphere
 {
 	t_rgb	color;
-	float	radius;
+	double	radius;
 	t_point	center;
 	t_point	p;
 	t_vec	normal;
@@ -82,10 +82,10 @@ typedef struct s_plane
 	t_rgb	color;
 	t_vec	norm;
 	t_point	point;
-	float	a;
-	float	b;
-	float	c;
-	float	d;
+	double	a;
+	double	b;
+	double	c;
+	double	d;
 	char	type;
 }	t_plane;
 
@@ -93,7 +93,7 @@ typedef struct s_cylidner
 {
 	t_rgb	color;
 	t_ray	ray;
-	float	r;
+	double	r;
 	char	type;
 }	t_cylidner;
 
@@ -132,10 +132,10 @@ typedef struct	s_mlximg
 	t_light	*ligh_rays;
 	t_vec	min_vec;
 	t_vec	vert;
-	float	min_len;
-	float	rad;
-	float	deg;
-	float	wdt;
+	double	min_len;
+	double	rad;
+	double	deg;
+	double	wdt;
 	t_lst	*objs;
 }	t_mlximg;
 
@@ -160,13 +160,13 @@ t_point		set_class(double x, double y, double z);
 int			get_rgb(t_point one, double a);
 int			get_rgb_num(double r, double g, double b, double a);
 t_ray		set_ray(t_point origin, t_vec direction);
-t_vec		get_vector(t_mlximg img, float x, float y);
+t_vec		get_vector(t_mlximg img, double x, double y);
 double		get_cos(t_vec a, t_vec b);
 double		dot_product(t_vec a, t_vec b);
 double		get_y(t_vec o, t_vec h);
 t_vec		normalize_vec(t_vec vec);
 double		vec_len(t_vec vec);
-float		square_vec(t_vec vec);
+double		square_vec(t_vec vec);
 double		vec_len(t_vec vec);
 double		dot_product(t_vec a, t_vec b);
 double		get_y(t_vec o, t_vec h);
@@ -174,8 +174,8 @@ double		get_x(t_vec h);
 t_vec		normalize_vec(t_vec vec);
 void 		get_objs(t_mlx *mlx);
 t_lst		*new_lst(void);
-t_sphere	*new_sphere(t_point center, float radius, t_rgb color);
-t_ray		get_ray(t_mlximg img, float x, float y);
+t_sphere	*new_sphere(t_point center, double radius, t_rgb color);
+t_ray		get_ray(t_mlximg img, double x, double y);
 t_vec		new_vec(t_point a, t_point b);
 double		div_product(t_vec a, t_vec b);
 

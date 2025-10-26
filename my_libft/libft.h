@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:02:51 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/10/16 17:11:50 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/26 18:48:13 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,13 +120,13 @@ long	ft_atol(const char *str);
 char	*ft_strsubs(char *str, char ch1, char ch2);
 char    *ft_rmrep(char *str, char rep);
 char    **ft_matrix_in_matrix(char **mat, int ind, char **holder);
-float	ft_abs(float abs);
-float	ft_min(float a, float b);
-float	ft_min(float a, float b);
-float	ft_max_neg(float a, float b);
-float	ft_min_pos(float a, float b);
-float	ft_deg_to_rad(float	deg);
-float	ft_rad_to_deg(float	rad);
+double	ft_abs(double abs);
+double	ft_min(double a, double b);
+double	ft_min(double a, double b);
+double	ft_max_neg(double a, double b);
+double	ft_min_pos(double a, double b);
+double	ft_deg_to_rad(double	deg);
+double	ft_rad_to_deg(double	rad);
 
 typedef struct s_list
 {

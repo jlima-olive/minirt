@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   ft_limits.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/16 15:46:43 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/16 16:21:26 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/10/26 18:48:13 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-float	ft_max(float a, float b)
+double	ft_max(double a, double b)
 {
 	return (a * (a > b) - b * (b >= a));
 }
 
-float	ft_min(float a, float b)
+double	ft_min(double a, double b)
 {
 	return (a * (a < b) - b * (b <= a));
 }
 
-float	ft_max_neg(float a, float b)
+double	ft_max_neg(double a, double b)
 {
 	if (a > 0 && b > 0)
 		return (-1);
@@ -31,7 +31,7 @@ float	ft_max_neg(float a, float b)
 	return (a * (a > b && a < 0) + b * (b >= a && b < 0));
 }
 
-float	ft_min_pos(float a, float b)
+double	ft_min_pos(double a, double b)
 {
 	if (a < 0 && b < 0)
 		return (-1);
