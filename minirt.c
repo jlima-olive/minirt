@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/26 14:15:02 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/10/26 18:46:43 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -512,10 +512,12 @@ double get_cos(t_vec a, t_vec b)
 
 t_vec edge_cases_del_v(t_vec o, t_vec v)
 {
-	if (o.z == 0)
-		return (set_class(-o.y, o.x, 0));
+	if (o.x == 0 && o.z == 0)
+		return (set_class(0, 0, -1));
 	if (o.y == 0)
 		return (set_class(0, -1 ,0));
+	if (o.z == 0)
+		return (set_class(o.y, o.x, 0));
 	return (v);
 }
 
@@ -542,10 +544,12 @@ t_ray	get_ray(t_mlximg img, float x, float y)
 t_mlximg parse(t_mlximg img)
 {
 	double	vp_size;
+	double	sinv;
+	double	cosv;
 	t_ray	vec;
 
-	img.camera = set_class(0.0, 0.0, -0.0);	// done by the parser this is just an example
-	img.ori_vec = set_class(0.0, -0.0, 1.0);	// done by the parser this is just an example
+	img.camera = set_class(0.0, 0.0, 0.0);	// done by the parser this is just an example
+	img.ori_vec = set_class(1.0, 0.0001, 1.0);	// done by the parser this is just an example
 	img.wdt = HGT * AP_RAT;
 	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
 	img.rad = ft_deg_to_rad(img.deg);
@@ -559,6 +563,11 @@ t_mlximg parse(t_mlximg img)
 	img.del_h = mult(img.del_h, vp_size / img.wdt);
 	img.normal_h = mult(img.del_h, img.wdt);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
+	// cosv = get_cos(set_class(img.ori_vec.x, 0, img.ori_vec.z), img.ori_vec);
+	// sinv = sqrt(1 - cosv * cosv);
+	// sinv = sinv * (img.ori_vec.y < 0) - sinv * (img.ori_vec.y > 0);
+	// img.del_v = mult(img.ori_vec, sinv);
+	// img.del_v = add(img.del_v, mult(set_class(0, 1, 0), cosv));
 	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), (vp_size / AP_RAT) / HGT);
 	img.normal_v = mult(img.del_v, HGT);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
