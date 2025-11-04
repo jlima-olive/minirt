@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/26 23:26:30 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/04 17:55:28 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,30 +229,32 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 	return (ret);
 }
 
-t_objinfo	proven_hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
+t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 {
 	t_vec		pl_light;
 	t_vec		pla;
 	t_objinfo	info;
 	double		root;
-	double		a;
 	double		len;
 
 	root = get_root_plane(ray, pl);
-	info.color = -1;
 	if (root < 0 || root > 100000)
-		return (info);
+		return (info.color = -1, info);
 	info = set_obj_info();
 	info.point = point_at(ray, root);
-	a = get_cos(pl->norm, new_vec(pl->point, light->src));
-	pl_light = new_vec(info.point, light->src);
-	a = a * (dot_product(pl->norm, pl_light) > 0);
+	pl_light = normalize_vec(new_vec(info.point, light->src));
+	root = get_cos(pl->norm, pl_light);
+	root = root * (root > 0);
 	// len = vec_len(new_vec(info.point, light->src));
-	// a = 1 / len / len * 100;
-	// if (a > 1)
-		// a = 1;
+	// root = 1 / len / len * 100; 
+	// if (root > 1)
+		// root = 1;
+	// root = 1 * (root > 1) + img.ambient * (root < img.ambient) + root * (root > 0 && root < 1);
+	// ray = set_ray(info.point, pl_light);
+	// if (info.inside == 1 && find_ligh(img, ray, vec_len(new_vec(light->src, info.point))) == 0)
+		// root = img.ambient;
 	info.inside = dot_product(pl->norm, new_vec(info.point, light->src)) < 0;
-	info.color = get_rgb(pl->color, a);
+	info.color = get_rgb(pl->color, root);
 	return (info);
 }
 
@@ -320,22 +322,15 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 		len = vec_len(new_vec(info.point, light->src));
 		pl =  new_vec(info.point, walk->src);
 		root = get_cos(cp, pl);
-		// root = (root + 1) / 2;
-		if (root < 0)
-			root = 0;
-		// root = root * root;
 		walk = walk->next;
 	}
-	if (root > 1)
-		root = 1;
-	if (root < 0)
-		root = 0;
+	root = 1 * (root > 1) + img.ambient * (root < img.ambient) + root * (root > 0 && root < 1);
 	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
-	info.color = get_rgb_num(1, 1, 1, root);
+	info.color = get_rgb(sp->color, root);
 	return (info);
 }
 
-double	get_cy_root(t_ray ray, t_cylidner cy, double *dv, double *xv)
+double	get_cy_root(t_ray ray, t_cylidner *cy, double *dv, double *xv)
 {
 	t_vec	x;
 	double	a;
@@ -344,14 +339,14 @@ double	get_cy_root(t_ray ray, t_cylidner cy, double *dv, double *xv)
 	double	outside;
 	double	root;
 
-	x = new_vec(ray.ori, cy.ray.ori);
-	*dv = dot_product(ray.dir, cy.ray.dir);
-	*xv = dot_product(x, cy.ray.dir);
+	x = new_vec(ray.ori, cy->ray.ori);
+	*dv = dot_product(ray.dir, cy->ray.dir);
+	*xv = dot_product(x, cy->ray.dir);
 	a = dot_product(ray.dir, ray.dir) - *dv * *dv;
 	if (a == 0)
 		return (-1);
 	b = 2 * (dot_product(ray.dir, x) - *dv * *xv);
-	c = dot_product(x, x) - *xv * *xv - cy.r * cy.r;
+	c = dot_product(x, x) - *xv * *xv - cy->r * cy->r;
 	root = b * b -4 * a * c;
 	if (root < 0)
 		return (-1);
@@ -423,7 +418,7 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	t_vec		pl_light;
 	double		ref;
 
-	root = get_cy_root(ray, *cy, &dv, &xv);
+	root = get_cy_root(ray, cy, &dv, &xv);
 	if (root < 0)
 		return (info.color = -1, info);
 	info = set_obj_info();
@@ -434,8 +429,7 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	pl_light = new_vec(light->src, info.point);
 	ref = get_lreflect(info.point, cp, ray.dir, *light);
 	root = get_cos(pl_light, cp);
-	if (root < 0)
-		root = 0;	
+	root = 1 * (root > 1) + img.ambient * (root < img.ambient) + root * (root > 0 && root < 1);
 	color = cy->color;
 	if (ref)
 	{
@@ -445,7 +439,7 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	info.color = get_rgb(color, root);
 	return (info); 
 }
-	
+
 int	get_color( t_mlximg img, double y, t_ray ray)
 {
 	t_objinfo	value;
@@ -460,7 +454,7 @@ int	get_color( t_mlximg img, double y, t_ray ray)
 		if (lst->id == 's')
 			new_v = hit_sphere(img, lst->obj, ray, img.ligh_rays);
 		else if (lst->id == 'p')
-			new_v = proven_hit_plane(img, lst->obj, ray, img.ligh_rays);
+			new_v = hit_plane(img, lst->obj, ray, img.ligh_rays);
 		else if (lst->id == 'c')
 			new_v = hit_cylinder(img, lst->obj, ray, img.ligh_rays);
 		len = vec_len(new_vec(img.camera, new_v.point));
@@ -646,6 +640,31 @@ t_mlximg parse(t_mlximg img)
 	vec = get_ray(img, img.wdt, HGT);
 	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
 	return (img);
+}
+
+int	find_ligh(t_mlximg img, t_ray ray, double len)
+{
+	double	new_len;
+	double	temp_len;
+	double	var1;
+	double	var2;
+	t_lst	*lst;
+
+	lst = img.objs;
+	new_len = INT_MAX;
+	while (lst)
+	{
+		if (lst->id == 's')
+			temp_len = get_sp_root(lst->obj, ray);
+		else if (lst->id == 'p')
+			temp_len = get_root_plane(ray, lst->obj);
+		else if (lst->id == 'c')
+			temp_len = get_cy_root(ray, lst->obj, &var1, &var2);
+		if (temp_len != -1 && temp_len < new_len)
+			new_len = temp_len;
+		lst = lst->next;
+	}
+	return (new_len < len);
 }
 
 int	main(void)
