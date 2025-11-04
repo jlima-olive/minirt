@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/04 20:08:57 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/04 20:20:54 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,7 @@ void get_objs(t_mlx *mlx)
 	img->objs = NULL;
 	img->ligh_rays = NULL;
 	img->total_lights = 0;
-	add_light(img, set_class(-2, 0, 2), set_class(1, 1, 1));
+	add_light(img, set_class(-2, 6, 2), set_class(1, 1, 1));
 
 	// add_light(img, set_class(-1, 0, 2), set_class(1, 1, 1));
 	// print_light(img);
@@ -194,44 +194,3 @@ void get_objs(t_mlx *mlx)
 	img->ambient = 0.1;
 	// exit(0);
 }
-
-/* void get_objs(t_mlx *mlx)
-{
-	t_lst		*lst;
-	t_mlximg	*img;
-
-	img = &mlx->img;
-	img->ligh_ray = set_class(1, -1, 1);
-
-	lst = new_lst();
-	img->objs = lst;
-	if (lst == NULL)
-		close_mlx(mlx);
-	lst->id = 's';
-	lst->obj = new_sphere(set_class(0, 0, 2), 0.5, set_class(0, 0 ,1));
-
-	lst->next = new_lst();
-	if (lst->next == NULL)
-		close_mlx(mlx);
-	lst->next->id = 's';
-	lst->next->obj = new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0));
-
-	lst->next->next = new_lst();
-	if (lst->next->next == NULL)
-		close_mlx(mlx);
-	lst->next->next->id = 's';
-	lst->next->next->obj = new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0));
-
-	lst->next->next->next = new_lst();
-	if (lst->next->next->next == NULL)
-		close_mlx(mlx);
-	lst->next->next->next->id = 's';
-	lst->next->next->next->obj = new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0));
-
-	lst->next->next->next->next = new_lst();
-	if (lst->next->next->next->next == NULL)
-		close_mlx(mlx);
-	lst->next->next->next->next->id = 's';
-	lst->next->next->next->next->obj = new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0));
-	print_obj(img);
-} */

@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/04 20:10:36 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/04 20:49:51 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -519,16 +519,10 @@ void	anti_aliasing(t_simpleimg img2,t_mlximg img)
 	double	h;
 	double	x;
 	double	y;
-	double	var;
-	double	ratio;
 
-	ratio = AP_RAT;
-	var = (HGT - HGT / ratio) / 2;
-	w = HGT;
-	h = HGT / ratio + var;
-	y = var;
-	w *= ratio;
-	h *= ratio;
+	w = HGT * AP_RAT;
+	h = HGT;
+	y = -1;
 	while (++y < h)
 	{
 		x = -1;
@@ -560,7 +554,7 @@ void	run_code(t_mlx *mlx)
 	// (mlx->mlx_ptr, mlx->mlx_win, mlx->img2.img_ptr, 0, 0);
 }
 
-double get_cos(t_vec a, t_vec b)
+double	get_cos(t_vec a, t_vec b)
 {
 	double	len;
 
@@ -568,7 +562,7 @@ double get_cos(t_vec a, t_vec b)
 	return (dot_product(a, b) / len);
 }
 
-t_vec edge_cases_del_v(t_vec o, t_vec v)
+t_vec	edge_cases_del_v(t_vec o, t_vec v)
 {
 	if (o.y == 0)
 		return (set_class(0, -1 ,0));
@@ -577,7 +571,7 @@ t_vec edge_cases_del_v(t_vec o, t_vec v)
 	if (o.x == 0)
 		return (normalize_vec(set_class(0, -o.z, o.y)));
 	if (o.z == 0)
-		return (normalize_vec(set_class(o.y, o.x, 0)));
+		return (normalize_vec(set_class(-o.y, o.x, 0)));
 	return (normalize_vec(v));
 }
 
@@ -609,7 +603,7 @@ t_mlximg parse(t_mlximg img)
 	t_ray	vec;
 
 	img.camera = set_class(-00.0, 00.0, -5.0);	// done by the parser this is just an example
-	img.ori_vec = set_class(0.0, -0.0, 1);	// done by the parser this is just an example
+	img.ori_vec = set_class(1.0, 1.0, 1);	// done by the parser this is just an example
 	img.wdt = HGT * AP_RAT;
 	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
 	img.rad = ft_deg_to_rad(img.deg);
@@ -662,7 +656,7 @@ int	find_ligh(t_mlximg img, t_ray ray)
 			len = get_pl_root(ray, lst->obj);
 		else if (lst->id == 'c')
 			len = get_cy_root(ray, lst->obj, &var1, &var2);
-		if (len > 0.000001 && len < 1)
+		if (len > 0.00000001 && len < 0.9999999)
 			return (1);
 		lst = lst->next;
 	}
