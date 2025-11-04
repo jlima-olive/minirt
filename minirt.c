@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/04 21:07:12 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/04 21:07:56 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -614,8 +614,8 @@ t_mlximg parse(t_mlximg img)
 	double	cosv;
 	t_ray	vec;
 
-	img.camera = set_class(-0.0, 0.0, -5.0);	// done by the parser this is just an example
-	img.ori_vec = set_class(0.0, -1.0, -1);		// done by the parser this is just an example
+	img.camera = set_class(-5.0, 7.5, -10.0);	// done by the parser this is just an example
+	img.ori_vec = set_class(1.0, -1.0, 1);		// done by the parser this is just an example
 	img.wdt = HGT * AP_RAT;
 	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
 	img.rad = ft_deg_to_rad(img.deg);
