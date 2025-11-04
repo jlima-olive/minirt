@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/04 17:02:20 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/04 19:36:32 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ typedef struct	s_mlximg
 	int		bpp;
 	int		endian;
 	int		line_len;
-	int		ambient;
+	double	ambient;
 	void	*img_ptr;
 	char	*pixel_ptr;
 	t_point	camera;
@@ -179,6 +179,6 @@ t_sphere	*new_sphere(t_point center, double radius, t_rgb color);
 t_ray		get_ray(t_mlximg img, double x, double y);
 t_vec		new_vec(t_point a, t_point b);
 double		div_product(t_vec a, t_vec b);
-int			find_ligh(t_mlximg img, t_ray ray, double len);
+int			find_ligh(t_mlximg img, t_ray ray);
 
 #endif

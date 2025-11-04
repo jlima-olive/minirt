@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/04 17:55:28 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/04 20:10:36 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ double	proven_get_root(double a, double h, double c)
 	return (ft_min_pos(root1, root2));
 }
 
-double	get_root_plane(t_ray ray, t_plane *pl)
+double	get_pl_root(t_ray ray, t_plane *pl)
 {
 	double	denominator;
 	double	nominator;
@@ -237,23 +237,19 @@ t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 	double		root;
 	double		len;
 
-	root = get_root_plane(ray, pl);
+	root = get_pl_root(ray, pl);
 	if (root < 0 || root > 100000)
 		return (info.color = -1, info);
 	info = set_obj_info();
 	info.point = point_at(ray, root);
-	pl_light = normalize_vec(new_vec(info.point, light->src));
+	pl_light = new_vec(info.point, light->src);
 	root = get_cos(pl->norm, pl_light);
-	root = root * (root > 0);
-	// len = vec_len(new_vec(info.point, light->src));
-	// root = 1 / len / len * 100; 
-	// if (root > 1)
-		// root = 1;
+	if (root < img.ambient)
+		root = img.ambient;
 	// root = 1 * (root > 1) + img.ambient * (root < img.ambient) + root * (root > 0 && root < 1);
-	// ray = set_ray(info.point, pl_light);
-	// if (info.inside == 1 && find_ligh(img, ray, vec_len(new_vec(light->src, info.point))) == 0)
-		// root = img.ambient;
-	info.inside = dot_product(pl->norm, new_vec(info.point, light->src)) < 0;
+	ray = set_ray(info.point, mult(pl_light, -1));
+	if (find_ligh(img, ray))
+		root = img.ambient;
 	info.color = get_rgb(pl->color, root);
 	return (info);
 }
@@ -324,8 +320,11 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 		root = get_cos(cp, pl);
 		walk = walk->next;
 	}
-	root = 1 * (root > 1) + img.ambient * (root < img.ambient) + root * (root > 0 && root < 1);
-	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
+	if (root < img.ambient)
+		root = img.ambient;
+	ray = set_ray(info.point, mult(pl, -1));
+	if (find_ligh(img, ray))
+		root = img.ambient;
 	info.color = get_rgb(sp->color, root);
 	return (info);
 }
@@ -427,15 +426,20 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	center = point_at(cy->ray, k);
 	cp = new_vec(info.point, center);
 	pl_light = new_vec(light->src, info.point);
-	ref = get_lreflect(info.point, cp, ray.dir, *light);
+	// ref = get_lreflect(info.point, cp, ray.dir, *light);
 	root = get_cos(pl_light, cp);
-	root = 1 * (root > 1) + img.ambient * (root < img.ambient) + root * (root > 0 && root < 1);
+	if (root < img.ambient)
+		root = img.ambient;
+	// root = 1 * (root > 1) + img.ambient * (root < img.ambient) + root * (root > 0 && root < 1);
 	color = cy->color;
-	if (ref)
-	{
-		color = light->color;
-		root = ref;
-	}
+	// if (ref)
+	// {
+		// color = light->color;
+		// root = ref;
+	// }
+	ray = set_ray(info.point, mult(pl_light, 1));
+	if (find_ligh(img, ray))
+		root = img.ambient;
 	info.color = get_rgb(color, root);
 	return (info); 
 }
@@ -604,7 +608,7 @@ t_mlximg parse(t_mlximg img)
 	double	cosv;
 	t_ray	vec;
 
-	img.camera = set_class(-00.0, 00.0, -00.0);	// done by the parser this is just an example
+	img.camera = set_class(-00.0, 00.0, -5.0);	// done by the parser this is just an example
 	img.ori_vec = set_class(0.0, -0.0, 1);	// done by the parser this is just an example
 	img.wdt = HGT * AP_RAT;
 	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
@@ -642,29 +646,27 @@ t_mlximg parse(t_mlximg img)
 	return (img);
 }
 
-int	find_ligh(t_mlximg img, t_ray ray, double len)
+int	find_ligh(t_mlximg img, t_ray ray)
 {
-	double	new_len;
-	double	temp_len;
+	double	len;
 	double	var1;
 	double	var2;
 	t_lst	*lst;
 
 	lst = img.objs;
-	new_len = INT_MAX;
 	while (lst)
 	{
 		if (lst->id == 's')
-			temp_len = get_sp_root(lst->obj, ray);
+			len = get_sp_root(lst->obj, ray);
 		else if (lst->id == 'p')
-			temp_len = get_root_plane(ray, lst->obj);
+			len = get_pl_root(ray, lst->obj);
 		else if (lst->id == 'c')
-			temp_len = get_cy_root(ray, lst->obj, &var1, &var2);
-		if (temp_len != -1 && temp_len < new_len)
-			new_len = temp_len;
+			len = get_cy_root(ray, lst->obj, &var1, &var2);
+		if (len > 0.000001 && len < 1)
+			return (1);
 		lst = lst->next;
 	}
-	return (new_len < len);
+	return (0);
 }
 
 int	main(void)
