@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/04 21:31:44 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/15 17:50:42 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,13 @@ void	free_obj(t_lst *obj)
 
 int	close_mlx(t_mlx *mlx)
 {
+	// free(mlx->img.ligh_rays);
+	// free_obj(mlx->img.objs);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
+	// mlx_destroy_image(mlx->mlx_ptr, mlx->img2.img_ptr);
 	mlx_destroy_display(mlx->mlx_ptr);
 	free(mlx->mlx_ptr);
-	free_obj(mlx->img.objs);
 	exit (0);
 	return (0);
 }
@@ -52,14 +54,27 @@ int	close_mlx(t_mlx *mlx)
 int	init_mlx(t_mlx *mlx)
 {
 	t_mlximg	img;
-	t_simpleimg	img2;
+	// t_simpleimg	img2;
 
+	// exit (0);
 	mlx->mlx_ptr = mlx_init();
 	if (mlx->mlx_ptr == NULL)
-		close_mlx(mlx);
+		close_mlx(mlx);	
+
+	// mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
+	// mlx_destroy_display(mlx->mlx_ptr);
+	// free(mlx->mlx_ptr);
+	// exit (0);
+
 	mlx->mlx_win = mlx_new_window(mlx->mlx_ptr, HGT * AP_RAT, HGT, "minirt");
 	if (mlx->mlx_win == NULL)
 		close_mlx(mlx);
+
+	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
+	mlx_destroy_display(mlx->mlx_ptr);
+	free(mlx->mlx_ptr);
+	exit (0);
+
 	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
 	if (img.img_ptr == NULL)
 		close_mlx(mlx);
@@ -68,16 +83,16 @@ int	init_mlx(t_mlx *mlx)
 	mlx->img = img;
 	if (img.pixel_ptr == NULL)
 		close_mlx(mlx);
-
-	img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
-	if (img2.img_ptr == NULL)
-		close_mlx(mlx);
-	img2.pixel_ptr
-	= mlx_get_data_addr(img2.img_ptr, &img2.bpp, &img2.line_len, &img2.endian);
+	// img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
+	// if (img2.img_ptr == NULL)
+		// close_mlx(mlx);
+	// img2.pixel_ptr
+	// = mlx_get_data_addr(img2.img_ptr, &img2.bpp, &img2.line_len, &img2.endian);
 	mlx->img = img;
-	if (img2.pixel_ptr == NULL)
-		close_mlx(mlx);
-	mlx->img2 = img2;
+	// if (img2.pixel_ptr == NULL)
+		// close_mlx(mlx);
+	// mlx->img2 = img2;
+	close_mlx(mlx);
 	return (0);
 }
 
@@ -238,9 +253,9 @@ t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 	double		len;
 
 	root = get_pl_root(ray, pl);
-	if (root < 0 || root > 100000)
-		return (info.color = -1, info);
 	info = set_obj_info();
+	if (root < 0 || root > 100000)
+		return (info);
 	info.point = point_at(ray, root);
 	pl_light = new_vec(info.point, light->src);
 	root = get_cos(pl->norm, pl_light);
@@ -306,9 +321,9 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	int			sign;
 
 	root = get_sp_root(sp, ray);
-	if (root < 0)
-		return (info.color = -1, info);
 	info = set_obj_info();
+	if (root < 0)
+		return (info);
 	info.point = point_at(ray, root);
 	cp = mult(new_vec(info.point, sp->center), -1 / sp->radius);
 	walk = light;
@@ -418,9 +433,9 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	double		ref;
 
 	root = get_cy_root(ray, cy, &dv, &xv);
-	if (root < 0)
-		return (info.color = -1, info);
 	info = set_obj_info();
+	if (root < 0)
+		return (info);
 	info.point = point_at(ray, root);
 	k = dv * root + xv;
 	center = point_at(cy->ray, k);

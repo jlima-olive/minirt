@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/14 19:19:16 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/15 17:27:52 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,11 @@
 # include "my_libft/libft.h"
 
 # ifndef HGT
-#  define HGT 720.0
+#  define HGT 72.0
 # endif
 
 # ifndef AP_RAT
-#  define AP_RAT (16.0 / 9)
+#  define AP_RAT 1/* (16.0 / 9) */
 # endif
 
 # ifndef FOV
