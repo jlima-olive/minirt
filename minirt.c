@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/16 18:14:44 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/16 18:58:06 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ void	free_obj(t_lst *obj)
 
 int	close_mlx(t_mlx *mlx)
 {
-	// free(mlx->img.ligh_rays);
-	// free_obj(mlx->img.objs);
+	free(mlx->img.ligh_rays);
+	free_obj(mlx->img.objs);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
 	// mlx_destroy_image(mlx->mlx_ptr, mlx->img2.img_ptr);
@@ -60,12 +60,6 @@ int	init_mlx(t_mlx *mlx)
 	mlx->mlx_ptr = mlx_init();
 	if (mlx->mlx_ptr == NULL)
 		close_mlx(mlx);	
-
-	// mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
-	// mlx_destroy_display(mlx->mlx_ptr);
-	// free(mlx->mlx_ptr);
-	// exit (0);
-
 	mlx->mlx_win = mlx_new_window(mlx->mlx_ptr, HGT * AP_RAT, HGT, "minirt");
 	if (mlx->mlx_win == NULL)
 		close_mlx(mlx);
