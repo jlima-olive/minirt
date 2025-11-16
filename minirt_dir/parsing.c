@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/16 18:06:02 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/16 19:19:06 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,45 +52,45 @@ t_lst	*new_lst(void)
 
 void	add_obj(t_mlximg *img, void *obj, char id)
 {
-	t_lst	*walk;
+// 	t_lst	*walk;
 	
-	if (img->objs == NULL)
-	{
-		img->objs = new_lst();
-		if (img->objs)
-		{
-			img->objs->id = id;
-			img->objs->obj = obj;
-		}
-		return ;
-	}
-	walk = img->objs;
-	while (walk->next)
-		walk = walk->next;
-	walk->next = new_lst();
-	if (walk->next)
-	{
-		walk->next->id = id;
-		walk->next->obj = obj;
-	}
+// 	if (img->objs == NULL)
+// 	{
+// 		img->objs = new_lst();
+// 		if (img->objs)
+// 		{
+// 			img->objs->id = id;
+// 			img->objs->obj = obj;
+// 		}
+// 		return ;
+// 	}
+// 	walk = img->objs;
+// 	while (walk->next)
+// 		walk = walk->next;
+// 	walk->next = new_lst();
+// 	if (walk->next)
+// 	{
+// 		walk->next->id = id;
+// 		walk->next->obj = obj;
+// 	}
 }
 
 void	print_obj(t_mlximg *img)
 {
-	t_lst *walk = img->objs;
-
-	printf("here\n");
-	while (walk)
-	{
-		if (walk->id == 's')
-		{
-			printf("id = %c --center(%f, %f, %f)\n", walk->id,
-			((t_sphere *)walk->obj)->center.x,
-			((t_sphere *)walk->obj)->center.y,
-			((t_sphere *)walk->obj)->center.z);
-		}
-		walk = walk->next;
-	}
+	// t_lst *walk = img->objs;
+// 
+	// printf("here\n");
+	// while (walk)
+	// {
+		// if (walk->id == 's')
+		// {
+			// printf("id = %c --center(%f, %f, %f)\n", walk->id,
+			// ((t_sphere *)walk->obj)->center.x,
+			// ((t_sphere *)walk->obj)->center.y,
+			// ((t_sphere *)walk->obj)->center.z);
+		// }
+		// walk = walk->next;
+	// }
 }
 
 t_light	*new_light()

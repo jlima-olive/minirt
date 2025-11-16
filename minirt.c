@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/16 18:58:06 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/16 20:24:02 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,14 @@ void	free_obj(t_lst *obj)
 
 int	close_mlx(t_mlx *mlx)
 {
-	free(mlx->img.ligh_rays);
-	free_obj(mlx->img.objs);
+	// free(mlx->img.ligh_rays);
+	// free_obj(mlx->img.objs);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
 	// mlx_destroy_image(mlx->mlx_ptr, mlx->img2.img_ptr);
 	mlx_destroy_display(mlx->mlx_ptr);
 	free(mlx->mlx_ptr);
+	clean_scene(mlx->img.scene);
 	exit (0);
 	return (0);
 }
@@ -457,18 +458,18 @@ int	get_color( t_mlximg img, double y, t_ray ray)
 {
 	t_objinfo	value;
 	t_objinfo	new_v;
-	t_lst		*lst;
+	t_list		*lst;
 	double		len;
 
 	lst = img.objs;
 	value = set_obj_info();
 	while (lst)
 	{
-		if (lst->id == 's')
+		if (lst->type == SPHERE)
 			new_v = hit_sphere(img, lst->obj, ray, img.ligh_rays);
-		else if (lst->id == 'p')
+		else if (lst->type == PLANE)
 			new_v = hit_plane(img, lst->obj, ray, img.ligh_rays);
-		else if (lst->id == 'c')
+		else if (lst->type == CYLINDER)
 			new_v = hit_cylinder(img, lst->obj, ray, img.ligh_rays);
 		len = vec_len(new_vec(img.camera, new_v.point));
 		if (value.color == -1 || (new_v.color != -1 && len
@@ -666,16 +667,16 @@ int	find_ligh(t_mlximg img, t_ray ray)
 	double	len;
 	double	var1;
 	double	var2;
-	t_lst	*lst;
+	t_list	*lst;
 
 	lst = img.objs;
 	while (lst)
 	{
-		if (lst->id == 's')
+		if (lst->type == SPHERE)
 			len = get_sp_root(lst->obj, ray);
-		else if (lst->id == 'p')
+		else if (lst->type == PLANE)
 			len = get_pl_root(ray, lst->obj);
-		else if (lst->id == 'c')
+		else if (lst->type == CYLINDER)
 			len = get_cy_root(ray, lst->obj, &var1, &var2);
 		if (len > 0.00000001 && len < 0.9999999)
 			return (1);
@@ -792,30 +793,41 @@ void print_scene(const t_scene *scene)
     printf("-----------------------\n");
 }
 
+t_mlximg	add_scene(t_mlximg *img, t_scene scene)
+{
+	img->scene = &scene;
+	img->ambient = scene.ambient->ratio;
+	img->a_color = scene.ambient->color;
+	img->objs = scene.list;
+	img->camera = scene.camera->src;
+	img->ligh_rays = scene.light;
+	scene.list;
+}
+
 int	main(int argc, char **argv)
 {
 	t_mlx	mlx;
 	t_point	camera_center;
 	t_point	pixel;
-/********************************/
 	t_scene	scene;
-
+/********************************/
 	if (!precheck(argc, argv[1]))
 		return (1);
 	init_scene(&scene);
 	parse(argv[1], &scene);
 	print_scene(&scene);
-	clean_scene(&scene);
-	return (0);
+	// clean_scene(&scene);
+	// return (0);
 /*************************************************/
 	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
-	mlx.img = temp_parse(mlx.img);
+	// temp_parse(mlx.img);
 	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
 	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
-	get_objs(&mlx);
+	add_scene(&(mlx.img), scene);
+	// get_objs(&mlx);
 	run_code(&mlx);
 	mlx_loop(mlx.mlx_ptr);
 	close_mlx(&mlx);
