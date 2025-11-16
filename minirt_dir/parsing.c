@@ -6,38 +6,38 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/14 19:28:18 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/16 18:06:02 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minirt.h"
 
-t_sphere *new_sphere(t_point center, double radius, t_rgb color)
+t_sphere *temp_new_sphere(t_point center, double r, t_rgb color)
 {
 	t_sphere *obj;
 
 	obj = malloc(sizeof(t_sphere));
 	obj->center = center;
-	obj->radius = radius;
+	obj->r = r;
 	obj->color = color;
 	return (obj);
 }
 
-t_plane *new_plane(t_mlximg *img, t_point norm, t_point pt, t_rgb color)
+t_plane *new_plane(t_mlximg *img, t_point normal, t_point pt, t_rgb color)
 {
 	t_plane *obj;
 
-	norm = normalize_vec(norm);
+	normal = normalize_vec(normal);
 	obj = malloc(sizeof(t_plane));
 	obj->color = color;
-	if (dot_product(norm, new_vec(pt, img->camera)) <= 0)
-		norm = mult(norm, -1);
-	obj->norm = norm;
+	if (dot_product(normal, new_vec(pt, img->camera)) <= 0)
+		normal = mult(normal, -1);
+	obj->normal = normal;
 	obj->point = pt;
-	obj->a = norm.x;
-	obj->b = norm.y;
-	obj->c = norm.z;
-	obj->d = -norm.x * pt.x -norm.y * pt.y -norm.z * pt.z;
+	obj->a = normal.x;
+	obj->b = normal.y;
+	obj->c = normal.z;
+	obj->d = -normal.x * pt.x -normal.y * pt.y -normal.z * pt.z;
 	return (obj);
 }
 
@@ -142,13 +142,13 @@ void	print_light(t_mlximg *img)
 	}
 }
 
-t_cylidner	*new_cylinder(t_point base, t_vec norm, t_rgb color, double r)
+t_cylinder	*new_cylinder(t_point base, t_vec normal, t_rgb color, double r)
 {
-	t_cylidner *obj;
+	t_cylinder *obj;
 
-	obj = malloc(sizeof(t_cylidner));
+	obj = malloc(sizeof(t_cylinder));
 	obj->ray.ori = base;
-	obj->ray.dir = norm;
+	obj->ray.dir = normal;
 	obj->r = r;
 	obj->color = color;
 	return (obj);
@@ -169,17 +169,17 @@ void get_objs(t_mlx *mlx)
 	// add_light(img, set_class(-1, 0, 2), set_class(1, 1, 1));
 	// print_light(img);
 
-	add_obj(img, new_sphere(set_class(0, 1, 2), 0.5, set_class(0, 0 ,1)), 's');
+	add_obj(img, temp_new_sphere(set_class(0, 1, 2), 0.5, set_class(0, 0 ,1)), 's');
 
-	add_obj(img, new_sphere(set_class(-6, 6, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, new_sphere(set_class(-6, -6, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, new_sphere(set_class(6, 6, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, new_sphere(set_class(6, -6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(-6, 6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(-6, -6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(6, 6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(6, -6, 2), 2, set_class(1, 0, 0)), 's');
 
-	add_obj(img, new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0)), 's');
 
 	// add_obj(img, new_cylinder(set_class(-6, 0, -2), set_class(0, 0, 2), set_class(1, 1, 1), 0.1), 'c');
 	add_obj(img, new_cylinder(set_class(-10, 0, 15), set_class(0, 1, 0), set_class(1, 0, 0), 2), 'c');
