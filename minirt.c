@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/16 18:58:06 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/16 23:46:25 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ t_vec	get_random_vec(double min, double max)
 {
 	t_vec	ret;
 	double	sqrd;
-	double	len;
 
 	while (1)
 	{
@@ -41,7 +40,7 @@ void	free_obj(t_lst *obj)
 int	close_mlx(t_mlx *mlx)
 {
 	free(mlx->img.ligh_rays);
-	free_obj(mlx->img.objs);
+	// free_obj(mlx->img.objs);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
 	// mlx_destroy_image(mlx->mlx_ptr, mlx->img2.img_ptr);
@@ -148,7 +147,7 @@ double	get_pl_root(t_ray ray, t_plane *pl)
 	return (ret);
 }
 
-int	get_color_difu(t_point p, t_vec cp)
+/* int	get_color_difu(t_vec cp)
 {
 	t_vec	ran;
 	double	prod;
@@ -157,9 +156,9 @@ int	get_color_difu(t_point p, t_vec cp)
 	prod = dot_product(ran, cp);
 	ran = mult(ran, (prod >= 0.0) - (prod < 0.0));
 	// return ();
-}
+} */
 
-t_objinfo	proven_hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
+t_objinfo	proven_hit_sphere(t_sphere *sp, t_ray ray, t_light *light)
 {
 	t_objinfo	info;
 	t_vec		oc;
@@ -168,7 +167,6 @@ t_objinfo	proven_hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *ligh
 	double		h;
 	double		c;
 	double		root;
-	double		len;
 
 	info = set_obj_info();
 	oc = sub(sp->center, ray.ori);
@@ -241,10 +239,8 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 {
 	t_vec		pl_light;
-	t_vec		pla;
 	t_objinfo	info;
 	double		root;
-	double		len;
 
 	root = get_pl_root(ray, pl);
 	info = set_obj_info();
@@ -310,9 +306,8 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	t_vec		pl;
 	t_vec		cp;
 	double		root;
-	double		new_root;
-	double		len;
-	int			sign;
+	// double		new_root;
+	// double		len;
 
 	root = get_sp_root(sp, ray);
 	info = set_obj_info();
@@ -324,7 +319,7 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	root = 0;
 	while (walk != NULL)
 	{
-		len = vec_len(new_vec(info.point, light->src));
+		// len = vec_len(new_vec(info.point, light->src));
 		pl =  new_vec(info.point, walk->src);
 		root = get_cos(cp, pl);
 		walk = walk->next;
@@ -344,7 +339,7 @@ double	get_cy_root(t_ray ray, t_cylinder *cy, double *dv, double *xv)
 	double	a;
 	double	b;
 	double	c;
-	double	outside;
+	// double	outside;
 	double	root;
 
 	x = new_vec(ray.ori, cy->ray.ori);
@@ -369,52 +364,52 @@ double	get_k(t_vec dir, t_vec pb)
 	return (dot_product(dir, pb) / square_vec(dir));
 }
 
-float	get_lreflect(t_point pt, t_vec normal, t_vec dir, t_light light)
-{
-	t_ray		ray;
-	t_point		temp;
-	t_vec		lreflect;
-	t_vec		p_light;
-	float		cosv;
-	float		sinv;
-	float		root;
-	t_sphere	sp;
+// float	get_lreflect(t_point pt, t_vec normal, t_vec dir, t_light light)
+// {
+// 	t_ray		ray;
+// 	t_point		temp;
+// 	t_vec		lreflect;
+// 	// t_vec		p_light;
+// 	// float		cosv;
+// 	float		sinv;
+// 	float		root;
+// 	t_sphere	sp;
 
-	ray.ori = pt;
-	ray.dir = dir;
-	temp = point_at(ray, 1);
-	cosv = get_cos(normal, dir);
-	lreflect = mult(dir, -1);
-	if (cosv != 0)
-	{
-		sinv = sqrt(1 - cosv * cosv);
-		temp = add(temp, mult(normal, sinv * 2));
-		lreflect = sub(temp, pt);
-	}
-	p_light = sub(light.src, pt);
-	sp.center = light.src;
-	sp.r = 5.0;
-	ray.ori = pt;
-	ray.dir = lreflect;
-	root = get_sp_root(&sp, ray);
-	if (root <= 0)
-		return (0);
-/********************** */
-	t_point	inter;
-	t_vec	cp;
-	t_light	walk;
+// 	ray.ori = pt;
+// 	ray.dir = dir;
+// 	temp = point_at(ray, 1);
+// 	// cosv = get_cos(normal, dir);
+// 	lreflect = mult(dir, -1);
+// 	// if (cosv != 0)
+// 	// {
+// 		// sinv = sqrt(1 - cosv * cosv);
+// 		// temp = add(temp, mult(normal, sinv * 2));
+// 		// lreflect = sub(temp, pt);
+// 	// }
+// 	// p_light = sub(light.src, pt);
+// 	sp.center = light.src;
+// 	sp.r = 5.0;
+// 	ray.ori = pt;
+// 	ray.dir = lreflect;
+// 	root = get_sp_root(&sp, ray);
+// 	if (root <= 0)
+// 		return (0);
+// /********************** */
+// 	t_point	inter;
+// 	t_vec	cp;
+// 	// t_light	walk;
 
-	inter = point_at(ray, root);
-	cp = mult(new_vec(inter, sp.center), -1 / sp.r);
-	root = get_cos(cp, lreflect);
-	root = (root + 9) / 10;
-/********************** */
-	return (root);
-}
+// 	inter = point_at(ray, root);
+// 	cp = mult(new_vec(inter, sp.center), -1 / sp.r);
+// 	root = get_cos(cp, lreflect);
+// 	root = (root + 9) / 10;
+// /********************** */
+// 	return (root);
+// }
 
 t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
 {
-	t_light		*walk;
+	// t_light		*walk;
 	t_objinfo	info;
 	t_point		center;
 	t_vec		cp;
@@ -424,7 +419,7 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
 	double		dv;
 	double		xv;
 	t_vec		pl_light;
-	double		ref;
+	// double		ref;
 
 	root = get_cy_root(ray, cy, &dv, &xv);
 	info = set_obj_info();
@@ -457,18 +452,18 @@ int	get_color( t_mlximg img, double y, t_ray ray)
 {
 	t_objinfo	value;
 	t_objinfo	new_v;
-	t_lst		*lst;
+	t_list		*lst;
 	double		len;
 
 	lst = img.objs;
 	value = set_obj_info();
 	while (lst)
 	{
-		if (lst->id == 's')
+		if (lst->type == SPHERE)
 			new_v = hit_sphere(img, lst->obj, ray, img.ligh_rays);
-		else if (lst->id == 'p')
+		else if (lst->type == PLANE)
 			new_v = hit_plane(img, lst->obj, ray, img.ligh_rays);
-		else if (lst->id == 'c')
+		else if (lst->type == CYLINDER)
 			new_v = hit_cylinder(img, lst->obj, ray, img.ligh_rays);
 		len = vec_len(new_vec(img.camera, new_v.point));
 		if (value.color == -1 || (new_v.color != -1 && len
@@ -600,14 +595,14 @@ t_ray	get_ray(t_mlximg img, double x, double y)
 {
 	t_ray	ray;
 	t_vec	vp_position;
-	double	cl;
+	// double	cl;
 
 	if (x == 0 && FOV == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, -1))));
 	if (x == img.wdt && FOV == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, 1))));
-	if (FOV > 120)
-		cl = (img.deg - 120) / 60;
+	// if (FOV > 120)
+		// cl = (img.deg - 120) / 60;
 	
 	ray.ori = img.camera;
 	vp_position = add(img.pixel00, mult(img.del_h, x));
@@ -619,8 +614,6 @@ t_ray	get_ray(t_mlximg img, double x, double y)
 t_mlximg temp_parse(t_mlximg img)
 {
 	double	vp_size;
-	double	sinv;
-	double	cosv;
 	t_ray	vec;
 
 	img.camera = set_class(-5.0, 7.5, -10.0);	// done by the temp_parser this is just an example
@@ -666,16 +659,16 @@ int	find_ligh(t_mlximg img, t_ray ray)
 	double	len;
 	double	var1;
 	double	var2;
-	t_lst	*lst;
+	t_list	*lst;
 
 	lst = img.objs;
 	while (lst)
 	{
-		if (lst->id == 's')
+		if (lst->type == SPHERE)
 			len = get_sp_root(lst->obj, ray);
-		else if (lst->id == 'p')
+		else if (lst->type == PLANE)
 			len = get_pl_root(ray, lst->obj);
-		else if (lst->id == 'c')
+		else if (lst->type == CYLINDER)
 			len = get_cy_root(ray, lst->obj, &var1, &var2);
 		if (len > 0.00000001 && len < 0.9999999)
 			return (1);
@@ -795,8 +788,8 @@ void print_scene(const t_scene *scene)
 int	main(int argc, char **argv)
 {
 	t_mlx	mlx;
-	t_point	camera_center;
-	t_point	pixel;
+	// t_point	camera_center;
+	// t_point	pixel;
 /********************************/
 	t_scene	scene;
 
@@ -806,16 +799,16 @@ int	main(int argc, char **argv)
 	parse(argv[1], &scene);
 	print_scene(&scene);
 	clean_scene(&scene);
-	return (0);
+	// return (0);
 /*************************************************/
 	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
 	mlx.img = temp_parse(mlx.img);
+	get_objs(&mlx);
 	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
 	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
-	get_objs(&mlx);
 	run_code(&mlx);
 	mlx_loop(mlx.mlx_ptr);
 	close_mlx(&mlx);

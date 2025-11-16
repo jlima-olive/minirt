@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/16 18:06:02 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/16 23:34:21 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,25 +41,25 @@ t_plane *new_plane(t_mlximg *img, t_point normal, t_point pt, t_rgb color)
 	return (obj);
 }
 
-t_lst	*new_lst(void)
+t_list	*new_list(void)
 {
-	t_lst	*ret;
+	t_list	*ret;
 
-	ret = malloc(sizeof(t_lst));
+	ret = malloc(sizeof(t_list));
 	ret->next = NULL;
 	return (ret);
 }
 
-void	add_obj(t_mlximg *img, void *obj, char id)
+void	add_obj(t_mlximg *img, void *obj, t_obj_type type)
 {
-	t_lst	*walk;
+	t_list	*walk;
 	
 	if (img->objs == NULL)
 	{
-		img->objs = new_lst();
+		img->objs = new_list();
 		if (img->objs)
 		{
-			img->objs->id = id;
+			img->objs->type = type;
 			img->objs->obj = obj;
 		}
 		return ;
@@ -67,27 +67,44 @@ void	add_obj(t_mlximg *img, void *obj, char id)
 	walk = img->objs;
 	while (walk->next)
 		walk = walk->next;
-	walk->next = new_lst();
+	walk->next = new_list();
 	if (walk->next)
 	{
-		walk->next->id = id;
+		walk->next->type = type;
 		walk->next->obj = obj;
 	}
 }
 
 void	print_obj(t_mlximg *img)
 {
-	t_lst *walk = img->objs;
+	t_list *walk = img->objs;
 
 	printf("here\n");
 	while (walk)
 	{
-		if (walk->id == 's')
+		if (walk->type == SPHERE)
 		{
-			printf("id = %c --center(%f, %f, %f)\n", walk->id,
+			printf("\nsphere\n");
+			printf("center(%f, %f, %f)\n",
 			((t_sphere *)walk->obj)->center.x,
 			((t_sphere *)walk->obj)->center.y,
 			((t_sphere *)walk->obj)->center.z);
+		}
+		if (walk->type == CYLINDER)
+		{
+			printf("\ncylinder\n");
+			// printf("type = %c --center(%f, %f, %f)\n", walk->type,
+			// ((t_sphere *)walk->obj)->center.x,
+			// ((t_sphere *)walk->obj)->center.y,
+			// ((t_sphere *)walk->obj)->center.z);
+		}
+		if (walk->type == PLANE)
+		{
+			printf("\nplane\n");
+			// printf("type = %c --center(%f, %f, %f)\n", walk->type,
+			// ((t_sphere *)walk->obj)->center.x,
+			// ((t_sphere *)walk->obj)->center.y,
+			// ((t_sphere *)walk->obj)->center.z);
 		}
 		walk = walk->next;
 	}
@@ -156,7 +173,6 @@ t_cylinder	*new_cylinder(t_point base, t_vec normal, t_rgb color, double r)
 
 void get_objs(t_mlx *mlx)
 {
-	t_lst		*lst;
 	t_mlximg	*img;
 
 	img = &mlx->img;
@@ -169,27 +185,27 @@ void get_objs(t_mlx *mlx)
 	// add_light(img, set_class(-1, 0, 2), set_class(1, 1, 1));
 	// print_light(img);
 
-	add_obj(img, temp_new_sphere(set_class(0, 1, 2), 0.5, set_class(0, 0 ,1)), 's');
+	add_obj(img, temp_new_sphere(set_class(0, 1, 2), 0.5, set_class(0, 0 ,1)), SPHERE);
 
-	add_obj(img, temp_new_sphere(set_class(-6, 6, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, temp_new_sphere(set_class(-6, -6, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, temp_new_sphere(set_class(6, 6, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, temp_new_sphere(set_class(6, -6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(-6, 6, 2), 2, set_class(1, 0, 0)), SPHERE);
+	add_obj(img, temp_new_sphere(set_class(-6, -6, 2), 2, set_class(1, 0, 0)), SPHERE);
+	add_obj(img, temp_new_sphere(set_class(6, 6, 2), 2, set_class(1, 0, 0)), SPHERE);
+	add_obj(img, temp_new_sphere(set_class(6, -6, 2), 2, set_class(1, 0, 0)), SPHERE);
 
-	add_obj(img, temp_new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, temp_new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, temp_new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0)), 's');
-	add_obj(img, temp_new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0)), 's');
+	add_obj(img, temp_new_sphere(set_class(-6, 0, 2), 2, set_class(1, 0, 0)), SPHERE);
+	add_obj(img, temp_new_sphere(set_class(6, 0, 2), 2, set_class(1, 0, 0)), SPHERE);
+	add_obj(img, temp_new_sphere(set_class(0, 6, 2), 2, set_class(1, 0, 0)), SPHERE);
+	add_obj(img, temp_new_sphere(set_class(0, -6, 2), 2, set_class(1, 0, 0)), SPHERE);
 
-	// add_obj(img, new_cylinder(set_class(-6, 0, -2), set_class(0, 0, 2), set_class(1, 1, 1), 0.1), 'c');
-	add_obj(img, new_cylinder(set_class(-10, 0, 15), set_class(0, 1, 0), set_class(1, 0, 0), 2), 'c');
-	add_obj(img, new_cylinder(set_class(10, 0, 15), set_class(0, 1, 0), set_class(0, 1, 0), 2), 'c');
+	// add_obj(img, new_cylinder(set_class(-6, 0, -2), set_class(0, 0, 2), set_class(1, 1, 1), 0.1), CYLINDER);
+	add_obj(img, new_cylinder(set_class(-10, 0, 15), set_class(0, 1, 0), set_class(1, 0, 0), 2), CYLINDER);
+	add_obj(img, new_cylinder(set_class(10, 0, 15), set_class(0, 1, 0), set_class(0, 1, 0), 2), CYLINDER);
 	
-	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, -10, 0), set_class(1, 0, 0)), 'p');
-	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(-15, 0, 0), set_class(1, 1, 0)), 'p');
-	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(20, 0, 0), set_class(1, 1, 0)), 'p');
-	// add_obj(img, new_plane(img, set_class(0, 0, 1), set_class(0, 0, 20), set_class(0, 1, 1)), 'p');
-	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, 20, 0), set_class(0, 1, 1)), 'p');
+	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, -10, 0), set_class(1, 0, 0)), PLANE);
+	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(-15, 0, 0), set_class(1, 1, 0)), PLANE);
+	add_obj(img, new_plane(img, set_class(1, 0, 0), set_class(20, 0, 0), set_class(1, 1, 0)), PLANE);
+	// add_obj(img, new_plane(img, set_class(0, 0, 1), set_class(0, 0, 20), set_class(0, 1, 1)), PLANE);
+	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, 20, 0), set_class(0, 1, 1)), PLANE);
 	print_obj(img);
 	img->ambient = 0.125;
 	// exit(0);

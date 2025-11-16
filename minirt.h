@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/16 18:04:30 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/16 23:26:47 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include "my_libft/libft.h"
 
 # ifndef HGT
-#  define HGT 72.0
+#  define HGT 480.0
 # endif
 
 # ifndef AP_RAT
@@ -84,7 +84,7 @@ typedef struct	s_mlximg
 	double	rad;
 	double	deg;
 	double	wdt;
-	t_lst	*objs;
+	t_list	*objs;
 }	t_mlximg;
 
 typedef struct	s_mlx

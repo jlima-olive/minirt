@@ -37,7 +37,7 @@ PARSE_OBJ =	parse/obj/clean.o \
 			parse/obj/attribute_check.o \
 			parse/obj/attribute_parse.o
 
-# CFLAGS=		-Wall -Wextra -Werror
+CFLAGS=		-Wall -Wextra -Werror
 
 LMX_FLAGS=	-Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz
 
@@ -45,7 +45,7 @@ AR=			ar rcs
 
 all: MLX LIBFT PARSE $(PROJ)
 
-$(PROJ): $(PROJ).c $(NAME)
+$(PROJ): $(PROJ).c $(NAME) minirt.h
 	$(CC) $(CFLAGS) $(PROJ).c $(MLX_ARQ) $(LIBFT_ARQ) $(NAME) $(LMX_FLAGS) $(PARSE_LIB) -o $(PROJ)
 
 $(NAME): $(OBJ_FILES) $(PARSE_OBJ)
