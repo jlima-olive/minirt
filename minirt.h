@@ -6,7 +6,11 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/11/16 20:10:37 by jlima-so         ###   ########.fr       */
+=======
+/*   Updated: 2025/11/16 23:26:47 by jlima-so         ###   ########.fr       */
+>>>>>>> 638f8e3b4a0e3dcd3c0a2ce121342614a7541247
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +28,7 @@
 # include "my_libft/libft.h"
 
 # ifndef HGT
-#  define HGT 72.0
+#  define HGT 480.0
 # endif
 
 # ifndef AP_RAT

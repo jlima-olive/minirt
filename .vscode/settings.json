@@ -9,6 +9,7 @@
         "math.h": "c",
         "libft.h": "c",
         "cmath": "c",
-        "parse.h": "c"
+        "parse.h": "c",
+        "string.h": "c"
     }
 }
