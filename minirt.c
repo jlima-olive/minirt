@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/15 17:50:42 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/16 17:02:03 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,10 @@ int	init_mlx(t_mlx *mlx)
 	if (mlx->mlx_win == NULL)
 		close_mlx(mlx);
 
-	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
-	mlx_destroy_display(mlx->mlx_ptr);
-	free(mlx->mlx_ptr);
-	exit (0);
+	// mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
+	// mlx_destroy_display(mlx->mlx_ptr);
+	// free(mlx->mlx_ptr);
+	// exit (0);
 
 	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
 	if (img.img_ptr == NULL)
@@ -92,7 +92,7 @@ int	init_mlx(t_mlx *mlx)
 	// if (img2.pixel_ptr == NULL)
 		// close_mlx(mlx);
 	// mlx->img2 = img2;
-	close_mlx(mlx);
+	// close_mlx(mlx);
 	return (0);
 }
 
