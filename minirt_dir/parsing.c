@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 16:48:14 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:03:17 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,11 +142,11 @@ void	print_light(t_mlximg *img)
 	}
 }
 
-t_cylidner	*new_cylinder(t_point base, t_vec norm, t_rgb color, double r)
+t_cylinder	*new_cylinder(t_point base, t_vec norm, t_rgb color, double r)
 {
-	t_cylidner *obj;
+	t_cylinder *obj;
 
-	obj = malloc(sizeof(t_cylidner));
+	obj = malloc(sizeof(t_cylinder));
 	obj->ray.ori = base;
 	obj->ray.dir = norm;
 	obj->r = r;

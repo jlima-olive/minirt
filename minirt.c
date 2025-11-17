@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 16:54:22 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:03:17 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -288,7 +288,7 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	return (info);
 }
 
-double	get_cy_root(t_ray ray, t_cylidner *cy, double *dv, double *xv)
+double	get_cy_root(t_ray ray, t_cylinder *cy, double *dv, double *xv)
 {
 	t_vec	x;
 	double	a;
@@ -360,7 +360,7 @@ double	get_k(t_vec dir, t_vec pb)
 // 	return (root);
 // }
 
-t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
+t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
 {
 	t_objinfo	info;
 	t_point		center;

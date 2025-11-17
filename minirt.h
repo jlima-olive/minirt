@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/04 20:36:40 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:03:25 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,13 @@ typedef struct s_plane
 	char	type;
 }	t_plane;
 
-typedef struct s_cylidner
+typedef struct s_cylinder
 {
 	t_rgb	color;
 	t_ray	ray;
 	double	r;
 	char	type;
-}	t_cylidner;
+}	t_cylinder;
 
 typedef struct	s_simpleimg
 {
