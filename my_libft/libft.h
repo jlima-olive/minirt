@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:02:51 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/10/26 18:48:13 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:36:05 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,20 +37,20 @@ typedef struct s_exec
 	int		ind;
 	int		check;
 	char	**mat;
-}				t_exec;
+}	t_exec;
 
 typedef struct s_main
 {
 	int	fd;
 	int	fd2[2];
-	int	id;
+	int	type;
 	int	ind;
 }	t_main;
 
 typedef struct s_pipex
 {
 	int	fd[3];
-	int	id;
+	int	type;
 	int	ind;
 }	t_pipex;
 
@@ -127,22 +127,5 @@ double	ft_max_neg(double a, double b);
 double	ft_min_pos(double a, double b);
 double	ft_deg_to_rad(double	deg);
 double	ft_rad_to_deg(double	rad);
-
-typedef struct s_list
-{
-	void			*content;
-	struct s_list	*next;
-}				t_list;
-
-void	ft_lstadd_front(t_list **lst, t_list *newl);
-void	ft_lstadd_back(t_list **lst, t_list *newl);
-void	ft_lstclear(t_list **lst, void (*del)(void*));
-void	ft_lstiter(t_list *lst, void (*f)(void *));
-t_list	*ft_lstnew(void *content);
-t_list	*ft_lstmap(t_list *lst, void *(*f)(void *),
-			void (*del)(void *));
-t_list	*ft_lstlast(t_list *lst);
-int		ft_lstsize(t_list *lst);
-void	ft_lstdelone(t_list *lst, void (*del)(void*));
 
 #endif
