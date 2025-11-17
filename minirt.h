@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 17:43:51 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:53:38 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,9 @@ int		close_mlx(t_mlx *mlx);
 int			equal(t_point one, t_point two);
 t_point		add(t_point one, t_point two);
 t_point		sub(t_point one, t_point two);
-t_point		mult(t_point point, double a);
 t_point		set_class(double x, double y, double z);
 int			get_rgb(t_point one, double a);
 int			get_rgb_num(double r, double g, double b, double a);
-t_ray		set_ray(t_point origin, t_vec direction);
 t_vec		get_vector(t_mlximg img, double x, double y);
 double		get_cos(t_vec a, t_vec b);
 double		dot_product(t_vec a, t_vec b);

@@ -6,12 +6,12 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 15:02:51 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/11/17 17:36:05 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:52:05 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
+#ifndef MY_LIBFT_H
+# define MY_LIBFT_H
 
 # include <stdlib.h>
 # include <unistd.h>
