@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 17:47:31 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 18:05:11 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,9 +200,9 @@ t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 	double		root;
 
 	root = get_pl_root(ray, pl);
-	if (root < 0 || root > 100000)
-		return (info.color = -1, info);
 	info = set_obj_info();
+	if (root < 0 || root > 100000)
+		return (info);
 	info.point = point_at(ray, root);
 	pl_light = new_vec(info.point, light->src);
 	root = get_cos(pl->normal, pl_light);
@@ -266,9 +266,9 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	// double		len;
 
 	root = get_sp_root(sp, ray);
-	if (root < 0)
-		return (info.color = -1, info);
 	info = set_obj_info();
+	if (root < 0)
+		return (info);
 	info.point = point_at(ray, root);
 	cp = mult(new_vec(info.point, sp->center), -1 / sp->r);
 	walk = light;
@@ -375,9 +375,9 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
 	// double		ref;
 
 	root = get_cy_root(ray, cy, &dv, &xv);
-	if (root < 0)
-		return (info.color = -1, info);
 	info = set_obj_info();
+	if (root < 0)
+		return (info);
 	info.point = point_at(ray, root);
 	k = dv * root + xv;
 	center = point_at(cy->ray, k);
