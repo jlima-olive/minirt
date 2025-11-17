@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 17:35:27 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:43:51 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include "parse/parse.h"
 
 # ifndef HGT
-#  define HGT 720.0
+#  define HGT 72.0
 # endif
 
 # ifndef AP_RAT

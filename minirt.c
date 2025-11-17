@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 17:37:56 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 17:47:31 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,12 @@ void	free_obj(t_list *obj)
 int	close_mlx(t_mlx *mlx)
 {
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
+	// mlx_destroy_image(mlx->mlx_ptr, mlx->img2.img_ptr);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
 	mlx_destroy_display(mlx->mlx_ptr);
-	free(mlx->mlx_ptr);
 	free_obj(mlx->img.objs);
+	free(mlx->mlx_ptr);
+	free(mlx->img.ligh_rays);
 	exit (0);
 	return (0);
 }
@@ -51,7 +53,7 @@ int	close_mlx(t_mlx *mlx)
 int	init_mlx(t_mlx *mlx)
 {
 	t_mlximg	img;
-	t_simpleimg	img2;
+	// t_simpleimg	img2;
 
 	mlx->mlx_ptr = mlx_init();
 	if (mlx->mlx_ptr == NULL)
@@ -67,15 +69,15 @@ int	init_mlx(t_mlx *mlx)
 	mlx->img = img;
 	if (img.pixel_ptr == NULL)
 		close_mlx(mlx);
-	img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
-	if (img2.img_ptr == NULL)
-		close_mlx(mlx);
-	img2.pixel_ptr
-	= mlx_get_data_addr(img2.img_ptr, &img2.bpp, &img2.line_len, &img2.endian);
+	// img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
+	// if (img2.img_ptr == NULL)
+		// close_mlx(mlx);
+	// img2.pixel_ptr
+	// = mlx_get_data_addr(img2.img_ptr, &img2.bpp, &img2.line_len, &img2.endian);
 	mlx->img = img;
-	if (img2.pixel_ptr == NULL)
-		close_mlx(mlx);
-	mlx->img2 = img2;
+	// if (img2.pixel_ptr == NULL)
+		// close_mlx(mlx);
+	// mlx->img2 = img2;
 	return (0);
 }
 
