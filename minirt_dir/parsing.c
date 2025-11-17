@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/04 21:13:17 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 16:48:14 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,6 @@ t_cylidner	*new_cylinder(t_point base, t_vec norm, t_rgb color, double r)
 
 void get_objs(t_mlx *mlx)
 {
-	t_lst		*lst;
 	t_mlximg	*img;
 
 	img = &mlx->img;

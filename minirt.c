@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/04 21:07:56 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 16:54:22 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ t_vec	get_random_vec(double min, double max)
 {
 	t_vec	ret;
 	double	sqrd;
-	double	len;
 
 	while (1)
 	{
@@ -139,52 +138,16 @@ double	get_pl_root(t_ray ray, t_plane *pl)
 	return (ret);
 }
 
-int	get_color_difu(t_point p, t_vec cp)
-{
-	t_vec	ran;
-	double	prod;
+// int	get_color_difu(t_vec cp)
+// {
+// 	t_vec	ran;
+// 	double	prod;
 
-	ran = get_random_vec(0, 1);
-	prod = dot_product(ran, cp);
-	ran = mult(ran, (prod >= 0.0) - (prod < 0.0));
-	// return ();
-}
-
-t_objinfo	proven_hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
-{
-	t_objinfo	info;
-	t_vec		oc;
-	t_vec		cp;
-	double		a;
-	double		h;
-	double		c;
-	double		root;
-	double		len;
-
-	info = set_obj_info();
-	oc = sub(sp->center, ray.ori);
-	a = dot_product(ray.dir, ray.dir);
-	h = dot_product(ray.dir, oc);
-	c = dot_product(oc, oc) - (sp->radius * sp->radius);
-	root = proven_get_root(a, h, c);
-	if (root < 0)
-		return (info);
-	info.point = point_at(ray, root);
-	cp = mult(new_vec(info.point, sp->center), -1 / sp->radius);
-	a = get_cos(cp, new_vec(info.point, light->src));
-	// a = (a + 1) / 2;
-	a = a * a ;
-	// len = vec_len(new_vec(info.point, light->src));
-	// a = a / len / len * 100;
-	if (a > 1)
-		a = 1;
-	info.inside = dot_product(ray.dir, new_vec(info.point, sp->center)) > 0;
-	// printf("%d\n", info.inside);
-	// info.color = get_rgb(sp->color, a);
-	info.color = get_rgb_num(1, 1, 1, a);
-	// info.color = get_color_difu(info.point, cp);
-	return (info);
-}
+// 	ran = get_random_vec(0, 1);
+// 	prod = dot_product(ran, cp);
+// 	ran = mult(ran, (prod >= 0.0) - (prod < 0.0));
+// 	// return ();
+// }
 
 t_objinfo	my_sphere_render1(t_sphere *sp, t_ray ray, t_vec light)
 {
@@ -232,10 +195,8 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 {
 	t_vec		pl_light;
-	t_vec		pla;
 	t_objinfo	info;
 	double		root;
-	double		len;
 
 	root = get_pl_root(ray, pl);
 	if (root < 0 || root > 100000)
@@ -301,9 +262,7 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	t_vec		pl;
 	t_vec		cp;
 	double		root;
-	double		new_root;
-	double		len;
-	int			sign;
+	// double		len;
 
 	root = get_sp_root(sp, ray);
 	if (root < 0)
@@ -315,7 +274,7 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	root = 0;
 	while (walk != NULL)
 	{
-		len = vec_len(new_vec(info.point, light->src));
+		// len = vec_len(new_vec(info.point, light->src));
 		pl =  new_vec(info.point, walk->src);
 		root = get_cos(cp, pl);
 		walk = walk->next;
@@ -335,7 +294,6 @@ double	get_cy_root(t_ray ray, t_cylidner *cy, double *dv, double *xv)
 	double	a;
 	double	b;
 	double	c;
-	double	outside;
 	double	root;
 
 	x = new_vec(ray.ori, cy->ray.ori);
@@ -360,52 +318,50 @@ double	get_k(t_vec dir, t_vec pb)
 	return (dot_product(dir, pb) / square_vec(dir));
 }
 
-float	get_lreflect(t_point pt, t_vec norm, t_vec dir, t_light light)
-{
-	t_ray		ray;
-	t_point		temp;
-	t_vec		lreflect;
-	t_vec		p_light;
-	float		cosv;
-	float		sinv;
-	float		root;
-	t_sphere	sp;
+// float	get_lreflect(t_point pt, t_vec norm, t_vec dir, t_light light)
+// {
+// 	t_ray		ray;
+// 	// t_point		temp;
+// 	t_vec		lreflect;
+// 	// t_vec		p_light;
+// 	// float		cosv;
+// 	// float		sinv;
+// 	float		root;
+// 	t_sphere	sp;
 
-	ray.ori = pt;
-	ray.dir = dir;
-	temp = point_at(ray, 1);
-	cosv = get_cos(norm, dir);
-	lreflect = mult(dir, -1);
-	if (cosv != 0)
-	{
-		sinv = sqrt(1 - cosv * cosv);
-		temp = add(temp, mult(norm, sinv * 2));
-		lreflect = sub(temp, pt);
-	}
-	p_light = sub(light.src, pt);
-	sp.center = light.src;
-	sp.radius = 5.0;
-	ray.ori = pt;
-	ray.dir = lreflect;
-	root = get_sp_root(&sp, ray);
-	if (root <= 0)
-		return (0);
-/********************** */
-	t_point	inter;
-	t_vec	cp;
-	t_light	walk;
+// 	ray.ori = pt;
+// 	ray.dir = dir;
+// 	// temp = point_at(ray, 1);
+// 	// cosv = get_cos(norm, dir);
+// 	lreflect = mult(dir, -1);
+// 	// if (cosv != 0)
+// 	// {
+// 		// sinv = sqrt(1 - cosv * cosv);
+// 		// temp = add(temp, mult(norm, sinv * 2));
+// 		// lreflect = sub(temp, pt);
+// 	// }
+// 	// p_light = sub(light.src, pt);
+// 	sp.center = light.src;
+// 	sp.radius = 5.0;
+// 	ray.ori = pt;
+// 	ray.dir = lreflect;
+// 	root = get_sp_root(&sp, ray);
+// 	if (root <= 0)
+// 		return (0);
+// /********************** */
+// 	t_point	inter;
+// 	t_vec	cp;
 
-	inter = point_at(ray, root);
-	cp = mult(new_vec(inter, sp.center), -1 / sp.radius);
-	root = get_cos(cp, lreflect);
-	root = (root + 9) / 10;
-/********************** */
-	return (root);
-}
+// 	inter = point_at(ray, root);
+// 	cp = mult(new_vec(inter, sp.center), -1 / sp.radius);
+// 	root = get_cos(cp, lreflect);
+// 	root = (root + 9) / 10;
+// /********************** */
+// 	return (root);
+// }
 
 t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 {
-	t_light		*walk;
 	t_objinfo	info;
 	t_point		center;
 	t_vec		cp;
@@ -415,7 +371,7 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylidner *cy, t_ray ray, t_light *light)
 	double		dv;
 	double		xv;
 	t_vec		pl_light;
-	double		ref;
+	// double		ref;
 
 	root = get_cy_root(ray, cy, &dv, &xv);
 	if (root < 0)
@@ -591,15 +547,14 @@ t_ray	get_ray(t_mlximg img, double x, double y)
 {
 	t_ray	ray;
 	t_vec	vp_position;
-	double	cl;
+	// double	cl;
 
 	if (x == 0 && FOV == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, -1))));
 	if (x == img.wdt && FOV == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, 1))));
-	if (FOV > 120)
-		cl = (img.deg - 120) / 60;
-	
+	// if (FOV > 120)
+		// cl = (img.deg - 120) / 60;
 	ray.ori = img.camera;
 	vp_position = add(img.pixel00, mult(img.del_h, x));
 	vp_position = add(vp_position, mult(img.del_v, y));
@@ -610,8 +565,7 @@ t_ray	get_ray(t_mlximg img, double x, double y)
 t_mlximg parse(t_mlximg img)
 {
 	double	vp_size;
-	double	sinv;
-	double	cosv;
+	// double	sinv;
 	t_ray	vec;
 
 	img.camera = set_class(-5.0, 7.5, -10.0);	// done by the parser this is just an example
@@ -678,8 +632,6 @@ int	find_ligh(t_mlximg img, t_ray ray)
 int	main(void)
 {
 	t_mlx	mlx;
-	t_point	camera_center;
-	t_point	pixel;
 
 	init_var(&mlx);
 	if (init_mlx(&mlx))
