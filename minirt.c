@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 21:19:27 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 21:57:52 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,12 @@ void	free_obj(t_list *obj)
 
 int	close_mlx(t_mlx *mlx)
 {
+	clean_scene(mlx->img.scene);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
 	// mlx_destroy_image(mlx->mlx_ptr, mlx->img2.img_ptr);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
 	mlx_destroy_display(mlx->mlx_ptr);
-	free_obj(mlx->img.objs);
 	free(mlx->mlx_ptr);
-	free(mlx->img.ligh_rays);
 	exit (0);
 	return (0);
 }
@@ -757,26 +756,20 @@ void	connect_parse(t_mlximg *img, t_scene scene)
 int	main(int argc, char **argv)
 {
 	t_mlx	mlx;
-
-///////////
 	t_scene	scene;
 
 	if (!precheck(argc, argv[1]))
 		return (1);
 	init_scene(&scene);
 	parse(argv[1], &scene);
-	// clean_scene(&scene);
-	// return (0);
-///////////
 	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
 	connect_parse(&(mlx.img), scene);
 	mlx.img = aux_parse(mlx.img);
 	mlx.img.scene = &scene;
-	// get_objs(&mlx);
 	scene.list = mlx.img.objs;
-	print_scene(mlx.img.scene);
+	// print_scene(mlx.img.scene);
 	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
 	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
