@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 22:03:51 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 23:08:13 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,23 @@ t_vec	get_op_redirections1(t_vec vec, t_vec op)
 	return (ret);
 }
 
+t_rgb	get_negative_color(t_rgb color)
+{
+	return (set_class(1 - color.x, 1 - color.y, 1 - color.z));
+}
+
+int	get_true_rgb(t_mlximg img, t_rgb color, float root)
+{
+	t_rgb	ref;
+
+	ref = get_negative_color(color);
+	ref = sub(img.ligh_rays->color, ref);
+	ref.x = (ref.x > 0) * ref.x;
+	ref.y = (ref.y > 0) * ref.y;
+	ref.z = (ref.z > 0) * ref.z;
+	return (get_rgb(ref, root));
+}
+
 t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 {
 	t_vec		pl_light;
@@ -211,7 +228,7 @@ t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 	ray = set_ray(info.point, mult(pl_light, -1));
 	if (find_ligh(img, ray))
 		root = img.ambient;
-	info.color = get_rgb(pl->color, root * img.ligh_rays->brightness);
+	info.color = get_true_rgb(img, pl->color, root * img.ligh_rays->brightness);
 	return (info);
 }
 
@@ -282,7 +299,7 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	ray = set_ray(info.point, mult(pl, -1));
 	if (find_ligh(img, ray))
 		root = img.ambient;
-	info.color = get_rgb(sp->color, root * img.ligh_rays->brightness);
+	info.color = get_true_rgb(img, sp->color, root * img.ligh_rays->brightness);
 	return (info);
 }
 
@@ -363,13 +380,11 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
 	t_objinfo	info;
 	t_point		center;
 	t_vec		cp;
-	t_rgb		color;
 	double		root;
 	double		k;
 	double		dv;
 	double		xv;
 	t_vec		pl_light;
-	// double		ref;
 
 	root = get_cy_root(ray, cy, &dv, &xv);
 	info = set_obj_info();
@@ -380,21 +395,13 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
 	center = point_at(cy->ray, k);
 	cp = new_vec(info.point, center);
 	pl_light = new_vec(light->src, info.point);
-	// ref = get_lreflect(info.point, cp, ray.dir, *light);
 	root = get_cos(pl_light, cp);
 	if (root < img.ambient)
 		root = img.ambient;
-	// root = 1 * (root > 1) + img.ambient * (root < img.ambient) + root * (root > 0 && root < 1);
-	color = cy->color;
-	// if (ref)
-	// {
-		// color = light->color;
-		// root = ref;
-	// }
 	ray = set_ray(info.point, mult(pl_light, 1));
 	if (find_ligh(img, ray))
 		root = img.ambient;
-	info.color = get_rgb(color, root * img.ligh_rays->brightness);
+	info.color = get_true_rgb(img, cy->color, root * img.ligh_rays->brightness);
 	return (info); 
 }
 
@@ -758,6 +765,7 @@ int	main(int argc, char **argv)
 		return (1);
 	init_scene(&scene);
 	parse(argv[1], &scene);
+	print_scene(&scene);
 	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
