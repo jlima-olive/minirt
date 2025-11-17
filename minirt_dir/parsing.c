@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/13 15:40:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 17:37:25 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 18:33:55 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,6 @@ void get_objs(t_mlx *mlx)
 	// add_obj(img, new_plane(img, set_class(0, 0, 1), set_class(0, 0, 20), set_class(0, 1, 1)), PLANE);
 	add_obj(img, new_plane(img, set_class(0, 1, 0), set_class(0, 20, 0), set_class(0, 1, 1)), PLANE);
 	print_obj(img);
-	img->ambient = 0.1;
+	img->ambient = 0.125;
 	// exit(0);
 }
