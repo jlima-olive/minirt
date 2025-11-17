@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 22:04:21 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 23:44:53 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct	s_mlximg
 	int		endian;
 	int		line_len;
 	double	ambient;
+	t_rgb	a_color;
 	void	*img_ptr;
 	char	*pixel_ptr;
 	t_point	camera;

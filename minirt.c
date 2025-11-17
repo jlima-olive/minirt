@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 23:08:13 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 23:58:21 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,12 +200,11 @@ t_rgb	get_negative_color(t_rgb color)
 int	get_true_rgb(t_mlximg img, t_rgb color, float root)
 {
 	t_rgb	ref;
+	// double	temp;
 
 	ref = get_negative_color(color);
 	ref = sub(img.ligh_rays->color, ref);
 	ref.x = (ref.x > 0) * ref.x;
-	ref.y = (ref.y > 0) * ref.y;
-	ref.z = (ref.z > 0) * ref.z;
 	return (get_rgb(ref, root));
 }
 
@@ -222,12 +221,12 @@ t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 	info.point = point_at(ray, root);
 	pl_light = new_vec(info.point, light->src);
 	root = get_cos(pl->normal, pl_light);
-	if (root < img.ambient)
-		root = img.ambient;
-	// root = 1 * (root > 1) + img.ambient * (root < img.ambient) + root * (root > 0 && root < 1);
+	if (root < 0)
+		root = 0;
+	// root = 1 * (root > 1) + 0 * (root < 0) + root * (root > 0 && root < 1);
 	ray = set_ray(info.point, mult(pl_light, -1));
 	if (find_ligh(img, ray))
-		root = img.ambient;
+		root = 0;
 	info.color = get_true_rgb(img, pl->color, root * img.ligh_rays->brightness);
 	return (info);
 }
@@ -294,11 +293,11 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 		root = get_cos(cp, pl);
 		walk = walk->next;
 	}
-	if (root < img.ambient)
-		root = img.ambient;
+	if (root < 0)
+		root = 0;
 	ray = set_ray(info.point, mult(pl, -1));
 	if (find_ligh(img, ray))
-		root = img.ambient;
+		root = 0;
 	info.color = get_true_rgb(img, sp->color, root * img.ligh_rays->brightness);
 	return (info);
 }
@@ -396,11 +395,11 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
 	cp = new_vec(info.point, center);
 	pl_light = new_vec(light->src, info.point);
 	root = get_cos(pl_light, cp);
-	if (root < img.ambient)
-		root = img.ambient;
+	if (root < 0)
+		root = 0;
 	ray = set_ray(info.point, mult(pl_light, 1));
 	if (find_ligh(img, ray))
-		root = img.ambient;
+		root = 0;
 	info.color = get_true_rgb(img, cy->color, root * img.ligh_rays->brightness);
 	return (info); 
 }
@@ -749,7 +748,7 @@ static void	init_scene(t_scene *scene)
 void	connect_parse(t_mlximg *img, t_scene scene)
 {
 	img->ambient = scene.ambient->ratio;
-	//  scene.ambient->color
+	img->a_color = scene.ambient->color;
 	img->camera = scene.camera->src;
 	img->ori_vec = scene.camera->dir;
 	img->ligh_rays = scene.light;
