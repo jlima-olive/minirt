@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 21:57:52 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 22:03:51 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 	ray = set_ray(info.point, mult(pl_light, -1));
 	if (find_ligh(img, ray))
 		root = img.ambient;
-	info.color = get_rgb(pl->color, root);
+	info.color = get_rgb(pl->color, root * img.ligh_rays->brightness);
 	return (info);
 }
 
@@ -282,7 +282,7 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	ray = set_ray(info.point, mult(pl, -1));
 	if (find_ligh(img, ray))
 		root = img.ambient;
-	info.color = get_rgb(sp->color, root);
+	info.color = get_rgb(sp->color, root * img.ligh_rays->brightness);
 	return (info);
 }
 
@@ -394,7 +394,7 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
 	ray = set_ray(info.point, mult(pl_light, 1));
 	if (find_ligh(img, ray))
 		root = img.ambient;
-	info.color = get_rgb(color, root);
+	info.color = get_rgb(color, root * img.ligh_rays->brightness);
 	return (info); 
 }
 
@@ -414,11 +414,7 @@ int	get_color( t_mlximg img, double y, t_ray ray)
 		else if (lst->type == PLANE)
 			new_v = hit_plane(img, lst->obj, ray, img.ligh_rays);
 		else if (lst->type == CYLINDER)
-		{
 			new_v = hit_cylinder(img, lst->obj, ray, img.ligh_rays);
-			// printf("it went in\n");
-			// fflush(stdout);
-		}
 		len = vec_len(new_vec(img.camera, new_v.point));
 		if (value.color == -1 || (new_v.color != -1 && len
 			< vec_len(new_vec(img.camera, value.point))))
@@ -746,7 +742,7 @@ static void	init_scene(t_scene *scene)
 void	connect_parse(t_mlximg *img, t_scene scene)
 {
 	img->ambient = scene.ambient->ratio;
-	// scene.ambient->color
+	//  scene.ambient->color
 	img->camera = scene.camera->src;
 	img->ori_vec = scene.camera->dir;
 	img->ligh_rays = scene.light;
@@ -769,7 +765,6 @@ int	main(int argc, char **argv)
 	mlx.img = aux_parse(mlx.img);
 	mlx.img.scene = &scene;
 	scene.list = mlx.img.objs;
-	// print_scene(mlx.img.scene);
 	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
 	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
