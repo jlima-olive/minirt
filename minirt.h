@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 18:06:15 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 19:28:06 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ typedef struct	s_mlximg
 	double	deg;
 	double	wdt;
 	t_list	*objs;
+	t_scene	*scene;
 }	t_mlximg;
 
 typedef struct	s_mlx

@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 18:33:17 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/17 20:17:03 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,7 +263,6 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	t_vec		pl;
 	t_vec		cp;
 	double		root;
-	// double		len;
 
 	root = get_sp_root(sp, ray);
 	info = set_obj_info();
@@ -275,7 +274,6 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 	root = 0;
 	while (walk != NULL)
 	{
-		// len = vec_len(new_vec(info.point, light->src));
 		pl =  new_vec(info.point, walk->src);
 		root = get_cos(cp, pl);
 		walk = walk->next;
@@ -417,7 +415,11 @@ int	get_color( t_mlximg img, double y, t_ray ray)
 		else if (lst->type == PLANE)
 			new_v = hit_plane(img, lst->obj, ray, img.ligh_rays);
 		else if (lst->type == CYLINDER)
+		{
 			new_v = hit_cylinder(img, lst->obj, ray, img.ligh_rays);
+			// printf("it went in\n");
+			// fflush(stdout);
+		}
 		len = vec_len(new_vec(img.camera, new_v.point));
 		if (value.color == -1 || (new_v.color != -1 && len
 			< vec_len(new_vec(img.camera, value.point))))
@@ -569,8 +571,8 @@ t_mlximg aux_parse(t_mlximg img)
 	// double	sinv;
 	t_ray	vec;
 
-	img.camera = set_class(-5.0, 7.5, -10.0);	// done by the aux_parser this is just an example
-	img.ori_vec = set_class(1.0, -1.0, 1);		// done by the aux_parser this is just an example
+	// img.camera = set_class(-5.0, 7.5, -10.0);	// done by the aux_parser this is just an example
+	// img.ori_vec = set_class(1.0, -1.0, 1);		// done by the aux_parser this is just an example
 	img.wdt = HGT * AP_RAT;
 	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
 	img.rad = ft_deg_to_rad(img.deg);
@@ -707,16 +709,19 @@ void print_scene(const t_scene *scene)
         		print_vec(&pl->normal);
             printf("\n  Color: ");
             print_color(&pl->color);
-            printf("\n  Material: %d\n", pl->material);
+            printf("\n  a: %f\n", pl->a);
+            printf("  b: %f\n", pl->b);
+            printf("  c: %f\n", pl->c);
+            printf("  d: %f\n", pl->d);
         }
 		if (node->type == CYLINDER)
 		{
 			t_cylinder *cy = node->obj;
 			printf("Cylinder:\n");
 			printf("  Center: ");
-			print_vec(&cy->center);
+			print_vec(&cy->ray.ori);
 			printf("\n  Axis: ");
-			print_vec(&cy->axis);
+			print_vec(&cy->ray.dir);
 			printf("\n  r: %.3f\n", cy->r);
 			printf("  Height: %.3f\n", cy->height);
 			printf("  Color: ");
@@ -739,29 +744,42 @@ static void	init_scene(t_scene *scene)
 	scene->n_objects = 0;
 }
 
+void	connect_parse(t_mlximg *img, t_scene scene)
+{
+	img->ambient = scene.ambient->ratio;
+	// scene.ambient->color
+	img->camera = scene.camera->src;
+	img->ori_vec = scene.camera->dir;
+	img->ligh_rays = scene.light;
+	img->objs = scene.list;
+}
+
 int	main(int argc, char **argv)
 {
 	t_mlx	mlx;
 
-////////
+///////////
 	t_scene	scene;
 
 	if (!precheck(argc, argv[1]))
 		return (1);
 	init_scene(&scene);
 	parse(argv[1], &scene);
-	print_scene(&scene);
-	clean_scene(&scene);
-	return (0);
+	// clean_scene(&scene);
+	// return (0);
 ///////////
 	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
+	connect_parse(&(mlx.img), scene);
 	mlx.img = aux_parse(mlx.img);
+	mlx.img.scene = &scene;
+	// get_objs(&mlx);
+	scene.list = mlx.img.objs;
+	print_scene(mlx.img.scene);
 	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
 	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
-	get_objs(&mlx);
 	run_code(&mlx);
 	mlx_loop(mlx.mlx_ptr);
 	close_mlx(&mlx);

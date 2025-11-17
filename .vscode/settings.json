@@ -8,6 +8,7 @@
         "random": "c",
         "math.h": "c",
         "libft.h": "c",
-        "cmath": "c"
+        "cmath": "c",
+        "parse.h": "c"
     }
 }
