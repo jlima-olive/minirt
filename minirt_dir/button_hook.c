@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   button_hook.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 09:24:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/10 09:46:54 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:41:34 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minirt.h"
 
-int my_button_hook(int key, t_mlx *mlx)
+int	my_button_hook(int key, t_mlx *mlx)
 {
 	if (key == XK_Escape)
 		close_mlx(mlx);

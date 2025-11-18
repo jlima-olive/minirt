@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 12:04:22 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/18 16:35:36 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:43:48 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static int	parse_cylinder_material(char *line, int *i, t_cylinder *cy)
 	return (0);
 }
 
-static int	parse_cylinder_body(char *line, t_cylinder *cy, int ind)
+static int	parse_cylinder_body(char *line, t_cylinder *cy, int i)
 {
 	while (ft_isspace(line[i]))
 		i++;

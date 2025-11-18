@@ -6,13 +6,13 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 16:11:01 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/11/18 16:11:14 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:41:19 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minirt.h"
 
-t_rgb	decompose_color(unsigned color)
+t_rgb	decompose_color(unsigned int color)
 {
 	t_rgb	ret;
 

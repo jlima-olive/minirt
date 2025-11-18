@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 11:35:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/18 15:38:27 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:40:50 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_point	add(t_point one, t_point two)
 {
-	t_point ret;
+	t_point	ret;
 
 	ret.x = one.x + two.x;
 	ret.y = one.y + two.y;
@@ -24,7 +24,7 @@ t_point	add(t_point one, t_point two)
 
 t_point	sub(t_point one, t_point two)
 {
-	t_point ret;
+	t_point	ret;
 
 	ret.x = one.x - two.x;
 	ret.y = one.y - two.y;

@@ -6,13 +6,13 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 11:24:34 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/18 16:39:21 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:43:32 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minirt.h"
 
-static int	parse_plane_body(char *line, t_plane *pl, t_scene *scene, int ind)
+static int	parse_plane_body(char *line, t_plane *pl, t_scene *scene, int i)
 {
 	while (ft_isspace(line[i]))
 		i++;
