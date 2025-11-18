@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_sphere.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
+/*   By: psantos- <psantos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 10:35:26 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/17 20:23:01 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:20:40 by psantos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,6 @@ static int	parse_sphere_body(char *line, t_sphere *sp)
 	if (!is_valid_rgb(line + i))
 		return (write(2, "Error\nsp: invalid color\n", 25), 1);
 	parse_color(line, &i, &sp->color);
-	sp->color = mult(sp->color, 1.0 / 255);
-	if (line[i] && line[i] != '\n')
-	{
-		if (!is_valid_int(line + i, 0, 2))
-			return (write(2, "Error\nsp: invalid material\n", 28), 1);
-		sp->material = (t_material)parse_int(line, &i);
-	}
-	else
-		sp->material = DEFAULT;
-	return (0);
 }
 
 int	parse_sphere(char *line, t_scene *scene)

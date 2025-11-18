@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_ambient.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
+/*   By: psantos- <psantos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:57:31 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/17 23:09:40 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:13:03 by psantos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,5 @@ int	parse_ambient(char *line, t_scene *scene)
 	if (!scene->ambient)
 		return (perror("malloc"), 1);
 	scene->ambient->ratio = ratio;
-	scene->ambient->color = mult(color, 1.0 / 255);
 	return (0);
 }

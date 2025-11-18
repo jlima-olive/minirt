@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ../minirt.h                                            :+:      :+:    :+:   */
+/*   parse.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
+/*   By: psantos- <psantos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 18:46:49 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/17 18:31:27 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:20:01 by psantos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,17 @@ typedef struct s_counts
 
 //helper structs
 
-typedef struct	s_vec
+typedef struct s_vec
 {
 	double	x;
 	double	y;
 	double	z;
-} t_vec;
+}	t_vec;
 
 typedef t_vec	t_rgb;
 typedef t_vec	t_point;
 
-typedef struct	s_ray
+typedef struct s_ray
 {
 	t_point	ori;
 	t_vec	dir;
@@ -68,19 +68,11 @@ typedef struct s_light
 }	t_light;
 
 //shape structs
-typedef enum s_material
-{
-	DEFAULT,
-	GLASS,
-	MIRROR
-}	t_material;
-
 typedef struct s_sphere
 {
 	t_vec		center;
 	float		r;
 	t_rgb		color;
-	t_material	material;
 }	t_sphere;
 
 typedef struct s_plane
@@ -88,7 +80,6 @@ typedef struct s_plane
 	t_vec		point;
 	t_vec		normal;
 	t_rgb		color;
-	t_material	material;
 	double		a;
 	double		b;
 	double		c;
@@ -103,7 +94,6 @@ typedef struct s_cylidner
 	float		r;
 	float		height;
 	t_rgb		color;
-	t_material	material;
 }	t_cylinder;
 
 //shapes list
@@ -167,5 +157,5 @@ int		parse_sphere(char *line, t_scene *scene);
 int		parse_plane(char *line, t_scene *scene);
 int		parse_cylinder(char *line, t_scene *scene);
 
-t_ray		set_ray(t_point origin, t_vec direction);
-t_point		mult(t_point point, double a);
+t_ray	set_ray(t_point origin, t_vec direction);
+t_point	mult(t_point point, double a);
