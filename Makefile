@@ -63,13 +63,11 @@ $(MLX_DIR):
 
 clean:
 	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) $(PROJ)
-	$(MAKE) -C $(MLX_DIR) clean
 	$(MAKE) -C $(LIBFT_DIR) clean
 	$(MAKE) -C parse clean
 
 fclean:
 	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) $(PROJ)
-	$(MAKE) -C $(MLX_DIR) clean
 	$(MAKE) -C $(LIBFT_DIR) fclean
 	$(MAKE) -C parse fclean
 
