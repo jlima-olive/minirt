@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/18 00:25:30 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:12:15 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,5 +120,25 @@ t_ray		get_ray(t_mlximg img, double x, double y);
 t_vec		new_vec(t_point a, t_point b);
 double		div_product(t_vec a, t_vec b);
 int			find_ligh(t_mlximg img, t_ray ray);
+
+double	get_cy_root(t_ray ray, t_cylinder *cy, double *dv, double *xv);
+double	get_sp_root(t_sphere *sp, t_ray ray);
+double	get_pl_root(t_ray ray, t_plane *pl);
+
+t_objinfo	set_obj_info(void);
+
+t_point	point_at(t_ray ray, double t);
+
+int	get_true_rgb(t_mlximg img, t_rgb color, float root);
+
+void	render(int x, int y, t_mlximg img);
+
+t_rgb	get_negative_color(t_rgb color);
+
+void	connect_parse(t_mlximg *img, t_scene scene);
+
+t_mlximg	aux_parse(t_mlximg img);
+
+void	run_code(t_mlx *mlx);
 
 #endif

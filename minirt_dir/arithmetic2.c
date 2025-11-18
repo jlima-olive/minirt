@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 15:38:28 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/11/18 15:39:08 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 15:49:35 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,9 @@ double	dot_product(t_vec a, t_vec b)
 double	div_product(t_vec a, t_vec b)
 {
 	return (a.x / b.x + a.y / b.y + a.z / b.z);
+}
+
+t_point	point_at(t_ray ray, double t)
+{
+	return (add(ray.ori, mult(ray.dir, t)));
 }

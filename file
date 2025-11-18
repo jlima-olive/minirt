@@ -1,0 +1,284 @@
+
+ft_abs.o:
+0000000000000000 T ft_abs
+
+ft_abs_strcmp.o:
+0000000000000000 T ft_abs_strcmp
+
+ft_atoi.o:
+0000000000000000 T ft_atoi
+
+ft_atol.o:
+0000000000000000 T ft_atol
+
+ft_bzero.o:
+0000000000000000 T ft_bzero
+
+ft_calloc.o:
+                 U ft_bzero
+0000000000000000 T ft_calloc
+                 U malloc
+
+ft_deg_n_rad.o:
+0000000000000000 T ft_deg_to_rad
+0000000000000020 T ft_rad_to_deg
+
+ft_emptystr.o:
+0000000000000000 T ft_emptystr
+
+ft_free_matrix.o:
+                 U free
+0000000000000000 T ft_free_matrix
+
+ft_free_matrix_count.o:
+                 U free
+0000000000000000 T ft_free_matrix_count
+
+ft_free_matrix_node.o:
+                 U free
+0000000000000000 T free_matrix_nodes
+
+ft_giga_split.o:
+0000000000000000 t close_quotes
+00000000000000b8 t end_loop
+                 U free
+                 U ft_calloc
+0000000000000337 T ft_giga_split
+00000000000001ad t ft_giga_split_aux
+000000000000004a T ft_strndup
+                 U malloc
+
+ft_isalnum.o:
+0000000000000000 T ft_isalnum
+                 U ft_isalpha
+                 U ft_isdigit
+
+ft_isalpha.o:
+0000000000000000 T ft_isalpha
+
+ft_isascii.o:
+0000000000000000 T ft_isascii
+
+ft_isdigit.o:
+0000000000000000 T ft_isdigit
+
+ft_isminishell.o:
+                 U ft_isalpha
+0000000000000000 T ft_isminishell
+
+ft_isprint.o:
+0000000000000000 T ft_isprint
+
+ft_itoa.o:
+                 U ft_calloc
+0000000000000047 T ft_itoa
+0000000000000000 t ft_nrblrn
+
+ft_join_matrix.o:
+                 U ft_calloc
+000000000000010b T ft_join_matrix
+0000000000000000 T ft_join_matrix_aux
+
+ft_limits.o:
+0000000000000000 T ft_max
+00000000000000bc T ft_max_neg
+000000000000005e T ft_min
+000000000000018f T ft_min_pos
+
+ft_mat_join.o:
+                 U ft_calloc
+0000000000000000 T ft_mat_join
+
+ft_matlen.o:
+0000000000000000 T ft_matlen
+
+ft_matnstr.o:
+0000000000000000 T ft_matnstr
+                 U ft_strncmp
+
+ft_matrix_in_matrix.o:
+                 U free
+                 U ft_free_matrix
+                 U ft_matlen
+0000000000000000 T ft_matrix_in_matrix
+                 U malloc
+
+ft_matrix_unify.o:
+0000000000000000 T ft_matrix_uni
+
+ft_memchr.o:
+0000000000000000 T ft_memchr
+
+ft_memcmp.o:
+0000000000000000 T ft_memcmp
+
+ft_memcpy.o:
+0000000000000000 T ft_memcpy
+
+ft_memmove.o:
+0000000000000000 T ft_memmove
+
+ft_memset.o:
+0000000000000000 T ft_memset
+
+ft_print_matrix.o:
+0000000000000000 T ft_print_matrix
+                 U write
+
+ft_putchar_fd.o:
+0000000000000000 T ft_putchar_fd
+                 U write
+
+ft_putendl_fd.o:
+0000000000000000 T ft_putendl_fd
+                 U ft_strlen
+                 U write
+
+ft_putnbr_fd.o:
+0000000000000000 T ft_putnbr_fd
+                 U write
+
+ft_putstr_fd.o:
+0000000000000000 T ft_putstr_fd
+                 U ft_strlen
+                 U write
+
+ft_rmrep.o:
+                 U ft_memmove
+0000000000000000 T ft_rmrep
+                 U ft_strlen
+
+ft_split.o:
+00000000000001a6 t alloc_mem
+                 U free
+000000000000014c t free_all
+                 U ft_bzero
+                 U ft_calloc
+                 U ft_memcpy
+00000000000001fc T ft_split
+0000000000000086 t ft_split_strndup
+0000000000000000 T ft_str_count
+                 U malloc
+
+ft_strcat.o:
+0000000000000000 T ft_strcat
+                 U ft_strlen
+
+ft_strchr.o:
+0000000000000000 T ft_strchr
+
+ft_strcmp.o:
+0000000000000000 T ft_strcmp
+
+ft_str_count.o:
+0000000000000000 T ft_str_count
+
+ft_strcpy.o:
+0000000000000000 T ft_strcpy
+
+ft_strdup.o:
+                 U ft_calloc
+                 U ft_memcpy
+0000000000000000 T ft_strdup
+                 U ft_strlen
+
+ft_striteri.o:
+0000000000000000 T ft_striteri
+
+ft_strjoin.o:
+                 U ft_calloc
+                 U ft_strcat
+                 U ft_strcpy
+                 U ft_strdup
+0000000000000000 T ft_strjoin
+                 U ft_strlen
+
+ft_strjoin_free.o:
+                 U free
+                 U ft_calloc
+                 U ft_strcat
+                 U ft_strcpy
+0000000000000000 T ft_strjoin_free
+                 U ft_strlen
+
+ft_strlcat.o:
+0000000000000000 T ft_strlcat
+                 U ft_strlen
+
+ft_strlcpy.o:
+0000000000000000 T ft_strlcpy
+                 U ft_strlen
+
+ft_strlen.o:
+0000000000000000 T ft_strlen
+
+ft_strmapi.o:
+                 U ft_calloc
+                 U ft_strlen
+0000000000000000 T ft_strmapi
+
+ft_strmat.o:
+0000000000000000 T ft_strmat
+                 U ft_strstr
+
+ft_strncmp.o:
+0000000000000000 T ft_strncmp
+
+ft_strndup.o:
+                 U ft_calloc
+0000000000000000 T ft_strndup
+
+ft_strnmat.o:
+0000000000000000 T ft_matnstr
+                 U ft_strnstr
+
+ft_strnstr.o:
+0000000000000000 T ft_strnstr
+
+ft_strrchr.o:
+                 U ft_strlen
+0000000000000000 T ft_strrchr
+
+ft_strstr.o:
+0000000000000000 T ft_strstr
+
+ft_strsubs.o:
+                 U ft_strlen
+0000000000000000 T ft_strsubs
+                 U malloc
+
+ft_strtrim.o:
+                 U ft_calloc
+0000000000000000 t ft_check
+                 U ft_strdup
+                 U ft_strlen
+000000000000011c T ft_strtrim
+0000000000000055 t total_len
+
+ft_substr.o:
+                 U ft_calloc
+                 U ft_strlen
+0000000000000000 T ft_substr
+
+ft_swap.o:
+0000000000000037 T ft_swap
+0000000000000000 T ft_ult_swap
+
+ft_tolower.o:
+0000000000000000 T ft_tolower
+
+ft_toupper.o:
+0000000000000000 T ft_toupper
+
+ft_wrdchr.o:
+0000000000000000 T ft_wrdchr
+
+pipex_split.o:
+000000000000028f t create_empty_mat
+                 U ft_free_matrix_count
+                 U ft_strndup
+                 U malloc
+000000000000016c t next_str
+00000000000002dc T pipex_split
+0000000000000000 t real_wrd_count
+00000000000000df t wrd_count

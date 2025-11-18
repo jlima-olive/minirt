@@ -6,489 +6,11 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/18 15:36:43 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:10:16 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
-
-int	close_mlx(t_mlx *mlx)
-{
-	clean_scene(mlx->img.scene);
-	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
-	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
-	mlx_destroy_display(mlx->mlx_ptr);
-	free(mlx->mlx_ptr);
-	exit(0);
-	return (0);
-}
-
-int	init_mlx(t_mlx *mlx)
-{
-	t_mlximg	img;
-
-	mlx->mlx_ptr = mlx_init();
-	if (mlx->mlx_ptr == NULL)
-		close_mlx(mlx);
-	mlx->mlx_win = mlx_new_window(mlx->mlx_ptr, HGT * AP_RAT, HGT, "minirt");
-	if (mlx->mlx_win == NULL)
-		close_mlx(mlx);
-	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
-	if (img.img_ptr == NULL)
-		close_mlx(mlx);
-	img.pixel_ptr = mlx_get_data_addr(img.img_ptr, &img.bpp, &img.line_len,
-			&img.endian);
-	mlx->img = img;
-	if (img.pixel_ptr == NULL)
-		close_mlx(mlx);
-	mlx->img = img;
-	return (0);
-}
-
-void	init_var(t_mlx *mlx)
-{
-	mlx->mlx_ptr = NULL;
-	mlx->mlx_win = NULL;
-}
-
-t_point	point_at(t_ray ray, double t)
-{
-	return (add(ray.ori, mult(ray.dir, t)));
-}
-
-t_vec	new_vec(t_point a, t_point b)
-{
-	return (sub(a, b));
-}
-
-t_objinfo	set_obj_info(void)
-{
-	t_objinfo	ret;
-
-	ret.light_count = 0;
-	ret.color = -1;
-	ret.point = set_class(0, 0, 0);
-	ret.red_vec = set_class(0, 0, 0);
-	return (ret);
-}
-
-double	get_pl_root(t_ray ray, t_plane *pl)
-{
-	double	denominator;
-	double	nominator;
-	double	ret;
-
-	if (dot_product(ray.dir, pl->normal) < 0.0001)
-		return (-1);
-	nominator = -pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c
-		* ray.ori.z;
-	denominator = pl->a * ray.dir.x + pl->b * ray.dir.y + pl->c * ray.dir.z;
-	ret = nominator / denominator;
-	if (ret != ret)
-		return (-1);
-	return (ret);
-}
-
-t_rgb	get_negative_color(t_rgb color)
-{
-	return (set_class(1 - color.x, 1 - color.y, 1 - color.z));
-}
-
-int	get_true_rgb(t_mlximg img, t_rgb color, float root)
-{
-	t_rgb	ref;
-	t_rgb	temp;
-
-	ref = get_negative_color(color);
-	ref = sub(img.ligh_rays->color, ref);
-	ref.x = (ref.x > 0) * ref.x;
-	ref.y = (ref.y > 0) * ref.y;
-	ref.z = (ref.z > 0) * ref.z;
-	ref = mult(ref, root);
-	temp = get_negative_color(color);
-	temp = sub(img.a_color, temp);
-	temp.x = (temp.x > 0) * temp.x;
-	temp.y = (temp.y > 0) * temp.y;
-	temp.z = (temp.z > 0) * temp.z;
-	temp = mult(temp, img.ambient);
-	ref.x = (ref.x > temp.x) * ref.x + (ref.x < temp.x) * temp.x;
-	ref.y = (ref.y > temp.y) * ref.y + (ref.y < temp.y) * temp.y;
-	ref.z = (ref.z > temp.z) * ref.z + (ref.z < temp.z) * temp.z;
-	return (get_rgb(ref, 1));
-}
-
-t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
-{
-	t_vec		pl_light;
-	t_objinfo	info;
-	double		root;
-
-	root = get_pl_root(ray, pl);
-	info = set_obj_info();
-	if (root < 0 || root > 100000)
-		return (info);
-	info.point = point_at(ray, root);
-	pl_light = new_vec(info.point, light->src);
-	root = get_cos(pl->normal, pl_light);
-	if (root < 0)
-		root = 0;
-	ray = set_ray(info.point, mult(pl_light, -1));
-	if (find_ligh(img, ray))
-		root = 0;
-	info.color = get_true_rgb(img, pl->color, root * img.ligh_rays->brightness);
-	return (info);
-}
-
-double	root_pl_plane(t_ray ray, t_plane *pl)
-{
-	double	denominator;
-	double	nominator;
-	double	ret;
-
-	if (dot_product(ray.dir, pl->normal) < 0.0001)
-		return (-1);
-	nominator = -pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c
-		* ray.ori.z;
-	denominator = pl->a * ray.dir.x + pl->b * ray.dir.y + pl->c * ray.dir.z;
-	ret = nominator / denominator;
-	if (ret != ret)
-		return (-1);
-	return (ret);
-}
-
-double	get_sp_root(t_sphere *sp, t_ray ray)
-{
-	t_vec	oc;
-	double	root1;
-	double	root2;
-	double	a;
-	double	h;
-	double	c;
-
-	oc = sub(sp->center, ray.ori);
-	a = dot_product(ray.dir, ray.dir);
-	h = dot_product(ray.dir, oc);
-	c = dot_product(oc, oc) - (sp->r * sp->r);
-	root1 = h * h - a * c;
-	if (root1 < 0)
-		return (-1);
-	root1 = sqrt(root1);
-	root2 = (h - root1) / a;
-	root1 = (h + root1) / a;
-	return (ft_min_pos(root1, root2));
-}
-/*  */
-
-t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
-{
-	t_objinfo	info;
-	t_vec		pl;
-	t_vec		cp;
-	double		root;
-
-	root = get_sp_root(sp, ray);
-	info = set_obj_info();
-	if (root < 0)
-		return (info);
-	info.point = point_at(ray, root);
-	cp = mult(new_vec(info.point, sp->center), -1 / sp->r);
-	pl = new_vec(info.point, light->src);
-	root = get_cos(cp, pl);
-	if (root < 0)
-		root = 0;
-	ray = set_ray(info.point, mult(pl, -1));
-	if (find_ligh(img, ray))
-		root = 0;
-	info.color = get_true_rgb(img, sp->color, root * img.ligh_rays->brightness);
-	return (info);
-}
-
-double	get_cy_root(t_ray ray, t_cylinder *cy, double *dv, double *xv)
-{
-	t_vec	x;
-	double	a;
-	double	b;
-	double	c;
-	double	root;
-
-	x = new_vec(ray.ori, cy->ray.ori);
-	*dv = dot_product(ray.dir, cy->ray.dir);
-	*xv = dot_product(x, cy->ray.dir);
-	a = dot_product(ray.dir, ray.dir) - *dv * *dv;
-	if (a == 0)
-		return (-1);
-	b = 2 * (dot_product(ray.dir, x) - *dv * *xv);
-	c = dot_product(x, x) - *xv * *xv - cy->r * cy->r;
-	root = b * b - 4 * a * c;
-	if (root < 0)
-		return (-1);
-	root = sqrt(root);
-	root = root / (a * 2);
-	b = -b / (a * 2);
-	return (ft_min_pos(b - root, b + root));
-}
-
-double	get_k(t_vec dir, t_vec pb)
-{
-	return (dot_product(dir, pb) / square_vec(dir));
-}
-
-t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray,
-		t_light *light)
-{
-	t_objinfo	info;
-	t_point		center;
-	t_vec		cp;
-	double		root;
-	double		k;
-	double		dv;
-	double		xv;
-	t_vec		pl_light;
-
-	root = get_cy_root(ray, cy, &dv, &xv);
-	info = set_obj_info();
-	if (root < 0)
-		return (info);
-	info.point = point_at(ray, root);
-	k = dv * root + xv;
-	center = point_at(cy->ray, k);
-	cp = new_vec(info.point, center);
-	pl_light = new_vec(light->src, info.point);
-	root = get_cos(pl_light, cp);
-	if (root < 0)
-		root = 0;
-	ray = set_ray(info.point, mult(pl_light, 1));
-	if (find_ligh(img, ray))
-		root = 0;
-	info.color = get_true_rgb(img, cy->color, root * img.ligh_rays->brightness);
-	return (info);
-}
-
-int	get_color(t_mlximg img, double y, t_ray ray)
-{
-	t_objinfo	value;
-	t_objinfo	new_v;
-	t_list		*lst;
-	double		len;
-
-	lst = img.objs;
-	value = set_obj_info();
-	while (lst)
-	{
-		if (lst->type == SPHERE)
-			new_v = hit_sphere(img, lst->obj, ray, img.ligh_rays);
-		else if (lst->type == PLANE)
-			new_v = hit_plane(img, lst->obj, ray, img.ligh_rays);
-		else if (lst->type == CYLINDER)
-			new_v = hit_cylinder(img, lst->obj, ray, img.ligh_rays);
-		len = vec_len(new_vec(img.camera, new_v.point));
-		if (value.color == -1 || (new_v.color != -1
-				&& len < vec_len(new_vec(img.camera, value.point))))
-			value = new_v;
-		lst = lst->next;
-	}
-	if (value.color != -1)
-		return (value.color);
-	y = y / HGT;
-	return (get_rgb_num(0.5, 0.3, 0, y) + get_rgb_num(0.5, 0.7, 1, 1));
-}
-
-void	render(int x, int y, t_mlximg img)
-{
-	int		offset;
-	t_ray	ray;
-
-	ray = get_ray(img, (int)(x), (int)(y));
-	offset = (x * 4) + (y * img.line_len);
-	*((unsigned int *)(img.pixel_ptr + offset)) = get_color(img, (int)(y), ray);
-}
-
-t_rgb	decompose_color(unsigned color)
-{
-	t_rgb	ret;
-
-	ret.x = color >> 16;
-	ret.y = (color << 16) >> 24;
-	ret.z = (color << 24) >> 24;
-	return (ret);
-}
-
-void	get_medium_color(int x, int y, t_simpleimg img2, t_mlximg img)
-{
-	t_rgb	color;
-	int		offset;
-
-	offset = ((x - 1) * 4) + (y * img.line_len);
-	color = decompose_color(*((unsigned int *)(img.pixel_ptr + offset)));
-	offset = ((x + 1) * 4) + (y * img.line_len);
-	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr
-						+ offset))));
-	offset = (x * 4) + ((y + 1) * img.line_len);
-	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr
-						+ offset))));
-	offset = (x * 4) + ((y - 1) * img.line_len);
-	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr
-						+ offset))));
-	offset = (x * 4) + (y * img.line_len);
-	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr
-						+ offset))));
-	color = mult(color, 1.0 / 5);
-	*((unsigned int *)(img2.pixel_ptr + offset)) = get_rgb(color, 1.0 / 255);
-}
-
-void	anti_aliasing(t_simpleimg img2, t_mlximg img)
-{
-	double	w;
-	double	h;
-	double	x;
-	double	y;
-
-	w = HGT * AP_RAT;
-	h = HGT;
-	y = -1;
-	while (++y < h)
-	{
-		x = -1;
-		while (++x < w)
-			get_medium_color(x, y, img2, img);
-	}
-}
-
-void	run_code(t_mlx *mlx)
-{
-	double	w;
-	double	h;
-	double	x;
-	double	y;
-
-	w = HGT * AP_RAT;
-	h = HGT;
-	y = -1;
-	while (++y < h)
-	{
-		x = -1;
-		while (++x < w)
-			render(x, y, mlx->img);
-	}
-	mlx_put_image_to_window(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
-}
-
-double	get_cos(t_vec a, t_vec b)
-{
-	double	len;
-
-	len = (vec_len(a) * vec_len(b));
-	return (dot_product(a, b) / len);
-}
-
-t_vec	edge_cases_del_v(t_vec o, t_vec v)
-{
-	if (o.y == 0)
-		return (set_class(0, -1, 0));
-	if (o.x == 0 && o.z == 0)
-		return (set_class(0, 0, 1));
-	if (o.x == 0)
-	{
-		if (o.z > 0)
-			return (normalize_vec(set_class(0, -o.z, o.y)));
-		else
-			return (normalize_vec(set_class(0, o.z, -o.y)));
-	}
-	if (o.z == 0)
-	{
-		if (o.x < 0)
-			return (normalize_vec(set_class(-o.y, o.x, 0)));
-		else
-			return (normalize_vec(set_class(o.y, -o.x, 0)));
-	}
-	if (v.y > 0)
-		v = mult(v, -1);
-	return (normalize_vec(v));
-}
-
-t_ray	get_ray(t_mlximg img, double x, double y)
-{
-	t_ray	ray;
-	t_vec	vp_position;
-
-	if (x == 0 && FOV == 180)
-		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, -1))));
-	if (x == img.wdt && FOV == 180)
-		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, 1))));
-	ray.ori = img.camera;
-	vp_position = add(img.pixel00, mult(img.del_h, x));
-	vp_position = add(vp_position, mult(img.del_v, y));
-	ray.dir = normalize_vec(new_vec(vp_position, ray.ori));
-	return (ray);
-}
-
-t_mlximg	aux_parse(t_mlximg img)
-{
-	double	vp_size;
-	t_ray	vec;
-
-	img.wdt = HGT * AP_RAT;
-	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
-	img.rad = ft_deg_to_rad(img.deg);
-	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* || check_stuff() */)
-		exit /* _func */ (1);
-	img.ori_vec = normalize_vec(img.ori_vec);
-	img.ctr_pnt = add(img.camera, img.ori_vec);
-	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
-	img.del_h = add(img.del_h, mult(set_class(1, 0, 0), !vec_len(img.del_h)));
-	vp_size = 2 * tan(img.rad / 2);
-	img.del_h = mult(normalize_vec(img.del_h), vp_size / img.wdt);
-	img.normal_h = mult(img.del_h, img.wdt);
-	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
-	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), (vp_size
-				/ AP_RAT) / HGT);
-	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
-	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
-	printf("del_v	%f %f %f\n", img.del_v.x, img.del_v.y, img.del_v.z);
-	printf("dot_product img.ori_vec, img.del_h = %f\n", dot_product(img.ori_vec,
-			img.del_h));
-	printf("dot_product img.ori_vec, img.del_v = %f\n", dot_product(img.ori_vec,
-			img.del_v));
-	printf("dot_product img.del_h,   img.del_v = %f\n", dot_product(img.del_h,
-			img.del_v));
-	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -img.wdt / 2));
-	img.pixel00 = add(img.pixel00, mult(img.del_v, -HGT / 2));
-	printf("pixel00	%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
-	vec = get_ray(img, 0, 0);
-	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	vec = get_ray(img, img.wdt / 4, HGT / 4);
-	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	vec = get_ray(img, img.wdt / 2, HGT / 2);
-	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	vec = get_ray(img, 3 * img.wdt / 4, 3 * HGT / 4);
-	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	vec = get_ray(img, img.wdt, HGT);
-	printf("n_vecdir	%f %f %f\n", vec.dir.x, vec.dir.y, vec.dir.z);
-	return (img);
-}
-
-int	find_ligh(t_mlximg img, t_ray ray)
-{
-	double	len;
-	double	var1;
-	double	var2;
-	t_list	*lst;
-
-	lst = img.objs;
-	while (lst)
-	{
-		if (lst->type == SPHERE)
-			len = get_sp_root(lst->obj, ray);
-		else if (lst->type == PLANE)
-			len = get_pl_root(ray, lst->obj);
-		else if (lst->type == CYLINDER)
-			len = get_cy_root(ray, lst->obj, &var1, &var2);
-		if (len > 0.00000001 && len < 0.9999999)
-			return (1);
-		lst = lst->next;
-	}
-	return (0);
-}
 
 /* static void	print_color(const t_rgb *c)
 {
@@ -589,6 +111,46 @@ void	print_scene(const t_scene *scene)
 	printf("-----------------------\n");
 } */
 
+int	close_mlx(t_mlx *mlx)
+{
+	clean_scene(mlx->img.scene);
+	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
+	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
+	mlx_destroy_display(mlx->mlx_ptr);
+	free(mlx->mlx_ptr);
+	exit(0);
+	return (0);
+}
+
+int	init_mlx(t_mlx *mlx)
+{
+	t_mlximg	img;
+
+	mlx->mlx_ptr = mlx_init();
+	if (mlx->mlx_ptr == NULL)
+		close_mlx(mlx);
+	mlx->mlx_win = mlx_new_window(mlx->mlx_ptr, HGT * AP_RAT, HGT, "minirt");
+	if (mlx->mlx_win == NULL)
+		close_mlx(mlx);
+	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
+	if (img.img_ptr == NULL)
+		close_mlx(mlx);
+	img.pixel_ptr = mlx_get_data_addr(img.img_ptr, &img.bpp, &img.line_len,
+			&img.endian);
+	mlx->img = img;
+	if (img.pixel_ptr == NULL)
+		close_mlx(mlx);
+	mlx->img = img;
+	return (0);
+}
+
+
+void	init_var(t_mlx *mlx)
+{
+	mlx->mlx_ptr = NULL;
+	mlx->mlx_win = NULL;
+}
+
 static void	init_scene(t_scene *scene)
 {
 	scene->ambient = NULL;
@@ -597,17 +159,7 @@ static void	init_scene(t_scene *scene)
 	scene->list = NULL;
 	scene->n_objects = 0;
 }
-
-void	connect_parse(t_mlximg *img, t_scene scene)
-{
-	img->ambient = scene.ambient->ratio;
-	img->a_color = scene.ambient->color;
-	img->camera = scene.camera->src;
-	img->ori_vec = scene.camera->dir;
-	img->ligh_rays = scene.light;
-	img->objs = scene.list;
-}
-
+	/* print_scene(&scene); */
 int	main(int argc, char **argv)
 {
 	t_mlx	mlx;
@@ -617,7 +169,6 @@ int	main(int argc, char **argv)
 		return (1);
 	init_scene(&scene);
 	parse(argv[1], &scene);
-	/* print_scene(&scene); */
 	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
@@ -627,7 +178,6 @@ int	main(int argc, char **argv)
 	scene.list = mlx.img.objs;
 	mlx_hook(mlx.mlx_win, 17, 0l, close_mlx, &mlx);
 	mlx_hook(mlx.mlx_win, KeyPress, KeyPressMask, my_key_hook, &mlx);
-	mlx_hook(mlx.mlx_win, ButtonPress, ButtonPressMask, my_button_hook, &mlx);
 	run_code(&mlx);
 	mlx_loop(mlx.mlx_ptr);
 	close_mlx(&mlx);

@@ -44,7 +44,7 @@ PARSE_OBJ =	parse/obj/clean.o \
 all: MLX LIBFT PARSE $(PROJ)
 
 $(PROJ): $(PROJ).c $(NAME) minirt.h parse/parse.h
-	$(CC) $(CFLAGS) $(PROJ).c $(MLX_ARQ) $(LIBFT_ARQ) $(NAME) $(LMX_FLAGS) parse/libft/libft.a -o $(PROJ)
+	$(CC) $(CFLAGS) $(PROJ).c $(MLX_ARQ) $(NAME) $(LIBFT_ARQ) $(LMX_FLAGS) parse/libft/libft.a -o $(PROJ)
 
 $(NAME): $(OBJ_FILES) $(PARSE_OBJ) 
 	$(AR) $(NAME) $?
