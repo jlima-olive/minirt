@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/17 23:58:21 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 00:23:47 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,12 +200,26 @@ t_rgb	get_negative_color(t_rgb color)
 int	get_true_rgb(t_mlximg img, t_rgb color, float root)
 {
 	t_rgb	ref;
-	// double	temp;
+	t_rgb	temp;
 
 	ref = get_negative_color(color);
 	ref = sub(img.ligh_rays->color, ref);
 	ref.x = (ref.x > 0) * ref.x;
-	return (get_rgb(ref, root));
+	ref.y = (ref.y > 0) * ref.y;
+	ref.z = (ref.z > 0) * ref.z;
+	ref = mult(ref, root);
+
+	temp = get_negative_color(color);
+	temp = sub(img.a_color, temp);
+	temp.x = (temp.x > 0) * temp.x;
+	temp.y = (temp.y > 0) * temp.y;
+	temp.z = (temp.z > 0) * temp.z;
+	temp = mult(temp, img.ambient);
+
+	ref.x = (ref.x > temp.x) * ref.x + (ref.x < temp.x) * temp.x;
+	ref.y = (ref.y > temp.y) * ref.y + (ref.y < temp.y) * temp.y;
+	ref.z = (ref.z > temp.z) * ref.z + (ref.z < temp.z) * temp.z;
+	return (get_rgb(ref, 1));
 }
 
 t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
