@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 12:04:22 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/17 21:58:14 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:35:36 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,8 @@ static int	parse_cylinder_material(char *line, int *i, t_cylinder *cy)
 	return (0);
 }
 
-static int	parse_cylinder_body(char *line, t_cylinder *cy)
+static int	parse_cylinder_body(char *line, t_cylinder *cy, int ind)
 {
-	int	i;
-
-	i = 0;
 	while (ft_isspace(line[i]))
 		i++;
 	if (!is_valid_vec(line + i))
@@ -65,7 +62,7 @@ int	parse_cylinder(char *line, t_scene *scene)
 
 	if (count_attributes(line) < 5 || count_attributes(line) > 6)
 		return (write(2, "Error\ncy: incorrect nr of attributes\n", 38), 1);
-	if (parse_cylinder_body(line, &tmp))
+	if (parse_cylinder_body(line, &tmp, 0))
 		return (1);
 	cy = malloc(sizeof(t_cylinder));
 	if (!cy)

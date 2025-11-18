@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/18 16:10:16 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:33:57 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@ void	print_scene(const t_scene *scene)
 	}
 	printf("-----------------------\n");
 } */
-
 int	close_mlx(t_mlx *mlx)
 {
 	clean_scene(mlx->img.scene);
@@ -144,7 +143,6 @@ int	init_mlx(t_mlx *mlx)
 	return (0);
 }
 
-
 void	init_var(t_mlx *mlx)
 {
 	mlx->mlx_ptr = NULL;
@@ -159,7 +157,7 @@ static void	init_scene(t_scene *scene)
 	scene->list = NULL;
 	scene->n_objects = 0;
 }
-	/* print_scene(&scene); */
+
 int	main(int argc, char **argv)
 {
 	t_mlx	mlx;
