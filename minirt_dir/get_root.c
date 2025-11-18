@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 15:48:20 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/11/18 16:49:29 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:52:23 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,7 @@ double	get_pl_root(t_ray ray, t_plane *pl)
 double	get_sp_root(t_sphere *sp, t_ray ray)
 {
 	t_vec	oc;
-	double	root1;
-	double	root2;
+	double	root;
 	double	a;
 	double	h;
 	double	c;
@@ -42,13 +41,11 @@ double	get_sp_root(t_sphere *sp, t_ray ray)
 	a = dot_product(ray.dir, ray.dir);
 	h = dot_product(ray.dir, oc);
 	c = dot_product(oc, oc) - (sp->r * sp->r);
-	root1 = h * h - a * c;
-	if (root1 < 0)
+	root = h * h - a * c;
+	if (root < 0)
 		return (-1);
-	root1 = sqrt(root1);
-	root2 = (h - root1) / a;
-	root1 = (h + root1) / a;
-	return (ft_min_pos(root1, root2));
+	root = sqrt(root);
+	return (ft_min_pos((h + root) / a, (h - root) / a));
 }
 
 double	get_cy_root(t_ray ray, t_cylinder *cy, double *dv, double *xv)
@@ -57,6 +54,7 @@ double	get_cy_root(t_ray ray, t_cylinder *cy, double *dv, double *xv)
 	double	a;
 	double	b;
 	double	c;
+	double	root;
 
 	x = new_vec(ray.ori, cy->ray.ori);
 	*dv = dot_product(ray.dir, cy->ray.dir);
@@ -66,11 +64,11 @@ double	get_cy_root(t_ray ray, t_cylinder *cy, double *dv, double *xv)
 		return (-1);
 	b = 2 * (dot_product(ray.dir, x) - *dv * *xv);
 	c = dot_product(x, x) - *xv * *xv - cy->r * cy->r;
-	c = b * b - 4 * a * c;
-	if (c < 0)
+	root = b * b - 4 * a * c;
+	if (root < 0)
 		return (-1);
-	c = sqrt(c);
-	c = c / (a * 2);
+	root = sqrt(root);
+	root = root / (a * 2);
 	b = -b / (a * 2);
-	return (ft_min_pos(b - c, b + c));
+	return (ft_min_pos(b - root, b + root));
 }

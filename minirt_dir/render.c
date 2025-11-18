@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 15:42:02 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/11/18 16:47:41 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:57:28 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray,
 {
 	t_objinfo	info;
 	t_point		temp;
-	t_vec		pl_light;
 	double		root;
 	double		dv;
 	double		xv;
@@ -29,11 +28,11 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray,
 	info.point = point_at(ray, root);
 	temp = point_at(cy->ray, dv * root + xv);
 	temp = new_vec(info.point, temp);
-	pl_light = new_vec(light->src, info.point);
-	root = get_cos(pl_light, temp);
+	ray.dir = new_vec(light->src, info.point);
+	root = get_cos(ray.dir, temp);
 	if (root < 0)
 		root = 0;
-	ray = set_ray(info.point, mult(pl_light, 1));
+	ray = set_ray(info.point, mult(ray.dir, 1));
 	if (find_ligh(img, ray))
 		root = 0;
 	info.color = get_true_rgb(img, cy->color, root * img.ligh_rays->brightness);

@@ -6,11 +6,21 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 11:24:34 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/18 16:43:32 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:55:38 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minirt.h"
+
+static int	parse_plane_body_aux(t_plane *pl)
+{
+	pl->a = pl->normal.x;
+	pl->b = pl->normal.y;
+	pl->c = pl->normal.z;
+	pl->d = -pl->normal.x * pl->point.x - pl->normal.y * pl->point.y
+		- pl->normal.z * pl->point.z;
+	return (0);
+}
 
 static int	parse_plane_body(char *line, t_plane *pl, t_scene *scene, int i)
 {
@@ -38,11 +48,7 @@ static int	parse_plane_body(char *line, t_plane *pl, t_scene *scene, int i)
 	}
 	else
 		pl->material = DEFAULT;
-	pl->a = pl->normal.x;
-	pl->b = pl->normal.y;
-	pl->c = pl->normal.z;
-	pl->d = -pl->normal.x * pl->point.x - pl->normal.y * pl->point.y - pl->normal.z * pl->point.z;
-	return (0);
+	return (parse_plane_body_aux(pl));
 }
 
 int	parse_plane(char *line, t_scene *scene)
