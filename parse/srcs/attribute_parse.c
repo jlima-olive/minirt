@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   attribute_parse.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
+/*   By: psantos- <psantos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 19:00:15 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/17 18:58:28 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:02:25 by psantos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	parse_color(char *line, int *i, t_rgb *color)
 	(*i)++;
 	val = ft_atoi(line + *i);
 	color->z = val;
+	color = mult(color, 1.0 / 255);
 	while (ft_isnum(line[*i]))
 		(*i)++;
 	while (ft_isspace(line[*i]))

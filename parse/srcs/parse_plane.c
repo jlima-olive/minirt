@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_plane.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
+/*   By: psantos- <psantos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 11:24:34 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/17 21:44:43 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:35 by psantos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,11 @@ static int	parse_plane_body(char *line, t_plane *pl, t_scene *scene)
 	if (!is_valid_rgb(line + i))
 		return (write(2, "Error\npl: invalid color\n", 25), 1);
 	parse_color(line, &i, &pl->color);
-	pl->color = mult(pl->color, 1.0 / 255);
-	if (line[i] && line[i] != '\n')
-	{
-		if (!is_valid_int(line + i, 0, 2))
-			return (write(2, "Error\npl: invalid material\n", 28), 1);
-		pl->material = (t_material)parse_int(line, &i);
-	}
-	else
-		pl->material = DEFAULT;
 	pl->a = pl->normal.x;
 	pl->b = pl->normal.y;
 	pl->c = pl->normal.z;
-	pl->d = -pl->normal.x * pl->point.x -pl->normal.y * pl->point.y -pl->normal.z * pl->point.z;
+	pl->d = -pl->normal.x * pl->point.x - pl->normal.y
+		* pl->point.y - pl->normal.z * pl->point.z;
 	return (0);
 }
 

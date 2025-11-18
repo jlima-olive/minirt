@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_light.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
+/*   By: psantos- <psantos-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 09:50:27 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/17 23:13:09 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:14:24 by psantos-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ int	parse_light(char *line, t_scene *scene)
 		return (perror("malloc"), 1);
 	scene->light->src = src;
 	scene->light->brightness = brightness;
-	scene->light->color = mult(color, 1.0 / 255);
 	scene->light->next = NULL;
 	return (0);
 }
