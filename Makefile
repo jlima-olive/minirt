@@ -16,9 +16,9 @@ LIBFT_DIR=	my_libft
 
 LIBFT_ARQ=	jojo_libft.a
 
-SRC_LIBFT=	$(wildcard $(LIBFT_DIR)/*.c)
+# SRC_LIBFT=	$(wildcard $(LIBFT_DIR)/*.c)
 
-OBJ_LIBFT=	$(SRC_LIBFT:.c=.o)
+# OBJ_LIBFT=	$(SRC_LIBFT:.c=.o)
 
 CC=			cc
 
