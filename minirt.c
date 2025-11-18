@@ -6,53 +6,26 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/18 00:23:47 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 15:36:43 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minirt.h"
 
-t_vec	get_random_vec(double min, double max)
-{
-	t_vec	ret;
-	double	sqrd;
-
-	while (1)
-	{
-		ret.x = ((double)rand() / RAND_MAX) * (max - min);
-		ret.y = ((double)rand() / RAND_MAX) * (max - min);
-		ret.z = ((double)rand() / RAND_MAX) * (max - min);
-		sqrd = square_vec(ret);
-		if (sqrd && sqrd <= 1)
-			return (mult(ret, 1 / sqrt(sqrd)));
-	}
-}
-
-void	free_obj(t_list *obj)
-{
-	if (obj == NULL)
-		return ;
-	free(obj->obj);
-	free_obj(obj->next);
-	free(obj);
-}
-
 int	close_mlx(t_mlx *mlx)
 {
 	clean_scene(mlx->img.scene);
 	mlx_destroy_image(mlx->mlx_ptr, mlx->img.img_ptr);
-	// mlx_destroy_image(mlx->mlx_ptr, mlx->img2.img_ptr);
 	mlx_destroy_window(mlx->mlx_ptr, mlx->mlx_win);
 	mlx_destroy_display(mlx->mlx_ptr);
 	free(mlx->mlx_ptr);
-	exit (0);
+	exit(0);
 	return (0);
 }
 
 int	init_mlx(t_mlx *mlx)
 {
 	t_mlximg	img;
-	// t_simpleimg	img2;
 
 	mlx->mlx_ptr = mlx_init();
 	if (mlx->mlx_ptr == NULL)
@@ -63,20 +36,12 @@ int	init_mlx(t_mlx *mlx)
 	img.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
 	if (img.img_ptr == NULL)
 		close_mlx(mlx);
-	img.pixel_ptr
-	= mlx_get_data_addr(img.img_ptr, &img.bpp, &img.line_len, &img.endian);
+	img.pixel_ptr = mlx_get_data_addr(img.img_ptr, &img.bpp, &img.line_len,
+			&img.endian);
 	mlx->img = img;
 	if (img.pixel_ptr == NULL)
 		close_mlx(mlx);
-	// img2.img_ptr = mlx_new_image(mlx->mlx_ptr, HGT * AP_RAT, HGT);
-	// if (img2.img_ptr == NULL)
-		// close_mlx(mlx);
-	// img2.pixel_ptr
-	// = mlx_get_data_addr(img2.img_ptr, &img2.bpp, &img2.line_len, &img2.endian);
 	mlx->img = img;
-	// if (img2.pixel_ptr == NULL)
-		// close_mlx(mlx);
-	// mlx->img2 = img2;
 	return (0);
 }
 
@@ -107,20 +72,6 @@ t_objinfo	set_obj_info(void)
 	return (ret);
 }
 
-double	proven_get_root(double a, double h, double c)
-{
-	double	root1;
-	double	root2;
-
-	root1 = h * h - a * c;
-	if (root1 < 0)
-		return (-1);
-	root1 = sqrt(root1);
-	root2 = (h - root1) / a;
-	root1 = (h + root1) / a;
-	return (ft_min_pos(root1, root2));
-}
-
 double	get_pl_root(t_ray ray, t_plane *pl)
 {
 	double	denominator;
@@ -129,66 +80,12 @@ double	get_pl_root(t_ray ray, t_plane *pl)
 
 	if (dot_product(ray.dir, pl->normal) < 0.0001)
 		return (-1);
-	nominator =
-		-pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c * ray.ori.z;
+	nominator = -pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c
+		* ray.ori.z;
 	denominator = pl->a * ray.dir.x + pl->b * ray.dir.y + pl->c * ray.dir.z;
 	ret = nominator / denominator;
 	if (ret != ret)
 		return (-1);
-	return (ret);
-}
-
-// int	get_color_difu(t_vec cp)
-// {
-// 	t_vec	ran;
-// 	double	prod;
-
-// 	ran = get_random_vec(0, 1);
-// 	prod = dot_product(ran, cp);
-// 	ran = mult(ran, (prod >= 0.0) - (prod < 0.0));
-// 	// return ();
-// }
-
-t_objinfo	my_sphere_render1(t_sphere *sp, t_ray ray, t_vec light)
-{
-	t_objinfo	info;
-	t_vec		oc;
-	t_vec		op;
-	double		a;
-	double		b;
-	double		c;
-	double		sqr;
-	double		res;
-
-	info = set_obj_info();
-	oc = sub(sp->center, ray.ori);
-	a = dot_product(ray.dir, ray.dir);
-	b = dot_product(mult(ray.dir, -2), oc);
-	c = dot_product(oc, oc) - (sp->r * sp->r);
-	sqr = b * b - 4 * a * c;
-	if (sqr < 0)
-		return (info);
-	sqr = sqrt(sqr);
-	res = (-b + sqr) / 2 * a;
-	a = (-b - sqr) / 2 * a;
-	if (a < 0 && res < 0)
-		return (info);
-	a = a * (a < res) + res * (res < a);
-	info.point = point_at(ray, a);
-	op = mult(new_vec(info.point, sp->center), 1 / sp->r);
-	a = get_cos(op, light);
-	b = 1 - (a * (a > 0) - a * (a - 0));
-	info.color = get_rgb_num(1, 1, 1, (1 - a) / 2);
-	return (info);
-}
-
-t_vec	get_op_redirections1(t_vec vec, t_vec op)
-{
-	t_vec	ret;
-
-	ret.x = 2 * vec.x + op.x; 
-	ret.y = 2 * vec.y + op.y; 
-	ret.z = 2 * vec.z + op.z; 
 	return (ret);
 }
 
@@ -208,14 +105,12 @@ int	get_true_rgb(t_mlximg img, t_rgb color, float root)
 	ref.y = (ref.y > 0) * ref.y;
 	ref.z = (ref.z > 0) * ref.z;
 	ref = mult(ref, root);
-
 	temp = get_negative_color(color);
 	temp = sub(img.a_color, temp);
 	temp.x = (temp.x > 0) * temp.x;
 	temp.y = (temp.y > 0) * temp.y;
 	temp.z = (temp.z > 0) * temp.z;
 	temp = mult(temp, img.ambient);
-
 	ref.x = (ref.x > temp.x) * ref.x + (ref.x < temp.x) * temp.x;
 	ref.y = (ref.y > temp.y) * ref.y + (ref.y < temp.y) * temp.y;
 	ref.z = (ref.z > temp.z) * ref.z + (ref.z < temp.z) * temp.z;
@@ -237,7 +132,6 @@ t_objinfo	hit_plane(t_mlximg img, t_plane *pl, t_ray ray, t_light *light)
 	root = get_cos(pl->normal, pl_light);
 	if (root < 0)
 		root = 0;
-	// root = 1 * (root > 1) + 0 * (root < 0) + root * (root > 0 && root < 1);
 	ray = set_ray(info.point, mult(pl_light, -1));
 	if (find_ligh(img, ray))
 		root = 0;
@@ -253,8 +147,8 @@ double	root_pl_plane(t_ray ray, t_plane *pl)
 
 	if (dot_product(ray.dir, pl->normal) < 0.0001)
 		return (-1);
-	nominator =
-		-pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c * ray.ori.z;
+	nominator = -pl->d - pl->a * ray.ori.x - pl->b * ray.ori.y - pl->c
+		* ray.ori.z;
 	denominator = pl->a * ray.dir.x + pl->b * ray.dir.y + pl->c * ray.dir.z;
 	ret = nominator / denominator;
 	if (ret != ret)
@@ -264,12 +158,12 @@ double	root_pl_plane(t_ray ray, t_plane *pl)
 
 double	get_sp_root(t_sphere *sp, t_ray ray)
 {
-	t_vec		oc;
-	double		root1;
-	double		root2;
-	double			a;
-	double			h;
-	double			c;
+	t_vec	oc;
+	double	root1;
+	double	root2;
+	double	a;
+	double	h;
+	double	c;
 
 	oc = sub(sp->center, ray.ori);
 	a = dot_product(ray.dir, ray.dir);
@@ -287,7 +181,6 @@ double	get_sp_root(t_sphere *sp, t_ray ray)
 
 t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 {
-	t_light		*walk;
 	t_objinfo	info;
 	t_vec		pl;
 	t_vec		cp;
@@ -299,14 +192,8 @@ t_objinfo	hit_sphere(t_mlximg img, t_sphere *sp, t_ray ray, t_light *light)
 		return (info);
 	info.point = point_at(ray, root);
 	cp = mult(new_vec(info.point, sp->center), -1 / sp->r);
-	walk = light;
-	root = 0;
-	while (walk != NULL)
-	{
-		pl =  new_vec(info.point, walk->src);
-		root = get_cos(cp, pl);
-		walk = walk->next;
-	}
+	pl = new_vec(info.point, light->src);
+	root = get_cos(cp, pl);
 	if (root < 0)
 		root = 0;
 	ray = set_ray(info.point, mult(pl, -1));
@@ -332,7 +219,7 @@ double	get_cy_root(t_ray ray, t_cylinder *cy, double *dv, double *xv)
 		return (-1);
 	b = 2 * (dot_product(ray.dir, x) - *dv * *xv);
 	c = dot_product(x, x) - *xv * *xv - cy->r * cy->r;
-	root = b * b -4 * a * c;
+	root = b * b - 4 * a * c;
 	if (root < 0)
 		return (-1);
 	root = sqrt(root);
@@ -346,49 +233,8 @@ double	get_k(t_vec dir, t_vec pb)
 	return (dot_product(dir, pb) / square_vec(dir));
 }
 
-// float	get_lreflect(t_point pt, t_vec normal, t_vec dir, t_light light)
-// {
-// 	t_ray		ray;
-// 	// t_point		temp;
-// 	t_vec		lreflect;
-// 	// t_vec		p_light;
-// 	// float		cosv;
-// 	// float		sinv;
-// 	float		root;
-// 	t_sphere	sp;
-
-// 	ray.ori = pt;
-// 	ray.dir = dir;
-// 	// temp = point_at(ray, 1);
-// 	// cosv = get_cos(normal, dir);
-// 	lreflect = mult(dir, -1);
-// 	// if (cosv != 0)
-// 	// {
-// 		// sinv = sqrt(1 - cosv * cosv);
-// 		// temp = add(temp, mult(normal, sinv * 2));
-// 		// lreflect = sub(temp, pt);
-// 	// }
-// 	// p_light = sub(light.src, pt);
-// 	sp.center = light.src;
-// 	sp.r = 5.0;
-// 	ray.ori = pt;
-// 	ray.dir = lreflect;
-// 	root = get_sp_root(&sp, ray);
-// 	if (root <= 0)
-// 		return (0);
-// /********************** */
-// 	t_point	inter;
-// 	t_vec	cp;
-
-// 	inter = point_at(ray, root);
-// 	cp = mult(new_vec(inter, sp.center), -1 / sp.r);
-// 	root = get_cos(cp, lreflect);
-// 	root = (root + 9) / 10;
-// /********************** */
-// 	return (root);
-// }
-
-t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
+t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray,
+		t_light *light)
 {
 	t_objinfo	info;
 	t_point		center;
@@ -415,10 +261,10 @@ t_objinfo	hit_cylinder(t_mlximg img, t_cylinder *cy, t_ray ray, t_light *light)
 	if (find_ligh(img, ray))
 		root = 0;
 	info.color = get_true_rgb(img, cy->color, root * img.ligh_rays->brightness);
-	return (info); 
+	return (info);
 }
 
-int	get_color( t_mlximg img, double y, t_ray ray)
+int	get_color(t_mlximg img, double y, t_ray ray)
 {
 	t_objinfo	value;
 	t_objinfo	new_v;
@@ -436,8 +282,8 @@ int	get_color( t_mlximg img, double y, t_ray ray)
 		else if (lst->type == CYLINDER)
 			new_v = hit_cylinder(img, lst->obj, ray, img.ligh_rays);
 		len = vec_len(new_vec(img.camera, new_v.point));
-		if (value.color == -1 || (new_v.color != -1 && len
-			< vec_len(new_vec(img.camera, value.point))))
+		if (value.color == -1 || (new_v.color != -1
+				&& len < vec_len(new_vec(img.camera, value.point))))
 			value = new_v;
 		lst = lst->next;
 	}
@@ -454,8 +300,7 @@ void	render(int x, int y, t_mlximg img)
 
 	ray = get_ray(img, (int)(x), (int)(y));
 	offset = (x * 4) + (y * img.line_len);
-	*((unsigned int *)(img.pixel_ptr + offset))
-	= get_color(img, (int)(y), ray);
+	*((unsigned int *)(img.pixel_ptr + offset)) = get_color(img, (int)(y), ray);
 }
 
 t_rgb	decompose_color(unsigned color)
@@ -476,18 +321,22 @@ void	get_medium_color(int x, int y, t_simpleimg img2, t_mlximg img)
 	offset = ((x - 1) * 4) + (y * img.line_len);
 	color = decompose_color(*((unsigned int *)(img.pixel_ptr + offset)));
 	offset = ((x + 1) * 4) + (y * img.line_len);
-	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr
+						+ offset))));
 	offset = (x * 4) + ((y + 1) * img.line_len);
-	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr
+						+ offset))));
 	offset = (x * 4) + ((y - 1) * img.line_len);
-	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr
+						+ offset))));
 	offset = (x * 4) + (y * img.line_len);
-	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr + offset))));
+	color = add(color, decompose_color(*((unsigned int *)(img.pixel_ptr
+						+ offset))));
 	color = mult(color, 1.0 / 5);
 	*((unsigned int *)(img2.pixel_ptr + offset)) = get_rgb(color, 1.0 / 255);
 }
 
-void	anti_aliasing(t_simpleimg img2,t_mlximg img)
+void	anti_aliasing(t_simpleimg img2, t_mlximg img)
 {
 	double	w;
 	double	h;
@@ -521,11 +370,7 @@ void	run_code(t_mlx *mlx)
 		while (++x < w)
 			render(x, y, mlx->img);
 	}
-	// anti_aliasing(mlx->img2, mlx->img);
-	mlx_put_image_to_window
-	(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
-	// mlx_put_image_to_window
-	// (mlx->mlx_ptr, mlx->mlx_win, mlx->img2.img_ptr, 0, 0);
+	mlx_put_image_to_window(mlx->mlx_ptr, mlx->mlx_win, mlx->img.img_ptr, 0, 0);
 }
 
 double	get_cos(t_vec a, t_vec b)
@@ -539,7 +384,7 @@ double	get_cos(t_vec a, t_vec b)
 t_vec	edge_cases_del_v(t_vec o, t_vec v)
 {
 	if (o.y == 0)
-		return (set_class(0, -1 ,0));
+		return (set_class(0, -1, 0));
 	if (o.x == 0 && o.z == 0)
 		return (set_class(0, 0, 1));
 	if (o.x == 0)
@@ -565,14 +410,11 @@ t_ray	get_ray(t_mlximg img, double x, double y)
 {
 	t_ray	ray;
 	t_vec	vp_position;
-	// double	cl;
 
 	if (x == 0 && FOV == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, -1))));
 	if (x == img.wdt && FOV == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, 1))));
-	// if (FOV > 120)
-		// cl = (img.deg - 120) / 60;
 	ray.ori = img.camera;
 	vp_position = add(img.pixel00, mult(img.del_h, x));
 	vp_position = add(vp_position, mult(img.del_v, y));
@@ -580,19 +422,16 @@ t_ray	get_ray(t_mlximg img, double x, double y)
 	return (ray);
 }
 
-t_mlximg aux_parse(t_mlximg img)
+t_mlximg	aux_parse(t_mlximg img)
 {
 	double	vp_size;
-	// double	sinv;
 	t_ray	vec;
 
-	// img.camera = set_class(-5.0, 7.5, -10.0);	// done by the aux_parser this is just an example
-	// img.ori_vec = set_class(1.0, -1.0, 1);		// done by the aux_parser this is just an example
 	img.wdt = HGT * AP_RAT;
 	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
 	img.rad = ft_deg_to_rad(img.deg);
 	if (img.rad == 0 || vec_len(img.ori_vec) == 0 /* || check_stuff() */)
-		exit/* _func */(1);
+		exit /* _func */ (1);
 	img.ori_vec = normalize_vec(img.ori_vec);
 	img.ctr_pnt = add(img.camera, img.ori_vec);
 	img.del_h = set_class(img.ori_vec.z, 0, -img.ori_vec.x);
@@ -601,13 +440,17 @@ t_mlximg aux_parse(t_mlximg img)
 	img.del_h = mult(normalize_vec(img.del_h), vp_size / img.wdt);
 	img.normal_h = mult(img.del_h, img.wdt);
 	img.del_v = set_class(get_x(img.del_h), get_y(img.ori_vec, img.del_h), 1);
-	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), (vp_size / AP_RAT) / HGT);
+	img.del_v = mult(edge_cases_del_v(img.ori_vec, img.del_v), (vp_size
+				/ AP_RAT) / HGT);
 	printf("ori_vec	%f %f %f\n", img.ori_vec.x, img.ori_vec.y, img.ori_vec.z);
 	printf("del_h	%f %f %f\n", img.del_h.x, img.del_h.y, img.del_h.z);
 	printf("del_v	%f %f %f\n", img.del_v.x, img.del_v.y, img.del_v.z);
-	printf("dot_product img.ori_vec, img.del_h = %f\n", dot_product(img.ori_vec, img.del_h));
-	printf("dot_product img.ori_vec, img.del_v = %f\n", dot_product(img.ori_vec, img.del_v));
-	printf("dot_product img.del_h,   img.del_v = %f\n", dot_product(img.del_h, img.del_v));
+	printf("dot_product img.ori_vec, img.del_h = %f\n", dot_product(img.ori_vec,
+			img.del_h));
+	printf("dot_product img.ori_vec, img.del_v = %f\n", dot_product(img.ori_vec,
+			img.del_v));
+	printf("dot_product img.del_h,   img.del_v = %f\n", dot_product(img.del_h,
+			img.del_v));
 	img.pixel00 = add(img.ctr_pnt, mult(img.del_h, -img.wdt / 2));
 	img.pixel00 = add(img.pixel00, mult(img.del_v, -HGT / 2));
 	printf("pixel00	%f %f %f\n", img.pixel00.x, img.pixel00.y, img.pixel00.z);
@@ -647,7 +490,7 @@ int	find_ligh(t_mlximg img, t_ray ray)
 	return (0);
 }
 
-static void	print_color(const t_rgb *c)
+/* static void	print_color(const t_rgb *c)
 {
 	printf("(%f, %f, %f)", c->x, c->y, c->z);
 }
@@ -657,81 +500,79 @@ static void	print_vec(const t_vec *v)
 	printf("(%.3f, %.3f, %.3f)", v->x, v->y, v->z);
 }
 
-void print_scene(const t_scene *scene)
+void	print_scene(const t_scene *scene)
 {
-    t_list *node;
+	t_list		*node;
+	t_sphere	*sp;
+	t_plane		*pl;
+	t_cylinder	*cy;
 
-    printf("----- SCENE DEBUG -----\n");
-
-    if (scene->ambient)
-    {
-        printf("Ambient:\n");
-        printf("  Ratio: %.3f\n", scene->ambient->ratio);
-        printf("  Color: ");
-        print_color(&scene->ambient->color);
-        printf("\n");
-    }
-    else
-        printf("Ambient: (null)\n");
-
-    if (scene->camera)
-    {
-        printf("Camera:\n");
-        printf("  Position: ");
-        print_vec(&scene->camera->src);
-        printf("\n  Direction: ");
-        print_vec(&scene->camera->dir);
-        printf("\n  FOV: %.2f\n", scene->camera->fov);
-    }
-    else
-        printf("Camera: (null)\n");
-
-    if (scene->light)
-    {
-        printf("Light:\n");
-        printf("  Position: ");
-        print_vec(&scene->light->src);
-        printf("\n  Brightness: %.3f\n", scene->light->brightness);
-        printf("  Color: ");
-        print_color(&scene->light->color);
-        printf("\n");
-    }
-    else
-        printf("Light: (null)\n");
-
-    // Print spheres
-    node = scene->list;
-    while (node)
-    {
-        if (node->type == SPHERE)
-        {
-            t_sphere *sp = node->obj;
-            printf("Sphere:\n");
-            printf("  Center: ");
-            print_vec(&sp->center);
-            printf("\n  r: %.3f\n", sp->r);
-            printf("  Color: ");
-            print_color(&sp->color);
-            printf("\n  Material: %d\n", sp->material);
-        }
+	printf("----- SCENE DEBUG -----\n");
+	if (scene->ambient)
+	{
+		printf("Ambient:\n");
+		printf("  Ratio: %.3f\n", scene->ambient->ratio);
+		printf("  Color: ");
+		print_color(&scene->ambient->color);
+		printf("\n");
+	}
+	else
+		printf("Ambient: (null)\n");
+	if (scene->camera)
+	{
+		printf("Camera:\n");
+		printf("  Position: ");
+		print_vec(&scene->camera->src);
+		printf("\n  Direction: ");
+		print_vec(&scene->camera->dir);
+		printf("\n  FOV: %.2f\n", scene->camera->fov);
+	}
+	else
+		printf("Camera: (null)\n");
+	if (scene->light)
+	{
+		printf("Light:\n");
+		printf("  Position: ");
+		print_vec(&scene->light->src);
+		printf("\n  Brightness: %.3f\n", scene->light->brightness);
+		printf("  Color: ");
+		print_color(&scene->light->color);
+		printf("\n");
+	}
+	else
+		printf("Light: (null)\n");
+	node = scene->list;
+	while (node)
+	{
+		if (node->type == SPHERE)
+		{
+			sp = node->obj;
+			printf("Sphere:\n");
+			printf("  Center: ");
+			print_vec(&sp->center);
+			printf("\n  r: %.3f\n", sp->r);
+			printf("  Color: ");
+			print_color(&sp->color);
+			printf("\n  Material: %d\n", sp->material);
+		}
 		if (node->type == PLANE)
-        {
-            t_plane *pl = node->obj;
-            printf("Plane:\n");
-            printf("  Point: ");
-            print_vec(&pl->point);
-            printf("\n  Normal: ");
-        		print_vec(&pl->normal);
-            printf("\n  Color: ");
-            print_color(&pl->color);
-            printf("\n  a: %f\n", pl->a);
-            printf("  b: %f\n", pl->b);
-            printf("  c: %f\n", pl->c);
-            printf("  d: %f\n", pl->d);
-        }
+		{
+			pl = node->obj;
+			printf("Plane:\n");
+			printf("  Point: ");
+			print_vec(&pl->point);
+			printf("\n  Normal: ");
+			print_vec(&pl->normal);
+			printf("\n  Color: ");
+			print_color(&pl->color);
+			printf("\n  a: %f\n", pl->a);
+			printf("  b: %f\n", pl->b);
+			printf("  c: %f\n", pl->c);
+			printf("  d: %f\n", pl->d);
+		}
 		if (node->type == CYLINDER)
 		{
-			t_cylinder *cy = node->obj;
+			cy = node->obj;
 			printf("Cylinder:\n");
 			printf("  Center: ");
 			print_vec(&cy->ray.ori);
@@ -743,12 +584,10 @@ void print_scene(const t_scene *scene)
 			print_color(&cy->color);
 			printf("\n  Material: %d\n", cy->material);
 		}
-        node = node->next;
-    }
-	
-    printf("-----------------------\n");
-}
-
+		node = node->next;
+	}
+	printf("-----------------------\n");
+} */
 
 static void	init_scene(t_scene *scene)
 {
@@ -778,7 +617,7 @@ int	main(int argc, char **argv)
 		return (1);
 	init_scene(&scene);
 	parse(argv[1], &scene);
-	print_scene(&scene);
+	/* print_scene(&scene); */
 	init_var(&mlx);
 	if (init_mlx(&mlx))
 		return (1);
