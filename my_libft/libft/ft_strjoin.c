@@ -6,11 +6,11 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 21:32:36 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/06/18 18:13:24 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:28:22 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft.h"
+#include "../my_libft.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {

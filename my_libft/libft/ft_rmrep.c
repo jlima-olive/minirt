@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_rmrep.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 09:45:14 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/09 09:45:36 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:28:22 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft.h"
+#include "../my_libft.h"
 
 char	*ft_rmrep(char *str, char rep)
 {

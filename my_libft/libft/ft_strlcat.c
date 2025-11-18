@@ -6,11 +6,11 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 16:12:29 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/06/11 09:10:30 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:28:22 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft.h"
+#include "../my_libft.h"
 
 size_t	ft_strlcat(char *dst, const char *src, size_t size)
 {

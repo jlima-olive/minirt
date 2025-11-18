@@ -5,8 +5,7 @@ CFLAGS = -Wall -Wextra -Werror
 SRC_DIR = srcs
 OBJ_DIR = obj
 
-SRCS =  main.c \
-		clean.c \
+SRCS =  clean.c \
 		precheck.c \
 		parsing.c \
 		parsing_utils.c \

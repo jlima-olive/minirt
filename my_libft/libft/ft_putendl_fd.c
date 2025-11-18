@@ -6,11 +6,11 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:14:19 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/06/11 09:09:45 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:28:22 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft.h"
+#include "../my_libft.h"
 
 void	ft_putendl_fd(char *s, int fd)
 {

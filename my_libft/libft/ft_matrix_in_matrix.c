@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_matrix_in_matrix.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 10:03:43 by namejojo          #+#    #+#             */
-/*   Updated: 2025/10/09 10:03:44 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:28:22 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft.h"
+#include "../my_libft.h"
 
 char	**ft_matrix_in_matrix(char **mat, int ind, char **holder)
 {

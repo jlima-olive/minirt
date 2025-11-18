@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_join_matrix.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: namejojo <namejojo@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 17:26:26 by vivaz-ca          #+#    #+#             */
-/*   Updated: 2025/10/13 13:54:11 by namejojo         ###   ########.fr       */
+/*   Updated: 2025/11/18 16:28:22 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../libft.h"
+#include "../my_libft.h"
 
 char	*ft_join_matrix_aux(char **mat, char *ret)
 {

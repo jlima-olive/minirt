@@ -7,7 +7,7 @@ OBJ_FILES=	${SRC_FILES:.c=.o}
 
 NAME=		../jojo_libft.a
 
-HDR_FILE=	libft.h
+HDR_FILE=	my_libft.h
 
 CC=			cc
 
