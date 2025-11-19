@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 16:41:52 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/11/18 16:41:57 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/19 14:31:53 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,12 @@ typedef struct s_light
 }					t_light;
 
 // shape structs
-typedef enum s_material
-{
-	DEFAULT,
-	GLASS,
-	MIRROR
-}					t_material;
 
 typedef struct s_sphere
 {
 	t_vec			center;
 	float			r;
 	t_rgb			color;
-	t_material		material;
 }					t_sphere;
 
 typedef struct s_plane
@@ -88,7 +81,6 @@ typedef struct s_plane
 	t_vec			point;
 	t_vec			normal;
 	t_rgb			color;
-	t_material		material;
 	double			a;
 	double			b;
 	double			c;
@@ -103,7 +95,6 @@ typedef struct s_cylidner
 	float			r;
 	float			height;
 	t_rgb			color;
-	t_material		material;
 }					t_cylinder;
 
 // shapes list

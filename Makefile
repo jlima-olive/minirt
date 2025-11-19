@@ -62,19 +62,19 @@ $(MLX_DIR):
 	git clone https://github.com/42paris/minilibx-linux.git mlx_linux
 
 clean:
-	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) $(PROJ)
+	rm -fr $(OBJ_FILES) $(NAME)
 	$(MAKE) -C $(LIBFT_DIR) clean
 	$(MAKE) -C parse clean
 
 fclean:
-	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) $(PROJ)
+	rm -fr $(OBJ_FILES) $(NAME) miniRT
 	$(MAKE) -C $(LIBFT_DIR) fclean
 	$(MAKE) -C parse fclean
 
 re: fclean all
 
 r:
-	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) $(PROJ)
+	rm -fr $(PROJ).a $(OBJ_FILES) $(NAME) miniRT
 	make
 
 .PHONY: re fclean clean all mini MLX LIBFT

@@ -6,24 +6,11 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 12:04:22 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/18 16:43:48 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/19 14:33:02 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../minirt.h"
-
-static int	parse_cylinder_material(char *line, int *i, t_cylinder *cy)
-{
-	if (line[*i] && line[*i] != '\n')
-	{
-		if (!is_valid_int(line + *i, 0, 2))
-			return (write(2, "Error\ncy: invalid material\n", 28), 1);
-		cy->material = (t_material)parse_int(line, i);
-	}
-	else
-		cy->material = DEFAULT;
-	return (0);
-}
 
 static int	parse_cylinder_body(char *line, t_cylinder *cy, int i)
 {
@@ -48,8 +35,6 @@ static int	parse_cylinder_body(char *line, t_cylinder *cy, int i)
 		return (write(2, "Error\ncy: invalid color\n", 24), 1);
 	parse_color(line, &i, &cy->color);
 	cy->color = mult(cy->color, 1.0 / 255);
-	if (parse_cylinder_material(line, &i, cy))
-		return (1);
 	cy->ray = set_ray(cy->center, cy->axis);
 	return (0);
 }

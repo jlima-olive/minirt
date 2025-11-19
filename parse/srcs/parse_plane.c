@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 11:24:34 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/18 16:55:38 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/19 14:31:11 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,6 @@ static int	parse_plane_body(char *line, t_plane *pl, t_scene *scene, int i)
 	if (!is_valid_rgb(line + i))
 		return (write(2, "Error\npl: invalid color\n", 25), 1);
 	parse_color(line, &i, &pl->color);
-	if (line[i] && line[i] != '\n')
-	{
-		if (!is_valid_int(line + i, 0, 2))
-			return (write(2, "Error\npl: invalid material\n", 28), 1);
-		pl->material = (t_material)parse_int(line, &i);
-	}
-	else
-		pl->material = DEFAULT;
 	return (parse_plane_body_aux(pl));
 }
 
