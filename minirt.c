@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:48:56 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/18 16:33:57 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:34:07 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,8 @@ int	main(int argc, char **argv)
 	t_mlx	mlx;
 	t_scene	scene;
 
+	if (AP_RAT < 1)
+		return (write(2, "Invalid aspect ratio\n", 22));
 	if (!precheck(argc, argv[1]))
 		return (1);
 	init_scene(&scene);
