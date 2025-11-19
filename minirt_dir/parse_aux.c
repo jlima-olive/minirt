@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 16:02:34 by jlima-so          #+#    #+#             */
-/*   Updated: 2025/11/18 16:42:51 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:32:26 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ t_mlximg	aux_parse(t_mlximg img)
 	double	vp_size;
 
 	img.wdt = HGT * AP_RAT;
-	img.deg = FOV * (FOV <= 179.99999) + 179.99999 * (FOV > 179.99999);
+	img.deg = img.fov * (img.fov <= 179.99999) + 179.99999
+		* (img.fov > 179.99999);
 	img.rad = ft_deg_to_rad(img.deg);
 	img.ori_vec = normalize_vec(img.ori_vec);
 	img.ctr_pnt = add(img.camera, img.ori_vec);
@@ -74,8 +75,9 @@ void	connect_parse(t_mlximg *img, t_scene scene)
 {
 	img->ambient = scene.ambient->ratio;
 	img->a_color = scene.ambient->color;
-	img->camera = scene.camera->src;
 	img->ori_vec = scene.camera->dir;
+	img->camera = scene.camera->src;
+	img->fov = scene.camera->fov;
 	img->ligh_rays = scene.light;
 	img->objs = scene.list;
 }

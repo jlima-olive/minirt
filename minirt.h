@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/09 13:42:15 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/18 16:29:00 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:30:31 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ typedef struct s_mlximg
 	t_vec		min_vec;
 	t_vec		vert;
 	double		min_len;
+	double		fov;
 	double		rad;
 	double		deg;
 	double		wdt;

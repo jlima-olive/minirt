@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/10 11:35:51 by namejojo          #+#    #+#             */
-/*   Updated: 2025/11/18 16:33:30 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/19 13:32:35 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ t_ray	get_ray(t_mlximg img, double x, double y)
 	t_ray	ray;
 	t_vec	vp_position;
 
-	if (x == 0 && FOV == 180)
+	if (x == 0 && img.fov == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, -1))));
-	if (x == img.wdt && FOV == 180)
+	if (x == img.wdt && img.fov == 180)
 		return (set_ray(img.camera, sub(img.camera, mult(img.del_h, 1))));
 	ray.ori = img.camera;
 	vp_position = add(img.pixel00, mult(img.del_h, x));
