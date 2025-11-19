@@ -6,7 +6,7 @@
 /*   By: jlima-so <jlima-so@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/26 17:07:08 by psantos-          #+#    #+#             */
-/*   Updated: 2025/11/17 18:58:28 by jlima-so         ###   ########.fr       */
+/*   Updated: 2025/11/19 14:26:50 by jlima-so         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	parse(char *filename, t_scene *scene)
 		if (result)
 		{
 			clean_scene(scene);
-			exit(1);
+			return (close(fd), exit(1));
 		}
 		line = get_next_line(fd);
 	}
